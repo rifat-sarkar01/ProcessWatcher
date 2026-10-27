@@ -1,0 +1,19 @@
+# Secret scanning must pass before every commit (AGENTS.md §4).
+# Ruff / mypy / pytest run through `uv run` (AGENTS.md §15), not as hooks.
+#
+# The gitleaks hook is declared as a local hook on purpose: this project runs on a
+# Windows host whose sandboxed shell cannot initialise the upstream hook
+# environment (`pre-commit` clones the hook repo into a temp directory, which the
+# sandbox denies). The scanner is the official gitleaks CLI, installed per machine
+# (`winget install Gitleaks.Gitleaks`); T-0.9 installs the same CLI in CI before
+# running `gitleaks detect`. `gitleaks detect --no-git` scans the working tree, so
+# `--all-files` and a plain commit scan the same content.
+repos:
+  - repo: local
+    hooks:
+      - id: gitleaks
+        name: gitleaks (secret scan)
+        entry: gitleaks detect --no-git --source . --redact --verbose --exit-code 1
+        language: system
+        pass_filenames: false
+        always_run: true

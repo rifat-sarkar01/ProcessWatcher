@@ -1,0 +1,77 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "process-watcher"
+version = "0.0.0"
+description = "Process Watcher: check a recorded physical procedure against its written SOP"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = { file = "LICENSE" }
+authors = [{ name = "Process Watcher team" }]
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "mypy>=1.13",
+    "pre-commit>=4.0",
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "ruff>=0.8",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pw"]
+
+[tool.uv]
+# AGENTS.md §4: never install a release younger than 14 days.
+# 2026-10-13 = 14 days before this lockfile was created (2026-10-27).
+exclude-newer = "2026-10-13"
+
+# --- lint ---------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+extend-exclude = ["bench", "runs", "web"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["pw"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+# --- types --------------------------------------------------------------
+[tool.mypy]
+python_version = "3.12"
+files = ["src"]
+strict = true
+warn_unreachable = true
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_errors = true
+
+# --- tests --------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config"
+markers = [
+    "unit: fast, no network, no model calls (the default)",
+    "integration: replay-mode integration tests (free, deterministic)",
+    "live: hits the Meta Model API and spends money (manual only)",
+]
+
+[tool.coverage.run]
+source = ["src/pw"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true

@@ -98,6 +98,9 @@ models/checkpoints/
 # 8. Secrets, API Keys & Private Configuration (Zero-Leakage Policy)
 # Rule: No secrets in code, logs, cache or bundle (AGENTS.md §4)
 # ------------------------------------------------------------------------------
+
+.env.local
+.env.*.local
 .env
 .env.*
 !.env.example
@@ -127,3 +130,12 @@ desktop.ini
 scratch/
 .gemini/
 .claude/
+
+# ------------------------------------------------------------------------------
+# 10. Local Tool Caches (uv, pre-commit, pytest leftovers)
+# Rule: keep caches inside the repo so sandboxed/CI runs work, but never commit
+# ------------------------------------------------------------------------------
+.uv/
+.pre-commit-cache/
+pytest-cache-files-*/
+
