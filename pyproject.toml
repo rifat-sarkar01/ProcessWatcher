@@ -12,6 +12,7 @@ license = { file = "LICENSE" }
 authors = [{ name = "Process Watcher team" }]
 dependencies = [
     "jsonschema>=4.23",
+    "pymupdf>=1.24",
 ]
 
 [project.scripts]

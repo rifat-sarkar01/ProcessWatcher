@@ -458,7 +458,7 @@ Standard checks S1–S9 plus the G2 extras in the Phase Profile. Evidence in PRO
 - Gate extras: `pw-bench run --split dev --predictor full` completes on 15/15 clips · first dev numbers recorded for Full vs A vs B · `pw-bench sop-eval` PASS 3/3 · every deviation has step id + track ids + times · **RED trigger:** if Full F1 < baseline B F1, stop and re-plan (identity/set-of-mark/segmentation) before G4.
 - Exit evidence: dev results table (Full, A, B), sop-eval output, coverage report.
 
-### T-3.1 · SOP ingest (md, txt, pdf)                                                     [ ]
+### T-3.1 · SOP ingest (md, txt, pdf)                                                     [x]
 - **Track:** ML | **Serves:** FR-01, FR-02 | **Size:** S | **Tier:** light | **Depends:** T-0.2 | **Blocks:** T-3.2
 - **Context pack (read only these):** `bench/sops/*.md`
 - **Goal:** normalise `.md`/`.txt`/text-PDF (pymupdf) into a `SopSource`; scanned PDFs yield page images flagged for Wonder vision.
