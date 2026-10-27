@@ -1,0 +1,60 @@
+# Git Ignore for Process Watcher
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments & Tooling
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node & Frontend
+node_modules/
+web/node_modules/
+web/dist/
+web/.next/
+.turbo/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Process Watcher Storage & Large Media
+# As per AGENTS.md §4 & §15: runs/ and bench/**/videos stay out of git
+runs/
+bench/**/videos/
+*.mp4
+*.mkv
+*.avi
+*.mov
+# Allow demo clip fixtures if explicitly placed
+!bench/golden/*.json
+!demo/cases/**
+
+# Secrets & Local Configurations
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.cert
+
+# Operating System & Editors
+.DS_Store
+Thumbs.db
+ehthumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
