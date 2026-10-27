@@ -307,7 +307,7 @@ Standard checks S1–S9 plus the G0 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** same validator cases as T-1.4.
 - **Done when:** `uv run pw-data validate --split heldout` → "9 clips OK · 9 GT OK".
 
-### T-1.6 · Metrics module                                                              [ ]
+### T-1.6 · Metrics module                                                              [x]
 - **Track:** ML | **Serves:** FR-13, NFR-07 | **Size:** S | **Tier:** standard | **Depends:** T-1.2, T-1.3 | **Blocks:** T-1.7
 - **Context pack (read only these):** NFR-07 · `contracts/report.schema.json` · `bench/gt.schema.json`
 - **Goal:** pure functions: type-aware matching (±2.0 s, same step id), P/R/F1 per type and overall, false flags per compliant clip, timestamp MAE, step frame accuracy, cost/latency aggregation.
