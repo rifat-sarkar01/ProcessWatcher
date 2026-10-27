@@ -280,7 +280,7 @@ Standard checks S1–S9 plus the G0 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** happy · evidence/illustration kind mixing rejected · deviation without track/time refs rejected.
 - **Done when:** `uv run pytest tests/contracts -q` → pass; `npm --prefix web run gen:types; git diff --exit-code web/src/types/generated` → exit 0; `git tag -l contracts-v1` → `contracts-v1`.
 
-### T-1.3 · Author 3 SOPs, golden step graphs, GT schema, shot list                   [ ]
+### T-1.3 · Author 3 SOPs, golden step graphs, GT schema, shot list                   [x]
 - **Track:** DATA | **Serves:** FR-13 | **Size:** M | **Tier:** light | **Depends:** T-1.1 | **Blocks:** T-1.4, T-1.5, T-1.6, T-3.3
 - **Context pack (read only these):** A-8 · `contracts/sop.schema.json`
 - **Goal:** SOP text for P-A/P-B/P-C, hand-written golden step graphs, GT YAML schema, and a shot list covering every deviation variant.

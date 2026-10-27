@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "sop_id": "sop_98f641c7",
+  "title": "SSD swap in a desktop PC",
+  "source": {
+    "kind": "md",
+    "sha256": "98f641c7bdb036f9ac4d410709d16245a45af2ed93bbd0b50c34084706c28d1a"
+  },
+  "steps": [
+    {
+      "id": "stp_01",
+      "idx": 1,
+      "text": "Power the PC down, unplug the power cable and clip the antistatic wrist strap to bare metal.",
+      "action": "power down",
+      "tools": ["antistatic wrist strap"],
+      "parts": ["power cable", "desktop case"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": true,
+      "visual_check": "Power cable disconnected, strap clipped to bare metal"
+    },
+    {
+      "id": "stp_02",
+      "idx": 2,
+      "text": "Remove the two rear thumbscrews and slide the side panel off the desktop case.",
+      "action": "open",
+      "tools": ["hand"],
+      "parts": ["side panel", "thumbscrews"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Side panel removed, interior visible"
+    },
+    {
+      "id": "stp_03",
+      "idx": 3,
+      "text": "Unplug the SATA data cable from the old SSD.",
+      "action": "disconnect",
+      "tools": ["hand"],
+      "parts": ["sata data cable", "old ssd"],
+      "ordering": "unordered_group",
+      "group_id": "grp_01",
+      "critical": false,
+      "visual_check": "Data cable clear of the drive"
+    },
+    {
+      "id": "stp_04",
+      "idx": 4,
+      "text": "Unplug the SATA power cable from the old SSD.",
+      "action": "disconnect",
+      "tools": ["hand"],
+      "parts": ["sata power cable", "old ssd"],
+      "ordering": "unordered_group",
+      "group_id": "grp_01",
+      "critical": false,
+      "visual_check": "Power cable clear of the drive"
+    },
+    {
+      "id": "stp_05",
+      "idx": 5,
+      "text": "Remove the two mounting screws with the Phillips screwdriver and slide the old SSD out of the bay.",
+      "action": "remove",
+      "tools": ["screwdriver"],
+      "parts": ["old ssd", "mounting screws"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Empty drive bay, old SSD on the bench"
+    },
+    {
+      "id": "stp_06",
+      "idx": 6,
+      "text": "Slide the new SSD into the bay and fasten the two mounting screws with the Phillips screwdriver.",
+      "action": "install",
+      "tools": ["screwdriver"],
+      "parts": ["new ssd", "mounting screws"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "New SSD seated flush, both screws fitted"
+    },
+    {
+      "id": "stp_07",
+      "idx": 7,
+      "text": "Plug the SATA data cable into the new SSD.",
+      "action": "connect",
+      "tools": ["hand"],
+      "parts": ["sata data cable", "new ssd"],
+      "ordering": "unordered_group",
+      "group_id": "grp_02",
+      "critical": false,
+      "visual_check": "Data cable latched on the drive"
+    },
+    {
+      "id": "stp_08",
+      "idx": 8,
+      "text": "Plug the SATA power cable into the new SSD.",
+      "action": "connect",
+      "tools": ["hand"],
+      "parts": ["sata power cable", "new ssd"],
+      "ordering": "unordered_group",
+      "group_id": "grp_02",
+      "critical": false,
+      "visual_check": "Power cable fully seated on the drive"
+    },
+    {
+      "id": "stp_09",
+      "idx": 9,
+      "text": "Refit the side panel and tighten the two rear thumbscrews.",
+      "action": "close",
+      "tools": ["hand"],
+      "parts": ["side panel", "thumbscrews"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Panel flush with the case"
+    },
+    {
+      "id": "stp_10",
+      "idx": 10,
+      "text": "Reconnect the power cable and boot the machine to confirm the new SSD is detected.",
+      "action": "verify boot",
+      "tools": ["hand"],
+      "parts": ["power cable", "new ssd"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": true,
+      "visual_check": "OS storage view lists the new SSD"
+    }
+  ],
+  "vocabulary": {
+    "sam_concepts": ["hand", "screwdriver", "ssd", "sata cable", "desktop case", "side panel"],
+    "zones": ["drive bay"]
+  },
+  "warnings": []
+}
