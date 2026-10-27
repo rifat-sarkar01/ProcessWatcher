@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "run_01J9ZQ8M3K4V7B2C5D6E8F0GHJ",
+  "created_at": "2026-10-27T09:12:04Z",
+  "finished_at": "2026-10-27T09:15:47Z",
+  "mode": "replay",
+  "inputs": {
+    "video_sha256": "c4a1f7e2b9d053816a2e4c6f8b0d1e3a5c7f9b2d4e6a8c0f1b3d5e7a9c2f4b6d",
+    "sop_sha256": "9f2c4d1e6b8a0c3f5e7d9b1a2c4e6f8091a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1",
+    "step_graph_sha256": "1d3f5a7b9c1e2f4a6b8c0d2e4f6a8b0c1d3e5f7a9b1c3d5e7f9a1b3c5d7e9f01",
+    "edited_by_user": false
+  },
+  "models": [
+    { "name": "sam-3.1", "version_or_date": "2026-10-01", "endpoint": "api.meta.ai/v1/responses" },
+    { "name": "muse-wonder-1.0", "version_or_date": "2026-10-01", "endpoint": "api.meta.ai/v1/responses" },
+    { "name": "muse-image-1.0", "version_or_date": "2026-10-01", "endpoint": "api.meta.ai/v1/images" }
+  ],
+  "config_sha256": "5e7d9b1a2c4e6f8091a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1c3d5e7",
+  "stages": [
+    {
+      "stage": "ingest",
+      "status": "ok",
+      "started_at": "2026-10-27T09:12:04Z",
+      "duration_ms": 4821,
+      "cache_hit": false,
+      "cost_usd": 0.0
+    },
+    {
+      "stage": "perceive",
+      "status": "ok",
+      "started_at": "2026-10-27T09:12:09Z",
+      "duration_ms": 91340,
+      "cache_hit": true,
+      "cost_usd": 0.41
+    },
+    {
+      "stage": "score",
+      "status": "ok",
+      "started_at": "2026-10-27T09:13:41Z",
+      "duration_ms": 45012,
+      "cache_hit": false,
+      "cost_usd": 0.36
+    },
+    {
+      "stage": "illustrate",
+      "status": "skipped",
+      "started_at": "2026-10-27T09:15:12Z",
+      "duration_ms": 0,
+      "cache_hit": false,
+      "cost_usd": 0.0
+    }
+  ],
+  "ledger": {
+    "total_usd": 0.77,
+    "by_model": { "sam-3.1": 0.41, "muse-wonder-1.0": 0.36 },
+    "calls": 14,
+    "cache_hits": 6,
+    "spend_cap_usd": 3.0,
+    "cap_reached": false
+  },
+  "dropped_candidates": 1,
+  "git_commit": "f6210ee",
+  "app_version": "0.0.0"
+}

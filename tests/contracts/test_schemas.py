@@ -13,16 +13,27 @@ from typing import Any
 import pytest
 
 from pw.data import cli
-from pw.data.schemas import EXAMPLE_FILENAMES, KINDS, default_contracts_dir, load_json
+from pw.data.schemas import (
+    EXAMPLE_FILENAMES,
+    EXAMPLE_PATTERNS,
+    KINDS,
+    default_contracts_dir,
+    load_json,
+)
 from pw.data.validate import validate_all, validate_payload
 
 CONTRACTS_DIR = default_contracts_dir()
 EXAMPLES_DIR = CONTRACTS_DIR / "examples"
 SCRATCH_ROOT = Path(__file__).resolve().parents[2] / ".uv" / "tests-tmp"
+REPORT_FIXTURES = (
+    "report.p-a.example.json",
+    "report.p-b.example.json",
+    "report.p-c.example.json",
+)
 
 
-def example(kind: str) -> dict[str, Any]:
-    payload = load_json(EXAMPLES_DIR / EXAMPLE_FILENAMES[kind])
+def example(kind: str, filename: str | None = None) -> dict[str, Any]:
+    payload = load_json(EXAMPLES_DIR / (filename or EXAMPLE_FILENAMES[kind]))
     assert isinstance(payload, dict)
     return copy.deepcopy(payload)
 
@@ -44,9 +55,37 @@ def artifact_dir() -> Iterator[Path]:
 
 
 @pytest.mark.unit
-@pytest.mark.parametrize("kind", KINDS)
-def test_committed_examples_are_valid(kind: str) -> None:
-    assert validate_payload(kind, example(kind)) == []
+@pytest.mark.parametrize(
+    ("kind", "path"),
+    [
+        (kind, path)
+        for kind in KINDS
+        for path in sorted(EXAMPLES_DIR.glob(EXAMPLE_PATTERNS[kind][0]))
+    ],
+    ids=[
+        f"{kind}-{path.name}"
+        for kind in KINDS
+        for path in sorted(EXAMPLES_DIR.glob(EXAMPLE_PATTERNS[kind][0]))
+    ],
+)
+def test_committed_examples_are_valid(kind: str, path: Path) -> None:
+    assert validate_payload(kind, load_json(path)) == []
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("filename", REPORT_FIXTURES)
+def test_report_fixtures_are_valid(filename: str) -> None:
+    assert validate_payload("report", example("report", filename)) == []
+
+
+@pytest.mark.unit
+def test_report_embedded_step_graph_is_validated() -> None:
+    payload = example("report", REPORT_FIXTURES[0])
+    payload["sop"]["steps"][0]["id"] = "step-one"
+
+    errors = validate_payload("report", payload)
+
+    assert any("step-one" in error for error in errors)
 
 
 @pytest.mark.unit
@@ -57,7 +96,7 @@ def test_validate_all_reports_no_problems() -> None:
 @pytest.mark.unit
 def test_validate_contracts_cli_prints_summary(capsys: pytest.CaptureFixture[str]) -> None:
     assert cli.main(["validate-contracts"]) == 0
-    assert "OK 3 schemas, 3 examples" in capsys.readouterr().out
+    assert "OK 8 schemas, 12 examples" in capsys.readouterr().out
 
 
 @pytest.mark.unit
@@ -167,7 +206,7 @@ def test_unknown_event_reference_in_segment_is_rejected() -> None:
 @pytest.mark.unit
 def test_unknown_kind_raises() -> None:
     with pytest.raises(ValueError, match="unknown artifact kind"):
-        validate_payload("report", {})
+        validate_payload("not_a_contract", {})
 
 
 @pytest.mark.unit
@@ -198,3 +237,167 @@ def test_validate_artifact_cli_unreadable_returns_two(
 ) -> None:
     assert cli.main(["validate-artifact", str(artifact_dir / "missing.json")]) == 2
     assert "ERROR" in capsys.readouterr().err
+
+
+# --- evidence / illustration provenance (FR-09, FR-10) ---------------------------
+
+
+@pytest.mark.unit
+def test_illustration_inside_evidence_is_rejected() -> None:
+    payload = example("report", REPORT_FIXTURES[0])
+    illustration = payload["deviations"][1]["illustration"]
+    payload["deviations"][1]["evidence"].append(illustration)
+
+    errors = validate_payload("report", payload)
+
+    assert any("evidence.1" in error for error in errors)
+
+
+@pytest.mark.unit
+def test_illustration_must_carry_a_watermark() -> None:
+    payload = example("report", REPORT_FIXTURES[0])
+    payload["deviations"][1]["illustration"]["watermark"] = False
+
+    errors = validate_payload("report", payload)
+
+    assert any("watermark" in error for error in errors)
+
+
+@pytest.mark.unit
+def test_missing_illustration_requires_a_reason() -> None:
+    payload = example("report", REPORT_FIXTURES[0])
+    payload["deviations"][0]["illustration_unavailable_reason"] = None
+
+    errors = validate_payload("report", payload)
+
+    assert any("illustration_unavailable_reason" in error for error in errors)
+
+
+# --- traceability invariants (NFR-04) -------------------------------------------
+
+
+@pytest.mark.unit
+def test_deviation_without_track_refs_is_rejected() -> None:
+    payload = example("report", REPORT_FIXTURES[0])
+    payload["deviations"][0]["track_ids"] = []
+
+    errors = validate_payload("report", payload)
+
+    assert any("track_ids" in error for error in errors)
+
+
+@pytest.mark.unit
+def test_deviation_without_step_id_is_rejected() -> None:
+    payload = example("report", REPORT_FIXTURES[0])
+    del payload["deviations"][0]["step_id"]
+
+    errors = validate_payload("report", payload)
+
+    assert any("step_id" in error for error in errors)
+
+
+@pytest.mark.unit
+def test_deviation_step_must_exist_in_the_embedded_sop() -> None:
+    payload = example("report", REPORT_FIXTURES[0])
+    payload["deviations"][0]["step_id"] = "stp_99"
+
+    errors = validate_payload("report", payload)
+
+    assert any("unknown step id" in error for error in errors)
+
+
+@pytest.mark.unit
+def test_evidence_without_reason_is_rejected() -> None:
+    payload = example("report", REPORT_FIXTURES[0])
+    payload["deviations"][0]["evidence"] = []
+    payload["deviations"][0]["evidence_unavailable"] = False
+
+    errors = validate_payload("report", payload)
+
+    assert any("evidence_unavailable" in error for error in errors)
+
+
+# --- report status invariants (docs/05_Schema.md §11) ---------------------------
+
+
+@pytest.mark.unit
+def test_not_recognized_requires_no_deviations() -> None:
+    payload = example("report", REPORT_FIXTURES[2])
+    payload["deviations"] = example("report", REPORT_FIXTURES[0])["deviations"]
+
+    errors = validate_payload("report", payload)
+
+    assert any("not_recognized" in error for error in errors)
+
+
+@pytest.mark.unit
+def test_done_requires_no_degraded_stages() -> None:
+    payload = example("report", REPORT_FIXTURES[0])
+    payload["degraded_stages"] = ["verify"]
+
+    errors = validate_payload("report", payload)
+
+    assert any("degraded_stages" in error for error in errors)
+
+
+@pytest.mark.unit
+def test_summary_counts_must_match_deviations() -> None:
+    payload = example("report", REPORT_FIXTURES[0])
+    payload["summary"]["flagged"] = 5
+
+    errors = validate_payload("report", payload)
+
+    assert any("summary.flagged" in error for error in errors)
+
+
+# --- review, alignment and thresholds invariants --------------------------------
+
+
+@pytest.mark.unit
+def test_review_duplicate_decision_is_rejected() -> None:
+    payload = example("review")
+    payload["decisions"][1]["deviation_id"] = payload["decisions"][0]["deviation_id"]
+
+    errors = validate_payload("review", payload)
+
+    assert any("duplicate decision" in error for error in errors)
+
+
+@pytest.mark.unit
+def test_likelihood_probabilities_must_sum_to_one() -> None:
+    payload = example("likelihoods")
+    payload["segments"][0]["step_probs"] = {"stp_01": 0.2, "none": 0.2}
+
+    errors = validate_payload("likelihoods", payload)
+
+    assert any("sum to" in error for error in errors)
+
+
+@pytest.mark.unit
+def test_alignment_interval_times_must_be_ordered() -> None:
+    payload = example("alignment")
+    payload["intervals"][0]["t_end"] = payload["intervals"][0]["t_start"] - 1.0
+
+    errors = validate_payload("alignment", payload)
+
+    assert any("before t_start" in error for error in errors)
+
+
+@pytest.mark.unit
+def test_thresholds_reject_unknown_keys() -> None:
+    payload = example("thresholds")
+    payload["deviation"]["tau_magic"] = 0.5
+
+    errors = validate_payload("thresholds", payload)
+
+    assert any("tau_magic" in error for error in errors)
+
+
+@pytest.mark.unit
+def test_thresholds_reject_out_of_range_probabilities() -> None:
+    payload = example("thresholds")
+    payload["deviation"]["tau_flag"] = 1.5
+
+    errors = validate_payload("thresholds", payload)
+
+    assert any("tau_flag" in error for error in errors)

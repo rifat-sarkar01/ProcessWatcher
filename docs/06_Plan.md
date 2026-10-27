@@ -271,7 +271,7 @@ Standard checks S1–S9 plus the G0 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** happy (examples valid) · edge (empty tracks list ok) · failure (missing field, bad enum, negative time, non-monotonic frames rejected).
 - **Done when:** `uv run pytest tests/contracts -q` → pass; `uv run pw-data validate-contracts` → "OK 3 schemas, 3 examples".
 
-### T-1.2 · Contracts B: alignment, report, manifest + generated TS types (C1)       [ ]
+### T-1.2 · Contracts B: alignment, report, manifest + generated TS types (C1)       [x]
 - **Track:** DATA | **Serves:** NFR-04, FR-12 | **Size:** M | **Tier:** standard | **Depends:** T-1.1, T-0.3 | **Blocks:** T-1.6, T-3.5, T-5.6
 - **Context pack (read only these):** 05_Schema §6–11, §14 · 01_PRD FR-12 · T-1.1 schemas
 - **Goal:** contracts per `05_Schema.md` §6–10 and §14 (alignment incl. identities/likelihoods, report with evidence/illustration `kind`, manifest, review, thresholds); TS types generated; three hand-authored realistic fixture reports for FE.

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://process-watcher.dev/contracts/review.schema.json",
+  "title": "Review",
+  "description": "Human review decisions, one latest decision per deviation. Notes are plain text and rendered escaped. Source of truth: docs/05_Schema.md §10.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "decisions"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["deviation_id", "decision", "note", "decided_at"],
+        "properties": {
+          "deviation_id": { "type": "string", "pattern": "^dev_\\d{3,}$" },
+          "decision": { "enum": ["accepted", "dismissed"] },
+          "note": { "type": "string", "maxLength": 500 },
+          "decided_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "Z$"
+          }
+        }
+      }
+    }
+  }
+}

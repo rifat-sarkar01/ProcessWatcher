@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://process-watcher.dev/contracts/report.schema.json",
+  "title": "Report",
+  "description": "Self-contained audit report. Evidence is real frames only (kind=evidence); Muse Image diagrams are kind=illustration, watermarked and never mixed. Source of truth: docs/05_Schema.md §7-§8.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "created_at",
+    "status",
+    "degraded_stages",
+    "sop",
+    "video",
+    "lanes",
+    "deviations",
+    "summary",
+    "manifest_ref"
+  ],
+  "properties": {
+    "schema_version": { "$ref": "#/$defs/semver" },
+    "run_id": { "$ref": "#/$defs/run_id" },
+    "created_at": { "$ref": "#/$defs/timestamp" },
+    "status": { "enum": ["done", "partial", "not_recognized"] },
+    "degraded_stages": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "sop": { "$ref": "https://process-watcher.dev/contracts/sop.schema.json" },
+    "video": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256", "duration_s", "width", "height"],
+      "properties": {
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "duration_s": { "type": "number", "exclusiveMinimum": 0 },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      },
+      "description": "Hashes and geometry only: no filename, no operator"
+    },
+    "lanes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expected", "observed"],
+      "properties": {
+        "expected": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["step_id", "idx"],
+            "properties": {
+              "step_id": { "$ref": "#/$defs/step_id" },
+              "idx": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "observed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["interval_id", "step_id", "t_start", "t_end"],
+            "properties": {
+              "interval_id": { "type": "string", "pattern": "^int_\\d{2,}$" },
+              "step_id": {
+                "type": ["string", "null"],
+                "pattern": "^stp_\\d{2,}$"
+              },
+              "t_start": { "$ref": "#/$defs/time" },
+              "t_end": { "$ref": "#/$defs/time" }
+            }
+          }
+        }
+      }
+    },
+    "deviations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/deviation" }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["flagged", "needs_review", "dropped", "by_type"],
+      "properties": {
+        "flagged": { "type": "integer", "minimum": 0 },
+        "needs_review": { "type": "integer", "minimum": 0 },
+        "dropped": { "type": "integer", "minimum": 0 },
+        "by_type": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["missed", "out_of_order", "wrong_tool"],
+          "properties": {
+            "missed": { "type": "integer", "minimum": 0 },
+            "out_of_order": { "type": "integer", "minimum": 0 },
+            "wrong_tool": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "manifest_ref": { "type": "string", "minLength": 1 },
+    "notice": { "type": "string" }
+  },
+  "$defs": {
+    "semver": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "run_id": { "type": "string", "pattern": "^run_[0-9A-HJKMNP-TV-Z]{26}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "timestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "time": { "type": "number", "minimum": 0 },
+    "step_id": { "type": "string", "pattern": "^stp_\\d{2,}$" },
+    "track_id": { "type": "string", "pattern": "^trk_\\d{3,}$" },
+    "deviation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "status",
+        "severity",
+        "step_id",
+        "t_start",
+        "t_end",
+        "track_ids",
+        "confidence",
+        "margin",
+        "explanation",
+        "verifier",
+        "evidence",
+        "evidence_unavailable"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^dev_\\d{3,}$" },
+        "type": { "enum": ["missed", "out_of_order", "wrong_tool"] },
+        "status": { "enum": ["flagged", "needs_review"] },
+        "severity": { "enum": ["high", "medium"] },
+        "step_id": { "$ref": "#/$defs/step_id" },
+        "relates_to_step_id": {
+          "type": ["string", "null"],
+          "pattern": "^stp_\\d{2,}$",
+          "description": "out_of_order only: the step it should have followed"
+        },
+        "t_start": { "$ref": "#/$defs/time" },
+        "t_end": { "$ref": "#/$defs/time" },
+        "track_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/track_id" }
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "margin": { "type": "number" },
+        "explanation": { "type": "string", "minLength": 1, "maxLength": 400 },
+        "verifier": { "$ref": "#/$defs/verifier" },
+        "expected_tools": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "observed_tools": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evidence_item" }
+        },
+        "evidence_unavailable": { "type": "boolean" },
+        "illustration": {
+          "oneOf": [{ "$ref": "#/$defs/illustration" }, { "type": "null" }]
+        },
+        "illustration_unavailable_reason": {
+          "type": ["string", "null"],
+          "maxLength": 200
+        }
+      }
+    },
+    "verifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ran", "agreed"],
+      "properties": {
+        "ran": { "type": "boolean" },
+        "agreed": { "type": ["boolean", "null"] },
+        "note": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "evidence_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "deviation_id",
+        "kind",
+        "source_sha256",
+        "frame_index",
+        "t",
+        "render_version",
+        "params_hash",
+        "output_path",
+        "output_sha256",
+        "phash",
+        "track_ids"
+      ],
+      "properties": {
+        "evidence_id": { "type": "string", "pattern": "^evd_\\d{3,}$" },
+        "deviation_id": { "type": "string", "pattern": "^dev_\\d{3,}$" },
+        "kind": { "const": "evidence" },
+        "source_sha256": { "$ref": "#/$defs/sha256" },
+        "frame_index": { "type": "integer", "minimum": 0 },
+        "t": { "$ref": "#/$defs/time" },
+        "render_version": { "type": "string", "minLength": 1 },
+        "params_hash": { "$ref": "#/$defs/sha256" },
+        "output_path": { "type": "string", "minLength": 1 },
+        "output_sha256": { "$ref": "#/$defs/sha256" },
+        "phash": { "type": "string", "minLength": 8 },
+        "track_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/track_id" }
+        },
+        "clip": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256", "t_start", "t_end"],
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "sha256": { "$ref": "#/$defs/sha256" },
+            "t_start": { "$ref": "#/$defs/time" },
+            "t_end": { "$ref": "#/$defs/time" }
+          }
+        }
+      }
+    },
+    "illustration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "watermark", "qa"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^ill_\\d{3,}$" },
+        "kind": { "const": "illustration" },
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "watermark": { "const": true },
+        "qa": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["verdict", "attempts"],
+          "properties": {
+            "verdict": { "enum": ["pass", "fail"] },
+            "attempts": { "type": "integer", "minimum": 1 },
+            "reason": { "type": "string", "maxLength": 200 }
+          }
+        }
+      }
+    }
+  }
+}

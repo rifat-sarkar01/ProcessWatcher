@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "run_01J9ZQ8M3K4V7B2C5D6E8F0GHJ",
+  "path": [
+    { "segment_id": "seg_001", "step_id": "stp_01" },
+    { "segment_id": "seg_002", "step_id": "stp_04" },
+    { "segment_id": "seg_003", "step_id": "none" }
+  ],
+  "intervals": [
+    {
+      "id": "int_01",
+      "step_id": "stp_01",
+      "t_start": 3.0,
+      "t_end": 12.4,
+      "segment_ids": ["seg_001"],
+      "mean_prob": 0.71,
+      "margin": 0.52
+    },
+    {
+      "id": "int_02",
+      "step_id": "stp_04",
+      "t_start": 72.4,
+      "t_end": 81.0,
+      "segment_ids": ["seg_002"],
+      "mean_prob": 0.84,
+      "margin": 0.76
+    }
+  ],
+  "cost": { "total": 4.72, "per_segment": 1.57, "coverage": 0.67 },
+  "params": {
+    "eps": 0.001,
+    "lambda_skip": 1.5,
+    "lambda_skip_critical": 3.0,
+    "lambda_back": 2.0,
+    "tau_T": 2.0,
+    "domain_coverage_min": 0.3,
+    "domain_cost_max": null
+  },
+  "status": "ok"
+}

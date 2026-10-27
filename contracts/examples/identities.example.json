@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "run_01J9ZQ8M3K4V7B2C5D6E8F0GHJ",
+  "identities": [
+    {
+      "track_id": "trk_001",
+      "label": "hand",
+      "confidence": 0.93,
+      "votes": [
+        { "label": "hand", "count": 3 }
+      ],
+      "crop_frames": [12, 44, 96]
+    },
+    {
+      "track_id": "trk_002",
+      "label": "torque wrench",
+      "confidence": 0.71,
+      "votes": [
+        { "label": "torque wrench", "count": 2 },
+        { "label": "ratchet", "count": 1 }
+      ],
+      "crop_frames": [48, 120, 180]
+    },
+    {
+      "track_id": "trk_003",
+      "label": "other",
+      "confidence": 0.34,
+      "votes": [{ "label": "other", "count": 3 }],
+      "crop_frames": [60]
+    }
+  ]
+}
