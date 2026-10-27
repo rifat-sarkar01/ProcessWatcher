@@ -179,7 +179,7 @@ report.json -> API + SSE -> Review UI + self-contained HTML/PDF audit report
 - **Done when:** `uv sync; uv run ruff check .; uv run mypy src; uv run pytest -q; uv run pre-commit run gitleaks --all-files` → all exit 0, 1 test passed.
 - **Rollback:** delete branch; no state.
 
-### T-0.3 · Web scaffold                                                              [ ]
+### T-0.3 · Web scaffold                                                              [x]
 - **Track:** FE | **Serves:** FR-11 | **Size:** S | **Tier:** light | **Depends:** T-0.2 | **Blocks:** T-1.2, T-5.6
 - **Context pack (read only these):** AGENTS.md §15
 - **Goal:** Vite + React + TypeScript + Tailwind + Vitest + ESLint skeleton with placeholder `gen:types` script.
