@@ -843,7 +843,7 @@ Standard checks S1–S9 (with e2e) plus the G5 extras in the Phase Profile. **Fe
 - **Tests first:** concurrency never exceeds limit · results identical to sequential run.
 - **Done when:** `uv run pw run --mode live --video bench/dev/A2.mp4 --sop bench/sops/A.md --profile` → wall time ≤ NFR-01 target; ledger total within 5% of provider dashboard (note in PROGRESS.md).
 
-### T-6.7 · State, accessibility and projector polish                                               [ ]
+### T-6.7 · State, accessibility and projector polish                                               [x]
 - **Track:** FE | **Serves:** NFR-09 | **Size:** S | **Tier:** light | **Depends:** G5 | **Blocks:** G6
 - **Context pack (read only these):** §1B UI states
 - **Goal:** no new features: verify every UI state, contrast ≥ 4.5:1, keyboard traversal, 1080p projector layout, reduced motion.
@@ -990,3 +990,4 @@ Standard checks S1–S9 plus the G7 extras in the Phase Profile. **Human approve
 | 2026-10-25 | Docs 01–05 added; citation map and authority order added to the header; T-1.2 extended with review + thresholds contracts; A-3 updated | User asked for the full spec-driven 6-doc set |
 | 2026-10-27 | T-0.1 complete → `docs/adr/ADR-000-rules.md`. A-10 resolved. No task added/removed/re-scoped: rules conflict with nothing in the plan; only administrative items (Representative, waiver, W-9/W-8BEN, $150 credit budget) recorded. Portal field list stays open (login-gated) for T-7.2. | Official Rules + waiver read (sources in ADR-000) |
 | 2026-10-27 | **T-0.9 pulled forward ahead of its T-0.8 dependency** (human-approved in-session). CI now gates every push/PR on backend lint/format/types/tests, web lint/types/tests/build, generated-types freshness and a gitleaks history scan; the skeleton step stays conditional on `src/pw/cli.py` + `tests/fixtures/tiny.mp4`, so it activates automatically when T-0.8 lands. `bench/HELDOUT.lock` and audits are conditional/non-blocking as specified. | The agent queue was empty (every other ready card needs `META_API_KEY` or filmed clips); guard rails were worth having before more code lands. |
+| 2026-10-27 | **T-6.7 executed before G5** (human-approved in-session pull-forward). Scope unchanged: no new features, only an axe harness over the four shipped routes, a token-contrast contract derived from `03_UI_Spec` §2, and motion/type guards. The "1080p projector pass" is covered by token/type assertions here and must be visually confirmed when Playwright lands (T-5.13); the axe run is re-executed by CI on every push. | G5 needs the API and pipeline that `META_API_KEY` blocks; accessibility polish is the only G5-era card that can be finished honestly against shipped UI. |
