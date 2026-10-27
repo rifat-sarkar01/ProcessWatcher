@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "decisions": [
+    {
+      "deviation_id": "dev_001",
+      "decision": "accepted",
+      "note": "Confirmed: the fifth bolt was never torqued.",
+      "decided_at": "2026-10-27T09:31:12Z"
+    },
+    {
+      "deviation_id": "dev_002",
+      "decision": "dismissed",
+      "note": "Same torque wrench, different angle: not a wrong tool.",
+      "decided_at": "2026-10-27T09:32:40Z"
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
-from pw.data.schemas import KINDS
+from pw.data.schemas import KINDS, SCHEMA_NAMES, example_files
 from pw.data.validate import validate_all, validate_artifact_file
 
 EXIT_OK = 0
@@ -56,7 +56,8 @@ def _run_validate_contracts(contracts_dir: Path | None) -> int:
         print(f"FAILED {len(errors)} problem(s)", file=sys.stderr)
         return EXIT_INVALID
 
-    print(f"OK {len(KINDS)} schemas, {len(KINDS)} examples")
+    total_examples = sum(len(example_files(kind, contracts_dir)) for kind in KINDS)
+    print(f"OK {len(SCHEMA_NAMES)} schemas, {total_examples} examples")
     return EXIT_OK
 
 

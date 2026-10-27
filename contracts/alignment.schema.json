@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://process-watcher.dev/contracts/alignment.schema.json",
+  "title": "AlignmentArtifacts",
+  "description": "Three per-run artifacts sharing one contract file: identities.json, likelihoods.json and alignment.json. Source of truth: docs/05_Schema.md §6.",
+  "oneOf": [
+    { "$ref": "#/$defs/identities_file" },
+    { "$ref": "#/$defs/likelihoods_file" },
+    { "$ref": "#/$defs/alignment_file" }
+  ],
+  "$defs": {
+    "semver": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "run_id": { "type": "string", "pattern": "^run_[0-9A-HJKMNP-TV-Z]{26}$" },
+    "track_id": { "type": "string", "pattern": "^trk_\\d{3,}$" },
+    "step_or_none": {
+      "type": "string",
+      "pattern": "^(stp_\\d{2,}|none)$"
+    },
+    "identities_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "identities"],
+      "properties": {
+        "schema_version": { "$ref": "#/$defs/semver" },
+        "run_id": { "$ref": "#/$defs/run_id" },
+        "identities": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/identity" }
+        }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["track_id", "label", "confidence", "votes"],
+      "properties": {
+        "track_id": { "$ref": "#/$defs/track_id" },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "A vocabulary item, or \"other\", or \"unknown\""
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "votes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["label", "count"],
+            "properties": {
+              "label": { "type": "string", "minLength": 1 },
+              "count": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "crop_frames": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "likelihoods_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "segments"],
+      "properties": {
+        "schema_version": { "$ref": "#/$defs/semver" },
+        "run_id": { "$ref": "#/$defs/run_id" },
+        "segments": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/likelihood_segment" }
+        }
+      }
+    },
+    "likelihood_segment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["segment_id", "step_probs", "observed_tools", "rationale_short", "flags"],
+      "properties": {
+        "segment_id": { "type": "string", "pattern": "^seg_\\d{3,}$" },
+        "step_probs": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": { "pattern": "^(stp_\\d{2,}|none)$" },
+          "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 },
+          "description": "Probabilities over step ids plus \"none\"; sums to 1 +/- 0.02 (semantic check)"
+        },
+        "observed_tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["track", "label", "confidence"],
+            "properties": {
+              "track": { "$ref": "#/$defs/track_id" },
+              "label": { "type": "string", "minLength": 1 },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+            }
+          }
+        },
+        "rationale_short": { "type": "string", "maxLength": 400 },
+        "flags": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "e.g. scorer_unavailable"
+        }
+      }
+    },
+    "alignment_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "path", "intervals", "cost", "params", "status"],
+      "properties": {
+        "schema_version": { "$ref": "#/$defs/semver" },
+        "run_id": { "$ref": "#/$defs/run_id" },
+        "path": {
+          "type": "array",
+          "description": "One {segment_id, step_id|none} entry per segment, in order",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["segment_id", "step_id"],
+            "properties": {
+              "segment_id": { "type": "string", "pattern": "^seg_\\d{3,}$" },
+              "step_id": { "$ref": "#/$defs/step_or_none" }
+            }
+          }
+        },
+        "intervals": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/interval" }
+        },
+        "cost": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["total", "per_segment", "coverage"],
+          "properties": {
+            "total": { "type": "number", "minimum": 0 },
+            "per_segment": { "type": "number", "minimum": 0 },
+            "coverage": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "params": {
+          "type": "object",
+          "description": "The align.* thresholds used; the manifest records their hash",
+          "additionalProperties": { "type": ["number", "null"] }
+        },
+        "status": { "enum": ["ok", "procedure_not_recognized"] }
+      }
+    },
+    "interval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "step_id", "t_start", "t_end", "segment_ids", "mean_prob", "margin"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^int_\\d{2,}$" },
+        "step_id": { "type": "string", "pattern": "^stp_\\d{2,}$" },
+        "t_start": { "type": "number", "minimum": 0 },
+        "t_end": { "type": "number", "minimum": 0 },
+        "segment_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "pattern": "^seg_\\d{3,}$" }
+        },
+        "mean_prob": { "type": "number", "minimum": 0, "maximum": 1 },
+        "margin": { "type": "number" }
+      }
+    }
+  }
+}

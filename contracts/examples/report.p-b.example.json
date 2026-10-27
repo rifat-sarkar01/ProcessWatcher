@@ -1,0 +1,219 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "run_01J9ZQ8M3K4V7B2C5D6E8F0GHJ",
+  "created_at": "2026-10-27T09:15:47Z",
+  "status": "partial",
+  "degraded_stages": [
+    "evidence",
+    "illustrate"
+  ],
+  "sop": {
+    "schema_version": "1.0.0",
+    "sop_id": "sop_8b2d4f61",
+    "title": "4-bolt cross-pattern torque",
+    "source": {
+      "kind": "md",
+      "sha256": "9f2c4d1e6b8a0c3f5e7d9b1a2c4e6f8091a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1"
+    },
+    "steps": [
+      {
+        "id": "stp_01",
+        "idx": 1,
+        "text": "Inspect the flange face and confirm it is clean and free of burrs.",
+        "action": "inspect",
+        "tools": [],
+        "parts": [
+          "flange"
+        ],
+        "ordering": "strict",
+        "group_id": null,
+        "critical": false,
+        "visual_check": "Clean flange face"
+      },
+      {
+        "id": "stp_02",
+        "idx": 2,
+        "text": "Seat the four M8 bolts in the flange holes by hand.",
+        "action": "seat",
+        "tools": [
+          "hand"
+        ],
+        "parts": [
+          "bolts"
+        ],
+        "ordering": "strict",
+        "group_id": null,
+        "critical": false,
+        "visual_check": "Four bolts standing in their holes"
+      },
+      {
+        "id": "stp_03",
+        "idx": 3,
+        "text": "Tighten bolt 1 to 25 Nm with the torque wrench.",
+        "action": "tighten",
+        "tools": [
+          "torque wrench"
+        ],
+        "parts": [
+          "bolt 1"
+        ],
+        "ordering": "strict",
+        "group_id": null,
+        "critical": true,
+        "visual_check": "Wrench clicks at 25 Nm on bolt 1"
+      },
+      {
+        "id": "stp_04",
+        "idx": 4,
+        "text": "Tighten bolt 3 to 25 Nm with the torque wrench.",
+        "action": "tighten",
+        "tools": [
+          "torque wrench"
+        ],
+        "parts": [
+          "bolt 3"
+        ],
+        "ordering": "strict",
+        "group_id": null,
+        "critical": false,
+        "visual_check": "Wrench clicks at 25 Nm on bolt 3"
+      },
+      {
+        "id": "stp_05",
+        "idx": 5,
+        "text": "Tighten bolt 2 to 25 Nm with the torque wrench.",
+        "action": "tighten",
+        "tools": [
+          "torque wrench"
+        ],
+        "parts": [
+          "bolt 2"
+        ],
+        "ordering": "strict",
+        "group_id": null,
+        "critical": true,
+        "visual_check": "Wrench clicks at 25 Nm on bolt 2"
+      },
+      {
+        "id": "stp_06",
+        "idx": 6,
+        "text": "Tighten bolt 4 and mark all four bolts with a torque stripe.",
+        "action": "tighten and mark",
+        "tools": [
+          "torque wrench",
+          "torque marker"
+        ],
+        "parts": [
+          "bolt 4"
+        ],
+        "ordering": "strict",
+        "group_id": null,
+        "critical": true,
+        "visual_check": "Four bolts carry a torque stripe"
+      }
+    ],
+    "vocabulary": {
+      "sam_concepts": [
+        "hand",
+        "torque wrench",
+        "bolt",
+        "flange",
+        "torque marker"
+      ],
+      "zones": []
+    },
+    "warnings": []
+  },
+  "video": {
+    "sha256": "c4a1f7e2b9d053816a2e4c6f8b0d1e3a5c7f9b2d4e6a8c0f1b3d5e7a9c2f4b6d",
+    "duration_s": 118.0,
+    "width": 1280,
+    "height": 720
+  },
+  "lanes": {
+    "expected": [
+      {
+        "step_id": "stp_01",
+        "idx": 1
+      },
+      {
+        "step_id": "stp_02",
+        "idx": 2
+      },
+      {
+        "step_id": "stp_03",
+        "idx": 3
+      },
+      {
+        "step_id": "stp_04",
+        "idx": 4
+      },
+      {
+        "step_id": "stp_05",
+        "idx": 5
+      },
+      {
+        "step_id": "stp_06",
+        "idx": 6
+      }
+    ],
+    "observed": [
+      {
+        "interval_id": "int_01",
+        "step_id": "stp_01",
+        "t_start": 3.0,
+        "t_end": 12.4
+      },
+      {
+        "interval_id": "int_02",
+        "step_id": "stp_02",
+        "t_start": 13.1,
+        "t_end": 28.6
+      },
+      {
+        "interval_id": "int_03",
+        "step_id": "stp_03",
+        "t_start": 41.0,
+        "t_end": 55.2
+      }
+    ]
+  },
+  "deviations": [
+    {
+      "id": "dev_001",
+      "type": "missed",
+      "status": "needs_review",
+      "severity": "high",
+      "step_id": "stp_05",
+      "relates_to_step_id": null,
+      "t_start": 61.0,
+      "t_end": 71.5,
+      "track_ids": [
+        "trk_001"
+      ],
+      "confidence": 0.52,
+      "margin": 2.4,
+      "explanation": "Step 5 (bolt 2) was never torqued: the wrench moved straight from bolt 3 to bolt 4.",
+      "verifier": {
+        "ran": true,
+        "agreed": true
+      },
+      "evidence": [],
+      "evidence_unavailable": true,
+      "illustration": null,
+      "illustration_unavailable_reason": "Illustration provider timed out after 3 attempts."
+    }
+  ],
+  "summary": {
+    "flagged": 0,
+    "needs_review": 1,
+    "dropped": 0,
+    "by_type": {
+      "missed": 1,
+      "out_of_order": 0,
+      "wrong_tool": 0
+    }
+  },
+  "manifest_ref": "manifest.json",
+  "notice": "Some analysis was unavailable: Evidence, Illustrations."
+}

@@ -1,0 +1,210 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "run_01J9ZQ8M3K4V7B2C5D6E8F0GHJ",
+  "created_at": "2026-10-27T09:15:47Z",
+  "status": "done",
+  "degraded_stages": [],
+  "sop": {
+    "schema_version": "1.0.0",
+    "sop_id": "sop_8b2d4f61",
+    "title": "4-bolt cross-pattern torque",
+    "source": {
+      "kind": "md",
+      "sha256": "9f2c4d1e6b8a0c3f5e7d9b1a2c4e6f8091a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1"
+    },
+    "steps": [
+      {
+        "id": "stp_01",
+        "idx": 1,
+        "text": "Inspect the flange face and confirm it is clean and free of burrs.",
+        "action": "inspect",
+        "tools": [],
+        "parts": ["flange"],
+        "ordering": "strict",
+        "group_id": null,
+        "critical": false,
+        "visual_check": "Clean flange face"
+      },
+      {
+        "id": "stp_02",
+        "idx": 2,
+        "text": "Seat the four M8 bolts in the flange holes by hand.",
+        "action": "seat",
+        "tools": ["hand"],
+        "parts": ["bolts"],
+        "ordering": "strict",
+        "group_id": null,
+        "critical": false,
+        "visual_check": "Four bolts standing in their holes"
+      },
+      {
+        "id": "stp_03",
+        "idx": 3,
+        "text": "Tighten bolt 1 to 25 Nm with the torque wrench.",
+        "action": "tighten",
+        "tools": ["torque wrench"],
+        "parts": ["bolt 1"],
+        "ordering": "strict",
+        "group_id": null,
+        "critical": true,
+        "visual_check": "Wrench clicks at 25 Nm on bolt 1"
+      },
+      {
+        "id": "stp_04",
+        "idx": 4,
+        "text": "Tighten bolt 3 to 25 Nm with the torque wrench.",
+        "action": "tighten",
+        "tools": ["torque wrench"],
+        "parts": ["bolt 3"],
+        "ordering": "strict",
+        "group_id": null,
+        "critical": false,
+        "visual_check": "Wrench clicks at 25 Nm on bolt 3"
+      },
+      {
+        "id": "stp_05",
+        "idx": 5,
+        "text": "Tighten bolt 2 to 25 Nm with the torque wrench.",
+        "action": "tighten",
+        "tools": ["torque wrench"],
+        "parts": ["bolt 2"],
+        "ordering": "strict",
+        "group_id": null,
+        "critical": true,
+        "visual_check": "Wrench clicks at 25 Nm on bolt 2"
+      },
+      {
+        "id": "stp_06",
+        "idx": 6,
+        "text": "Tighten bolt 4 and mark all four bolts with a torque stripe.",
+        "action": "tighten and mark",
+        "tools": ["torque wrench", "torque marker"],
+        "parts": ["bolt 4"],
+        "ordering": "strict",
+        "group_id": null,
+        "critical": true,
+        "visual_check": "Four bolts carry a torque stripe"
+      }
+    ],
+    "vocabulary": {
+      "sam_concepts": ["hand", "torque wrench", "bolt", "flange", "torque marker"],
+      "zones": []
+    },
+    "warnings": []
+  },
+  "video": {
+    "sha256": "c4a1f7e2b9d053816a2e4c6f8b0d1e3a5c7f9b2d4e6a8c0f1b3d5e7a9c2f4b6d",
+    "duration_s": 118.0,
+    "width": 1280,
+    "height": 720
+  },
+  "lanes": {
+    "expected": [
+      { "step_id": "stp_01", "idx": 1 },
+      { "step_id": "stp_02", "idx": 2 },
+      { "step_id": "stp_03", "idx": 3 },
+      { "step_id": "stp_04", "idx": 4 },
+      { "step_id": "stp_05", "idx": 5 },
+      { "step_id": "stp_06", "idx": 6 }
+    ],
+    "observed": [
+      { "interval_id": "int_01", "step_id": "stp_01", "t_start": 3.0, "t_end": 12.4 },
+      { "interval_id": "int_02", "step_id": "stp_02", "t_start": 13.1, "t_end": 28.6 },
+      { "interval_id": "int_03", "step_id": "stp_03", "t_start": 41.0, "t_end": 55.2 },
+      { "interval_id": "int_04", "step_id": "stp_04", "t_start": 72.4, "t_end": 81.0 },
+      { "interval_id": "int_05", "step_id": "stp_06", "t_start": 92.0, "t_end": 110.5 }
+    ]
+  },
+  "deviations": [
+    {
+      "id": "dev_001",
+      "type": "missed",
+      "status": "flagged",
+      "severity": "high",
+      "step_id": "stp_05",
+      "relates_to_step_id": null,
+      "t_start": 61.0,
+      "t_end": 71.5,
+      "track_ids": ["trk_001"],
+      "confidence": 0.82,
+      "margin": 2.4,
+      "explanation": "Step 5 (bolt 2) was never torqued: the wrench moved straight from bolt 3 to bolt 4.",
+      "verifier": { "ran": true, "agreed": true },
+      "evidence": [
+        {
+          "evidence_id": "evd_001",
+          "deviation_id": "dev_001",
+          "kind": "evidence",
+          "source_sha256": "c4a1f7e2b9d053816a2e4c6f8b0d1e3a5c7f9b2d4e6a8c0f1b3d5e7a9c2f4b6d",
+          "frame_index": 1065,
+          "t": 71.0,
+          "render_version": "render-1.0.0",
+          "params_hash": "2b4d6f8091a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3c5",
+          "output_path": "evidence/evd_001.png",
+          "output_sha256": "7a9b1c3d5e7f9a1b3c5d7e9f01a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4",
+          "phash": "f0e1d2c3b4a59687",
+          "track_ids": ["trk_001"],
+          "clip": {
+            "path": "evidence/evd_001.mp4",
+            "sha256": "0b1c3d5e7f9a1b3c5d7e9f01a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5",
+            "t_start": 61.0,
+            "t_end": 71.5
+          }
+        }
+      ],
+      "evidence_unavailable": false,
+      "illustration": null,
+      "illustration_unavailable_reason": "Illustrations disabled for this run (PW_DISABLE_ILLUSTRATIONS)."
+    },
+    {
+      "id": "dev_002",
+      "type": "wrong_tool",
+      "status": "flagged",
+      "severity": "high",
+      "step_id": "stp_04",
+      "relates_to_step_id": null,
+      "t_start": 72.4,
+      "t_end": 81.0,
+      "track_ids": ["trk_002", "trk_003"],
+      "confidence": 0.86,
+      "margin": 3.8,
+      "explanation": "Step 4 needs the torque wrench; an adjustable wrench was used on bolt 3 from 01:12 to 01:21.",
+      "verifier": { "ran": true, "agreed": true },
+      "expected_tools": ["torque wrench"],
+      "observed_tools": ["adjustable wrench"],
+      "evidence": [
+        {
+          "evidence_id": "evd_002",
+          "deviation_id": "dev_002",
+          "kind": "evidence",
+          "source_sha256": "c4a1f7e2b9d053816a2e4c6f8b0d1e3a5c7f9b2d4e6a8c0f1b3d5e7a9c2f4b6d",
+          "frame_index": 1113,
+          "t": 74.2,
+          "render_version": "render-1.0.0",
+          "params_hash": "2b4d6f8091a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3c5",
+          "output_path": "evidence/evd_002.png",
+          "output_sha256": "3c5d7e9f01a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c",
+          "phash": "a1b2c3d4e5f60718",
+          "track_ids": ["trk_002", "trk_003"]
+        }
+      ],
+      "evidence_unavailable": false,
+      "illustration": {
+        "id": "ill_001",
+        "kind": "illustration",
+        "path": "illustrations/ill_001.png",
+        "sha256": "d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4",
+        "watermark": true,
+        "qa": { "verdict": "pass", "attempts": 1 }
+      },
+      "illustration_unavailable_reason": null
+    }
+  ],
+  "summary": {
+    "flagged": 2,
+    "needs_review": 0,
+    "dropped": 1,
+    "by_type": { "missed": 1, "out_of_order": 0, "wrong_tool": 1 }
+  },
+  "manifest_ref": "manifest.json"
+}

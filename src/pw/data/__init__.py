@@ -2,11 +2,16 @@
 
 from pw.data.schemas import (
     EXAMPLE_FILENAMES,
+    EXAMPLE_PATTERNS,
+    KIND_TO_SCHEMA,
     KINDS,
-    SCHEMA_FILENAMES,
+    SCHEMA_FILES,
+    SCHEMA_NAMES,
     default_contracts_dir,
+    example_files,
     load_json,
     load_schema,
+    load_schemas,
 )
 from pw.data.validate import (
     artifact_kind,
@@ -17,12 +22,17 @@ from pw.data.validate import (
 
 __all__ = [
     "EXAMPLE_FILENAMES",
+    "EXAMPLE_PATTERNS",
     "KINDS",
-    "SCHEMA_FILENAMES",
+    "KIND_TO_SCHEMA",
+    "SCHEMA_FILES",
+    "SCHEMA_NAMES",
     "artifact_kind",
     "default_contracts_dir",
+    "example_files",
     "load_json",
     "load_schema",
+    "load_schemas",
     "validate_all",
     "validate_artifact_file",
     "validate_payload",

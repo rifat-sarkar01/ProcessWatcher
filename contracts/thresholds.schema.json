@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://process-watcher.dev/contracts/thresholds.schema.json",
+  "title": "Thresholds",
+  "description": "config/thresholds.json. Exactly the keys in docs/04_TRD.md §7; unknown keys are rejected. Frozen after G3. Source of truth: docs/05_Schema.md §14.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "analysis_fps",
+    "chunk",
+    "timeline",
+    "align",
+    "deviation",
+    "limits"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "analysis_fps": { "type": "integer", "minimum": 1, "maximum": 60 },
+    "chunk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seconds", "overlap_seconds"],
+      "properties": {
+        "seconds": { "type": "number", "exclusiveMinimum": 0, "maximum": 120 },
+        "overlap_seconds": { "type": "number", "minimum": 0, "maximum": 60 }
+      }
+    },
+    "timeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contact_enter",
+        "contact_exit",
+        "enter_frames",
+        "exit_frames",
+        "min_hold_s",
+        "move_disp",
+        "idle_gap_s",
+        "seg_min_s",
+        "seg_max_s"
+      ],
+      "properties": {
+        "contact_enter": { "type": "number", "minimum": 0, "maximum": 1 },
+        "contact_exit": { "type": "number", "minimum": 0, "maximum": 1 },
+        "enter_frames": { "type": "integer", "minimum": 1 },
+        "exit_frames": { "type": "integer", "minimum": 1 },
+        "min_hold_s": { "type": "number", "minimum": 0 },
+        "move_disp": { "type": "number", "minimum": 0, "maximum": 1 },
+        "idle_gap_s": { "type": "number", "minimum": 0 },
+        "seg_min_s": { "type": "number", "exclusiveMinimum": 0, "maximum": 20 },
+        "seg_max_s": { "type": "number", "exclusiveMinimum": 0, "maximum": 60 }
+      }
+    },
+    "align": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eps",
+        "lambda_skip",
+        "lambda_skip_critical",
+        "lambda_back",
+        "tau_T",
+        "domain_coverage_min",
+        "domain_cost_max"
+      ],
+      "properties": {
+        "eps": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+        "lambda_skip": { "type": "number", "minimum": 0 },
+        "lambda_skip_critical": { "type": "number", "minimum": 0 },
+        "lambda_back": { "type": "number", "minimum": 0 },
+        "tau_T": { "type": "number", "minimum": 0 },
+        "domain_coverage_min": { "type": "number", "minimum": 0, "maximum": 1 },
+        "domain_cost_max": { "type": ["number", "null"] }
+      }
+    },
+    "deviation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tau_miss", "tau_flag", "tau_review", "wrong_tool_conf"],
+      "properties": {
+        "tau_miss": { "type": "number", "minimum": 0, "maximum": 1 },
+        "tau_flag": { "type": "number", "minimum": 0, "maximum": 1 },
+        "tau_review": { "type": "number", "minimum": 0, "maximum": 1 },
+        "wrong_tool_conf": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_duration_s", "max_mb", "spend_cap_usd", "max_concurrent_runs"],
+      "properties": {
+        "max_duration_s": { "type": "number", "exclusiveMinimum": 0 },
+        "max_mb": { "type": "number", "exclusiveMinimum": 0 },
+        "spend_cap_usd": { "type": "number", "exclusiveMinimum": 0 },
+        "max_concurrent_runs": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}

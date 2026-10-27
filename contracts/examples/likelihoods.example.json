@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "run_01J9ZQ8M3K4V7B2C5D6E8F0GHJ",
+  "segments": [
+    {
+      "segment_id": "seg_001",
+      "step_probs": { "stp_01": 0.71, "stp_02": 0.19, "none": 0.1 },
+      "observed_tools": [
+        { "track": "trk_001", "label": "hand", "confidence": 0.93 }
+      ],
+      "rationale_short": "Bare hand inspecting the flange face.",
+      "flags": []
+    },
+    {
+      "segment_id": "seg_002",
+      "step_probs": { "stp_03": 0.08, "stp_04": 0.84, "none": 0.08 },
+      "observed_tools": [
+        { "track": "trk_002", "label": "torque wrench", "confidence": 0.71 }
+      ],
+      "rationale_short": "Torque wrench applied to the third bolt position.",
+      "flags": []
+    },
+    {
+      "segment_id": "seg_003",
+      "step_probs": { "stp_05": 0.44, "stp_06": 0.46, "none": 0.1 },
+      "observed_tools": [
+        { "track": "trk_003", "label": "unknown", "confidence": 0.34 }
+      ],
+      "rationale_short": "Tool identity uncertain; two candidate steps.",
+      "flags": ["identity_low_confidence"]
+    }
+  ]
+}

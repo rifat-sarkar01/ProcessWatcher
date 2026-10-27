@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_fps": 15,
+  "chunk": { "seconds": 20, "overlap_seconds": 2 },
+  "timeline": {
+    "contact_enter": 0.3,
+    "contact_exit": 0.1,
+    "enter_frames": 3,
+    "exit_frames": 5,
+    "min_hold_s": 0.4,
+    "move_disp": 0.06,
+    "idle_gap_s": 2.0,
+    "seg_min_s": 1.0,
+    "seg_max_s": 20.0
+  },
+  "align": {
+    "eps": 0.001,
+    "lambda_skip": 1.5,
+    "lambda_skip_critical": 3.0,
+    "lambda_back": 2.0,
+    "tau_T": 2.0,
+    "domain_coverage_min": 0.3,
+    "domain_cost_max": null
+  },
+  "deviation": {
+    "tau_miss": 0.25,
+    "tau_flag": 0.7,
+    "tau_review": 0.4,
+    "wrong_tool_conf": 0.6
+  },
+  "limits": {
+    "max_duration_s": 180,
+    "max_mb": 500,
+    "spend_cap_usd": 3.0,
+    "max_concurrent_runs": 2
+  }
+}
