@@ -169,7 +169,7 @@ report.json -> API + SSE -> Review UI + self-contained HTML/PDF audit report
 - **Tests first:** n/a (reading task).
 - **Done when:** `Select-String docs/adr/ADR-000-rules.md -Pattern "Deliverables:|Video:|Repo/licence:|Pre-existing work:|Deadline UTC:"` → 5 matches; §7 has a new line.
 
-### T-0.2 · Python scaffold and tooling                                              [ ]
+### T-0.2 · Python scaffold and tooling                                              [x]
 - **Track:** OPS | **Serves:** NFR-05, NFR-06 | **Size:** M | **Tier:** light | **Depends:** T-0.1 | **Blocks:** T-0.3, T-0.7, T-1.1
 - **Context pack (read only these):** §1B · AGENTS.md §15
 - **Goal:** `uv` project with src layout, lint/type/test, secret scan, env template, AGENTS.md.
