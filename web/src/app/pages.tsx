@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { readStoredAccessCode, storeAccessCode } from "../api";
+import { DemoGallery } from "../features/demo/demo-gallery";
 import { AccessGate } from "../ui/access-gate";
 import { EmptyState } from "../ui/states";
 
@@ -61,14 +62,10 @@ export function RunPage() {
   );
 }
 
-/** Demo gallery: frozen offline cases arrive in T-5.12. */
+/** Demo gallery: frozen offline cases (T-5.12). */
 export function DemoPage() {
-  return (
-    <EmptyState
-      title="Demo cases"
-      help="Three frozen offline cases will load here in seconds, with no network or model calls."
-    />
-  );
+  const navigate = useNavigate();
+  return <DemoGallery onOpen={(caseId) => navigate(`/demo/${caseId}`)} />;
 }
 
 export function NotFoundPage() {

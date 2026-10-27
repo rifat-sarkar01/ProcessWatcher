@@ -1,5 +1,6 @@
 import { Outlet, Route, Routes } from "react-router-dom";
 
+import { DemoCasePage } from "../features/demo/demo-case-page";
 import { AppShell } from "./app-shell";
 import { DemoPage, HomePage, NotFoundPage, RunPage } from "./pages";
 
@@ -19,6 +20,7 @@ export function AppRoutes() {
         <Route index element={<HomePage />} />
         <Route path="runs/:runId" element={<RunPage />} />
         <Route path="demo" element={<DemoPage />} />
+        <Route path="demo/:caseId" element={<DemoCasePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
