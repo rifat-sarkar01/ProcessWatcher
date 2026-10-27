@@ -700,7 +700,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** every deviation id present · no `src="http` · size < 15 MB on a dev run · PDF page count ≥ 1.
 - **Done when:** `uv run pytest tests/report/test_export.py -q` → pass; `uv run pw export runs/<id> --format html` then `(Select-String -Path runs/<id>/report.html -Pattern 'src="http').Count` → 0.
 
-### T-5.6 · App shell, tokens, typed API client                                               [ ]
+### T-5.6 · App shell, tokens, typed API client                                               [x]
 - **Track:** FE | **Serves:** FR-11, NFR-09 | **Size:** M | **Tier:** standard | **Depends:** T-0.3, T-1.2 | **Blocks:** T-5.7, T-5.8, T-5.9, T-5.12
 - **Context pack (read only these):** `contracts/examples/*` (stub client until `openapi.json` lands in T-5.2) · `web/src/types/generated/*` · §1B (UI states)
 - **Goal:** Tailwind tokens (dark, high contrast, 18 px base for projectors), layout, routes (`/`, `/runs/:id`, `/demo`), typed client, loading/empty/error components, access-code gate.

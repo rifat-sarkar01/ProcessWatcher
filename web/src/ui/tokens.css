@@ -1,0 +1,124 @@
+/*
+ * Design tokens — the single source of colour, type, spacing and motion.
+ * Values come from docs/03_UI_Spec.md §2–§4; components must never use raw hex.
+ * Tailwind maps these variables in web/tailwind.config.js.
+ */
+
+:root {
+  /* --- colour (dark theme, default) — UI spec §2 --- */
+  --bg: #0b0f14;
+  --surface: #121923;
+  --surface-2: #1a2430;
+  --border: #2a3a4d;
+  --border-strong: #5b7189;
+  --text: #e6edf3;
+  --text-muted: #9fb0c3;
+  --accent: #6ea8ff;
+  --accent-ink: #0b0f14;
+  --ok: #4ade80;
+  --error: #f87171;
+  --focus: #6ea8ff;
+
+  /* --- deviation and status colours — UI spec §2 --- */
+  --dev-missed: #f5a524;
+  --dev-order: #a78bfa;
+  --dev-tool: #fb7185;
+  --needs-review: #94a3b8;
+  --illustration: #38bdf8;
+
+  /* --- SAM overlay palette, by track-ID hash — UI spec §2 --- */
+  --overlay-1: #22d3ee;
+  --overlay-2: #f472b6;
+  --overlay-3: #facc15;
+  --overlay-4: #34d399;
+  --overlay-5: #fb923c;
+  --overlay-6: #60a5fa;
+  --overlay-7: #c084fc;
+  --overlay-8: #f87171;
+  --overlay-9: #2dd4bf;
+  --overlay-10: #a3e635;
+  --overlay-fill-alpha: 0.35;
+  --overlay-outline-alpha: 0.95;
+
+  /* --- print/HTML report theme (light), UI spec §2 --- */
+  --r-bg: #ffffff;
+  --r-text: #0f172a;
+  --r-muted: #475569;
+  --r-border: #cbd5e1;
+
+  /* --- typography — UI spec §3 --- */
+  --font-ui: Inter, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+  --text-base: 18px;
+  --line-base: 28px;
+  --text-small: 14px;
+  --line-small: 20px;
+  --text-control: 16px;
+  --line-control: 24px;
+  --text-h1: 32px;
+  --line-h1: 40px;
+  --text-h2: 24px;
+  --line-h2: 32px;
+  --text-h3: 20px;
+  --line-h3: 28px;
+
+  /* --- spacing, radius, elevation, motion — UI spec §4 --- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  --radius-card: 12px;
+  --radius-control: 8px;
+  --radius-chip: 999px;
+  --radius-modal: 16px;
+  --shadow-modal: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+  --motion-fast: 120ms;
+  --motion-panel: 160ms;
+
+  /* --- layout — UI spec §5 --- */
+  --header-height: 56px;
+  --page-max-width: 1920px;
+  --page-padding: 24px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  line-height: var(--line-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Every interactive element gets a visible focus ring (UI spec §8). */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
