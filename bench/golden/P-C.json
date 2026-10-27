@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0.0",
+  "sop_id": "sop_48d35c81",
+  "title": "4-bolt cross-pattern torque",
+  "source": {
+    "kind": "md",
+    "sha256": "48d35c81be89a25560eabcdf42ee5404853f6189e1e26e13fb28eb7fb1ec1da0"
+  },
+  "steps": [
+    {
+      "id": "stp_01",
+      "idx": 1,
+      "text": "Inspect the flange face and confirm it is clean and free of burrs.",
+      "action": "inspect",
+      "tools": ["hand"],
+      "parts": ["flange"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Clean flange face, no burrs"
+    },
+    {
+      "id": "stp_02",
+      "idx": 2,
+      "text": "Seat the four M8 bolts in the flange holes by hand.",
+      "action": "seat",
+      "tools": ["hand"],
+      "parts": ["bolts"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Four bolts standing in their holes"
+    },
+    {
+      "id": "stp_03",
+      "idx": 3,
+      "text": "Tighten bolt 1 to 25 Nm with the torque wrench and socket.",
+      "action": "tighten",
+      "tools": ["torque wrench", "socket"],
+      "parts": ["bolt 1"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": true,
+      "visual_check": "Wrench clicks at 25 Nm on bolt 1"
+    },
+    {
+      "id": "stp_04",
+      "idx": 4,
+      "text": "Tighten bolt 3 to 25 Nm with the torque wrench and socket.",
+      "action": "tighten",
+      "tools": ["torque wrench", "socket"],
+      "parts": ["bolt 3"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Wrench clicks at 25 Nm on bolt 3"
+    },
+    {
+      "id": "stp_05",
+      "idx": 5,
+      "text": "Tighten bolt 2 to 25 Nm with the torque wrench and socket.",
+      "action": "tighten",
+      "tools": ["torque wrench", "socket"],
+      "parts": ["bolt 2"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Wrench clicks at 25 Nm on bolt 2"
+    },
+    {
+      "id": "stp_06",
+      "idx": 6,
+      "text": "Tighten bolt 4 to 25 Nm with the torque wrench and socket.",
+      "action": "tighten",
+      "tools": ["torque wrench", "socket"],
+      "parts": ["bolt 4"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Wrench clicks at 25 Nm on bolt 4"
+    },
+    {
+      "id": "stp_07",
+      "idx": 7,
+      "text": "Draw a torque stripe across all four bolts with the torque marker.",
+      "action": "mark",
+      "tools": ["torque marker"],
+      "parts": ["bolts"],
+      "ordering": "unordered_group",
+      "group_id": "grp_01",
+      "critical": false,
+      "visual_check": "Continuous stripe across each bolt head"
+    },
+    {
+      "id": "stp_08",
+      "idx": 8,
+      "text": "Record the torque value and inspector initials on the job card.",
+      "action": "record",
+      "tools": ["hand"],
+      "parts": ["job card"],
+      "ordering": "unordered_group",
+      "group_id": "grp_01",
+      "critical": true,
+      "visual_check": "Job card shows 25 Nm and initials"
+    }
+  ],
+  "vocabulary": {
+    "sam_concepts": ["hand", "torque wrench", "socket", "bolt", "flange", "torque marker"],
+    "zones": []
+  },
+  "warnings": []
+}

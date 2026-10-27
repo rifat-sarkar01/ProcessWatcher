@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0.0",
+  "sop_id": "sop_958c5b7e",
+  "title": "Prepare 100 ml of a standard sodium chloride solution",
+  "source": {
+    "kind": "md",
+    "sha256": "958c5b7e5b9418127a2d4d55c704da912236dfd8391083a5bfbb9129d72fc91b"
+  },
+  "steps": [
+    {
+      "id": "stp_01",
+      "idx": 1,
+      "text": "Clean and dry the 100 ml volumetric flask and set it on the bench.",
+      "action": "clean",
+      "tools": ["hand"],
+      "parts": ["volumetric flask"],
+      "ordering": "unordered_group",
+      "group_id": "grp_01",
+      "critical": false,
+      "visual_check": "Dry flask standing on the bench"
+    },
+    {
+      "id": "stp_02",
+      "idx": 2,
+      "text": "Weigh 0.585 g of sodium chloride on the analytical balance.",
+      "action": "weigh",
+      "tools": ["analytical balance"],
+      "parts": ["sodium chloride"],
+      "ordering": "unordered_group",
+      "group_id": "grp_01",
+      "critical": true,
+      "visual_check": "Balance reads 0.585 g of NaCl"
+    },
+    {
+      "id": "stp_03",
+      "idx": 3,
+      "text": "Transfer the weighed sodium chloride into the volumetric flask through the funnel.",
+      "action": "transfer",
+      "tools": ["funnel"],
+      "parts": ["sodium chloride", "volumetric flask"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "No crystals left in the weighing boat"
+    },
+    {
+      "id": "stp_04",
+      "idx": 4,
+      "text": "Add about 50 ml of distilled water from the distilled water bottle.",
+      "action": "add solvent",
+      "tools": ["distilled water bottle"],
+      "parts": ["distilled water"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Flask roughly half full"
+    },
+    {
+      "id": "stp_05",
+      "idx": 5,
+      "text": "Swirl the flask until every crystal has dissolved.",
+      "action": "dissolve",
+      "tools": ["hand"],
+      "parts": ["solution"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Clear, particle-free solution"
+    },
+    {
+      "id": "stp_06",
+      "idx": 6,
+      "text": "Top up with distilled water from the wash bottle until the meniscus sits on the 100 ml calibration mark.",
+      "action": "top up",
+      "tools": ["wash bottle"],
+      "parts": ["volumetric flask", "distilled water"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": true,
+      "visual_check": "Meniscus tangent to the calibration mark"
+    },
+    {
+      "id": "stp_07",
+      "idx": 7,
+      "text": "Stopper the flask and invert it three times to mix.",
+      "action": "mix",
+      "tools": ["hand"],
+      "parts": ["volumetric flask"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Stopper seated, three inversions completed"
+    },
+    {
+      "id": "stp_08",
+      "idx": 8,
+      "text": "Check the meniscus again at eye level and top up if it has dropped.",
+      "action": "verify level",
+      "tools": ["wash bottle"],
+      "parts": ["volumetric flask"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Meniscus still on the mark at eye level"
+    },
+    {
+      "id": "stp_09",
+      "idx": 9,
+      "text": "Label the flask with the substance name, concentration and date using the marker.",
+      "action": "label",
+      "tools": ["marker"],
+      "parts": ["label", "volumetric flask"],
+      "ordering": "strict",
+      "group_id": null,
+      "critical": false,
+      "visual_check": "Label shows NaCl, concentration and date"
+    }
+  ],
+  "vocabulary": {
+    "sam_concepts": [
+      "hand",
+      "analytical balance",
+      "volumetric flask",
+      "funnel",
+      "distilled water bottle",
+      "wash bottle",
+      "marker"
+    ],
+    "zones": []
+  },
+  "warnings": []
+}

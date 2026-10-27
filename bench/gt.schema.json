@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://process-watcher.dev/bench/gt.schema.json",
+  "title": "GroundTruth",
+  "description": "Per-clip ground truth for PW-Bench (docs/05_Schema.md §14). Operator/camera are bench-only metadata and never reach report.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "clip_id",
+    "procedure",
+    "sop_file",
+    "compliant",
+    "operator",
+    "camera",
+    "instances",
+    "steps",
+    "deviations"
+  ],
+  "properties": {
+    "clip_id": { "type": "string", "pattern": "^[A-C][0-9]{1,2}$" },
+    "procedure": { "enum": ["A", "B", "C"] },
+    "sop_file": { "type": "string", "minLength": 1 },
+    "compliant": { "type": "boolean" },
+    "operator": { "type": "string", "minLength": 1 },
+    "camera": { "type": "string", "minLength": 1 },
+    "instances": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "integer", "minimum": 0 },
+      "description": "Expected instance count per concept"
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/step_window" }
+    },
+    "deviations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/deviation" }
+    }
+  },
+  "$defs": {
+    "time": { "type": "number", "minimum": 0 },
+    "step_id": { "type": "string", "pattern": "^stp_\\d{2,}$" },
+    "step_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step_id", "t_start", "t_end"],
+      "properties": {
+        "step_id": { "$ref": "#/$defs/step_id" },
+        "t_start": { "$ref": "#/$defs/time" },
+        "t_end": { "$ref": "#/$defs/time" }
+      }
+    },
+    "deviation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "step_id", "t_start", "t_end"],
+      "properties": {
+        "type": { "enum": ["missed", "out_of_order", "wrong_tool"] },
+        "step_id": { "$ref": "#/$defs/step_id" },
+        "t_start": { "$ref": "#/$defs/time" },
+        "t_end": { "$ref": "#/$defs/time" },
+        "note": { "type": "string", "maxLength": 200 }
+      }
+    }
+  }
+}

@@ -45,6 +45,12 @@ extend-exclude = ["bench", "runs", "web"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 
+[tool.ruff.lint.per-file-ignores]
+# The T-1.3 success line is specified verbatim in 06_Plan.md and uses typographic
+# en dash / >=. RUF001 would flag them as confusable with ASCII.
+"src/pw/data/cli.py" = ["RUF001"]
+"tests/data/test_bench_sops.py" = ["RUF001"]
+
 [tool.ruff.lint.isort]
 known-first-party = ["pw"]
 
