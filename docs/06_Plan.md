@@ -754,7 +754,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** states: flagged · needs_review · procedure_not_recognized · evidence_unavailable · illustration_unavailable.
 - **Done when:** `npm --prefix web run test -- --run web/src/features/review/panel` → pass.
 
-### T-5.12 · Demo gallery                                                                        [ ]
+### T-5.12 · Demo gallery                                                                        [x]
 - **Track:** FE | **Serves:** FR-14 | **Size:** S | **Tier:** light | **Depends:** T-1.2, T-5.6 | **Blocks:** T-5.13, T-7.1
 - **Context pack (read only these):** fixture reports
 - **Goal:** `/demo` lists frozen cases across the three domains with one-click load and an "offline" badge.
