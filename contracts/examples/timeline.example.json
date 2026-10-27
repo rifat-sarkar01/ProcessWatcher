@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "run_01J9ZQ8M3K4V7B2C5D6E8F0GHJ",
+  "events": [
+    {
+      "id": "evt_001",
+      "type": "hold_start",
+      "t_start": 0.0,
+      "t_end": 0.0,
+      "tracks": ["trk_001"],
+      "confidence": 0.81
+    },
+    {
+      "id": "evt_002",
+      "type": "contact_start",
+      "t_start": 3.2,
+      "t_end": 3.2,
+      "tracks": ["trk_002", "trk_003"],
+      "confidence": 0.74
+    },
+    {
+      "id": "evt_003",
+      "type": "move",
+      "t_start": 5.1,
+      "t_end": 8.4,
+      "tracks": ["trk_001", "trk_002"],
+      "confidence": 0.69
+    },
+    {
+      "id": "evt_004",
+      "type": "contact_end",
+      "t_start": 12.0,
+      "t_end": 12.0,
+      "tracks": ["trk_002", "trk_003"],
+      "confidence": 0.77
+    },
+    {
+      "id": "evt_005",
+      "type": "hold_end",
+      "t_start": 14.2,
+      "t_end": 14.2,
+      "tracks": ["trk_001"],
+      "confidence": 0.72
+    },
+    {
+      "id": "evt_006",
+      "type": "exit",
+      "t_start": 20.0,
+      "t_end": 20.0,
+      "tracks": ["trk_003"],
+      "confidence": 0.65
+    }
+  ],
+  "segments": [
+    {
+      "id": "seg_001",
+      "t_start": 0.0,
+      "t_end": 3.2,
+      "salient_tracks": ["trk_001"],
+      "event_ids": ["evt_001"],
+      "kind": "activity"
+    },
+    {
+      "id": "seg_002",
+      "t_start": 3.2,
+      "t_end": 12.0,
+      "salient_tracks": ["trk_001", "trk_002"],
+      "event_ids": ["evt_002", "evt_003", "evt_004"],
+      "kind": "activity"
+    },
+    {
+      "id": "seg_003",
+      "t_start": 12.0,
+      "t_end": 20.0,
+      "salient_tracks": ["trk_001", "trk_003"],
+      "event_ids": ["evt_005", "evt_006"],
+      "kind": "activity"
+    },
+    {
+      "id": "seg_004",
+      "t_start": 20.0,
+      "t_end": 92.4,
+      "salient_tracks": [],
+      "event_ids": [],
+      "kind": "idle"
+    }
+  ]
+}

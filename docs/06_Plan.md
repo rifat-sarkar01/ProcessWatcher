@@ -262,7 +262,7 @@ Standard checks S1–S9 plus the G0 extras in the Phase Profile. Evidence in PRO
 - Gate extras: tag `contracts-v1` · 15 dev + 9 held-out clips validated · oracle F1 = 1.00, empty recall = 0 · held-out lock committed BEFORE any tuning.
 - Exit evidence: `pw-data validate` outputs, lock hash, oracle/empty bench outputs.
 
-### T-1.1 · Contracts A: sop, tracks, timeline + validator CLI                         [ ]
+### T-1.1 · Contracts A: sop, tracks, timeline + validator CLI                         [x]
 - **Track:** DATA | **Serves:** NFR-04, FR-13 | **Size:** M | **Tier:** standard | **Depends:** T-0.2 | **Blocks:** T-1.3, T-2.2, T-3.2
 - **Context pack (read only these):** §1B · ADR-001 (track shape)
 - **Goal:** JSON Schema 2020-12 for step graph, tracks and timeline, with examples and a `pw-data` CLI.
