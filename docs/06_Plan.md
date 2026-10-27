@@ -727,7 +727,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** ordered events · failed stage · reconnect replay.
 - **Done when:** `npm --prefix web run test -- --run web/src/features/progress` → pass.
 
-### T-5.9 · Review core: player and dual-lane timeline                                         [ ]
+### T-5.9 · Review core: player and dual-lane timeline                                         [x]
 - **Track:** FE | **Serves:** FR-11 | **Size:** M | **Tier:** deep | **Depends:** T-5.6 | **Blocks:** T-5.10, T-5.11, T-5.13
 - **Context pack (read only these):** `contracts/report.schema.json` · fixture reports
 - **Goal:** custom video controls (frame-step, speed), two lanes (SOP expected vs observed from alignment), deviation markers coloured by type, scrub↔lane sync, keyboard (J/K/L, ←/→ frame, N/P next/previous deviation).

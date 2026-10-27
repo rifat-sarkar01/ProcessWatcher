@@ -13,8 +13,11 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
-    setupFiles: ["./src/test-setup.ts"],
+    // Run with the repository as the vitest root so `--run <path>` filters work with
+    // repo-relative paths, which is how 06_Plan.md writes every FE Done-when command.
+    root: "..",
+    setupFiles: ["./web/src/test-setup.ts"],
     css: true,
-    include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    include: ["web/src/**/*.{test,spec}.{ts,tsx}"],
   },
 });
