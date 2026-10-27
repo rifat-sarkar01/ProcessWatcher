@@ -1,0 +1,118 @@
+name: CI
+
+# Every push and every PR to main runs the full gate set (06_Plan.md T-0.9):
+# backend lint/format/types/tests, web lint/types/tests/build, and a gitleaks
+# history scan. Steps that depend on later cards are conditional so this workflow
+# never blocks on work that does not exist yet.
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: backend (lint, format, types, tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install
+        run: uv sync --locked
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Format check
+        run: uv run ruff format --check .
+
+      - name: Typecheck
+        run: uv run mypy src
+
+      - name: Unit tests
+        run: uv run pytest -m "not integration and not live" -q
+
+      - name: Contract and bench-data checks
+        run: |
+          uv run pw-data validate-contracts
+          uv run pw-data validate-sops
+
+      - name: Walking skeleton (fake mode)
+        if: ${{ hashFiles('src/pw/cli.py') != '' && hashFiles('tests/fixtures/tiny.mp4') != '' }}
+        run: uv run pw run --mode fake --video tests/fixtures/tiny.mp4 --sop tests/fixtures/tiny_sop.md
+
+      - name: Held-out lock
+        if: ${{ hashFiles('bench/HELDOUT.lock') != '' }}
+        run: uv run pw-data verify-lock
+
+      - name: Dependency audit (non-blocking until G6)
+        continue-on-error: true
+        run: uvx pip-audit
+
+  web:
+    name: web (lint, types, tests, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Component tests
+        run: npm run test -- --run
+
+      - name: Build
+        run: npm run build
+
+      - name: Generated contract types are current
+        run: |
+          npm run gen:types
+          git diff --exit-code src/types/generated
+
+      - name: Dependency audit (non-blocking until G6)
+        continue-on-error: true
+        run: npm audit --audit-level=high
+
+  secrets:
+    name: secrets (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install gitleaks
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz \
+            | tar -xz gitleaks
+          ./gitleaks version
+
+      - name: Scan the full history
+        run: ./gitleaks detect --redact --verbose --exit-code 1

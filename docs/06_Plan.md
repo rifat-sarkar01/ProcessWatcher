@@ -235,7 +235,7 @@ report.json -> API + SSE -> Review UI + self-contained HTML/PDF audit report
 - **Tests first:** happy (all 12 stub artifacts written) · edge (rerun is a no-op via cache) · failure (missing video → typed error exit 2).
 - **Done when:** `uv run pw run --mode fake --video tests/fixtures/tiny.mp4 --sop tests/fixtures/tiny_sop.md` → exit 0 and `runs/<id>/stages` has 12 json files; `curl http://localhost:8000/healthz` → `{"status":"ok"}`.
 
-### T-0.9 · CI and skeleton check                                                     [ ]
+### T-0.9 · CI and skeleton check                                                     [x]
 - **Track:** OPS | **Serves:** NFR-06 | **Size:** S | **Tier:** light | **Depends:** T-0.3, T-0.8 | **Blocks:** G0
 - **Context pack (read only these):** AGENTS.md §15
 - **Goal:** GitHub Actions on every push: backend lint/type/unit, web lint/type/test/build, gitleaks, fake-mode skeleton run, `verify-lock` once it exists.
@@ -989,3 +989,4 @@ Standard checks S1–S9 plus the G7 extras in the Phase Profile. **Human approve
 | 2026-10-25 | v1.0 initial plan | Created from the project brief, hackathon page and the master-plan method |
 | 2026-10-25 | Docs 01–05 added; citation map and authority order added to the header; T-1.2 extended with review + thresholds contracts; A-3 updated | User asked for the full spec-driven 6-doc set |
 | 2026-10-27 | T-0.1 complete → `docs/adr/ADR-000-rules.md`. A-10 resolved. No task added/removed/re-scoped: rules conflict with nothing in the plan; only administrative items (Representative, waiver, W-9/W-8BEN, $150 credit budget) recorded. Portal field list stays open (login-gated) for T-7.2. | Official Rules + waiver read (sources in ADR-000) |
+| 2026-10-27 | **T-0.9 pulled forward ahead of its T-0.8 dependency** (human-approved in-session). CI now gates every push/PR on backend lint/format/types/tests, web lint/types/tests/build, generated-types freshness and a gitleaks history scan; the skeleton step stays conditional on `src/pw/cli.py` + `tests/fixtures/tiny.mp4`, so it activates automatically when T-0.8 lands. `bench/HELDOUT.lock` and audits are conditional/non-blocking as specified. | The agent queue was empty (every other ready card needs `META_API_KEY` or filmed clips); guard rails were worth having before more code lands. |
