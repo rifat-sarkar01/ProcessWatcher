@@ -105,7 +105,7 @@ report.json -> API + SSE -> Review UI + self-contained HTML/PDF audit report
 - **A-7** Video: single fixed camera (phone on stand), 1080p source, normalised to ≤720p constant-frame-rate for analysis; clips 45–180 s; English SOPs.
 - **A-8** Procedures (swappable): P-A "SSD swap in a desktop PC", P-B "prepare 100 ml of a standard solution", P-C "4-bolt cross-pattern torque". Each 8–12 steps, ≥3 tools, ≥1 critical step, ≥1 order-sensitive pair, ≥1 any-order group.
 - **A-9** Exactly three deviation types (missed, out_of_order, wrong_tool) plus a status `needs_review`; nothing else is a type.
-- **A-10** Official Rules are unseen (published Oct 26). T-0.1 may force plan edits (IP, open-source, video length, pre-existing work); log in §7. **No product code before the rules are read.**
+- **A-10** ~~Official Rules are unseen (published Oct 26). T-0.1 may force plan edits (IP, open-source, video length, pre-existing work); log in §7. **No product code before the rules are read.**~~ **Resolved by T-0.1 / ADR-000 (2026-10-27):** rules read, no plan conflict. No video-length limit; no repo-visibility or licence requirement (MIT kept); submission must be original, solely owned work; Indie teams ≤ 4; $150 API credits for the 10-day window; deadline 2026-11-05T02:00:00Z. Product code unblocked.
 - **A-11** Muse Wonder is in preview; Muse Spark is NOT used unless an ADR approves it for cost/rate reasons.
 - **A-12** Public demo is gated by an access code (protects API spend); judges receive the code in the submission.
 - **A-13** Latency, cost and quality figures in §3 are targets, re-baselined from ADR-001/002 and logged in §7.
@@ -160,7 +160,7 @@ report.json -> API + SSE -> Review UI + self-contained HTML/PDF audit report
 - Gate extras: CI green from a clean clone · `pw run --mode fake` produces all stage artifacts · ADR-000..003 present · live selftest OK for all 3 models · decision log filled (SAM backend, chunk length, mask decode path, deploy host candidate).
 - Exit evidence: CI run URL, three selftest outputs, ADR list in PROGRESS.md.
 
-### T-0.1 · Read Official Rules and log constraints                                   [ ]
+### T-0.1 · Read Official Rules and log constraints                                   [x]
 - **Track:** DOC | **Serves:** SUB-01 | **Size:** S | **Tier:** light | **Depends:** (none) | **Blocks:** all (plan edits)
 - **Context pack (read only these):** Official Rules + waiver (published Oct 26) · event page
 - **Goal:** know the deliverables, video length, repo/licence/IP rules, team and pre-existing-work rules, then amend the plan.
@@ -988,3 +988,4 @@ Standard checks S1–S9 plus the G7 extras in the Phase Profile. **Human approve
 |---|---|---|
 | 2026-10-25 | v1.0 initial plan | Created from the project brief, hackathon page and the master-plan method |
 | 2026-10-25 | Docs 01–05 added; citation map and authority order added to the header; T-1.2 extended with review + thresholds contracts; A-3 updated | User asked for the full spec-driven 6-doc set |
+| 2026-10-27 | T-0.1 complete → `docs/adr/ADR-000-rules.md`. A-10 resolved. No task added/removed/re-scoped: rules conflict with nothing in the plan; only administrative items (Representative, waiver, W-9/W-8BEN, $150 credit budget) recorded. Portal field list stays open (login-gated) for T-7.2. | Official Rules + waiver read (sources in ADR-000) |
