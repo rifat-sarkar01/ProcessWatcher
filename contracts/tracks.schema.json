@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://process-watcher.dev/contracts/tracks.schema.json",
+  "title": "tracks",
+  "description": "Stitched SAM 3.1 tracks with persistent global IDs. Frame indices appear ONLY here; all times are seconds. Source of truth: docs/05_Schema.md §4.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "video", "tracks"],
+  "properties": {
+    "schema_version": { "$ref": "#/$defs/semver" },
+    "run_id": { "type": "string", "pattern": "^run_[0-9A-HJKMNP-TV-Z]{26}$" },
+    "video": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256", "duration_s", "analysis_fps", "width", "height", "frame_count"],
+      "properties": {
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "duration_s": { "type": "number", "exclusiveMinimum": 0 },
+        "analysis_fps": { "type": "number", "exclusiveMinimum": 0, "maximum": 60 },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "frame_count": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "tracks": {
+      "type": "array",
+      "description": "May be empty when nothing was matched; each id is global after stitching",
+      "items": { "$ref": "#/$defs/track" }
+    },
+    "stitching": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fragmentation_ratio": { "type": "number", "minimum": 0 },
+        "merges": { "type": "integer", "minimum": 0 },
+        "gaps_filled": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "$defs": {
+    "semver": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "track": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "concept", "first_t", "last_t", "frames"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^trk_\\d{3,}$" },
+        "concept": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Member of the step graph's vocabulary.sam_concepts"
+        },
+        "first_t": { "type": "number", "minimum": 0 },
+        "last_t": { "type": "number", "minimum": 0 },
+        "frames": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/frame" },
+          "description": "Strictly increasing frame index (enforced by pw-data semantic checks)"
+        },
+        "source_chunks": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^chk_\\d{2}$" },
+          "description": "Chunk provenance for stitching"
+        }
+      }
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "t", "box", "score"],
+      "properties": {
+        "frame": { "type": "integer", "minimum": 0, "description": "0-based analysis frame index" },
+        "t": { "type": "number", "minimum": 0, "description": "Seconds from the start of the analysis video" },
+        "box": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "type": "number", "minimum": 0, "maximum": 1 },
+          "description": "[x0, y0, x1, y1] normalised to the analysis frame"
+        },
+        "score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "mask": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["encoding", "data"],
+          "properties": {
+            "encoding": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Mask encoding; the decode path is fixed by ADR-001"
+            },
+            "data": { "type": "string" }
+          }
+        },
+        "poly": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": { "type": "number", "minimum": 0, "maximum": 1 }
+          },
+          "description": "Simplified polygon for the UI (<= 64 points)"
+        }
+      }
+    }
+  }
+}

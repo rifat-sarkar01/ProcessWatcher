@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://process-watcher.dev/contracts/timeline.schema.json",
+  "title": "timeline",
+  "description": "Deterministic interaction events and candidate segments derived from tracks. Times are seconds. Source of truth: docs/05_Schema.md §5.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "events", "segments"],
+  "properties": {
+    "schema_version": { "$ref": "#/$defs/semver" },
+    "run_id": { "type": "string", "pattern": "^run_[0-9A-HJKMNP-TV-Z]{26}$" },
+    "events": {
+      "type": "array",
+      "description": "Sorted by t_start (enforced by pw-data semantic checks); ids unique",
+      "items": { "$ref": "#/$defs/event" }
+    },
+    "segments": {
+      "type": "array",
+      "description": "Non-overlapping, ordered; each length 1-20 s (enforced by pw-data semantic checks)",
+      "items": { "$ref": "#/$defs/segment" }
+    }
+  },
+  "$defs": {
+    "semver": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "t": { "type": "number", "minimum": 0 },
+    "track_id": { "type": "string", "pattern": "^trk_\\d{3,}$" },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "t_start", "t_end", "tracks", "confidence"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^evt_\\d{3,}$" },
+        "type": {
+          "enum": [
+            "hold_start",
+            "hold_end",
+            "contact_start",
+            "contact_end",
+            "move",
+            "enter",
+            "exit"
+          ]
+        },
+        "t_start": { "$ref": "#/$defs/t" },
+        "t_end": {
+          "$ref": "#/$defs/t",
+          "description": "Equal to t_start for point events"
+        },
+        "tracks": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/track_id" },
+          "description": "Subject first"
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "segment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "t_start", "t_end", "salient_tracks", "event_ids", "kind"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^seg_\\d{3,}$" },
+        "t_start": { "$ref": "#/$defs/t" },
+        "t_end": { "$ref": "#/$defs/t" },
+        "salient_tracks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/track_id" }
+        },
+        "event_ids": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^evt_\\d{3,}$" }
+        },
+        "kind": { "enum": ["activity", "idle"] }
+      }
+    }
+  }
+}
