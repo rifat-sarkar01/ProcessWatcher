@@ -1,60 +1,129 @@
-# Git Ignore for Process Watcher
+# ==============================================================================
+# Strict Git Ignore for Process Watcher
+# Reference: AGENTS.md §4, §15 & docs/04_TRD.md
+# ==============================================================================
 
-# Byte-compiled / optimized / DLL files
+# ------------------------------------------------------------------------------
+# 1. Bytecode & Compiled Files
+# ------------------------------------------------------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+*.dylib
+*.dll
 
-# Environments & Tooling
+# ------------------------------------------------------------------------------
+# 2. Environments & Dependency Directories
+# ------------------------------------------------------------------------------
 .venv/
 venv/
 ENV/
 env/
+.env.virtualenv/
+
+# ------------------------------------------------------------------------------
+# 3. Testing, Linting & Coverage
+# ------------------------------------------------------------------------------
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
+.coverage.*
 htmlcov/
+coverage.xml
+nosetests.xml
+.hypothesis/
+.tox/
+.nox/
+
+# ------------------------------------------------------------------------------
+# 4. Packaging, Builds & Distributions
+# ------------------------------------------------------------------------------
 dist/
 build/
 *.egg-info/
+*.egg
+eggs/
+.eggs/
 
-# Node & Frontend
+# ------------------------------------------------------------------------------
+# 5. Frontend & Node Ecosystem (web/)
+# ------------------------------------------------------------------------------
 node_modules/
 web/node_modules/
 web/dist/
 web/.next/
+web/build/
 .turbo/
+*.tsbuildinfo
+.eslintcache
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
-# Process Watcher Storage & Large Media
-# As per AGENTS.md §4 & §15: runs/ and bench/**/videos stay out of git
+# ------------------------------------------------------------------------------
+# 6. Process Watcher Pipeline Runs & Large Video Media
+# Rule: runs/ and bench/**/videos stay out of git (AGENTS.md §4, §15)
+# ------------------------------------------------------------------------------
 runs/
 bench/**/videos/
+bench/dev/videos/
+bench/heldout/videos/
 *.mp4
 *.mkv
 *.avi
 *.mov
-# Allow demo clip fixtures if explicitly placed
+*.webm
+*.flv
+
+# Allow demo golden metadata fixtures and committed checksummed cases
 !bench/golden/*.json
 !demo/cases/**
+!docs/**/*.svg
 
-# Secrets & Local Configurations
+# ------------------------------------------------------------------------------
+# 7. Model Weights & Local Checkpoints (Large Binaries)
+# ------------------------------------------------------------------------------
+*.pt
+*.pth
+*.onnx
+*.safetensors
+*.ckpt
+*.bin
+models/checkpoints/
+
+# ------------------------------------------------------------------------------
+# 8. Secrets, API Keys & Private Configuration (Zero-Leakage Policy)
+# Rule: No secrets in code, logs, cache or bundle (AGENTS.md §4)
+# ------------------------------------------------------------------------------
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 *.pem
 *.key
 *.cert
+*.p12
+*.pfx
+*.crt
+id_rsa*
+id_ed25519*
+*_credentials.json
+*secret*.json
 
-# Operating System & Editors
+# ------------------------------------------------------------------------------
+# 9. IDE, Workspace & Operating System Files
+# ------------------------------------------------------------------------------
 .DS_Store
 Thumbs.db
 ehthumbs.db
+desktop.ini
 .idea/
 .vscode/
 *.swp
 *.swo
+*~
+scratch/
+.gemini/
+.claude/
