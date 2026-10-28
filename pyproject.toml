@@ -12,11 +12,13 @@ license = { file = "LICENSE" }
 authors = [{ name = "Process Watcher team" }]
 dependencies = [
     "jsonschema>=4.23",
+    "pillow>=12.3.0",
     "pymupdf>=1.24",
 ]
 
 [project.scripts]
 pw-data = "pw.data.cli:main"
+pw = "pw.evidence.overlay_cli:main"
 
 [dependency-groups]
 dev = [

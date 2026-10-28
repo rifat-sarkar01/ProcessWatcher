@@ -5,23 +5,24 @@
 ## Now (one row per owner; one task in progress per owner)
 | Owner | Track | Current task | Status | Branch / last green commit |
 |---|---|---|---|---|
-| O3 | BE | T-2.1 · Video ingest and normalisation | done | task/T-2.1-ingest |
+| O3 | BE | T-2.9 · Render primitives and debug overlay | done | task/T-2.9-overlay |
 | O4 | FE | T-6.7 · State, accessibility and projector polish | done | 18b072a (merged) |
 | O1 | ML | T-1.6 · Metrics module | done | 82360e8 (merged) |
 | O2 | ML | T-3.1 · SOP ingest (md, txt, pdf) | done | 28e831f (merged) |
-Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 15/74 cards [x]
+Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 16/74 cards [x]
 Micro-plan (M tasks only, 3–6 lines):
-- Ingest is done and covered; T-2.2 (SAM chunks), T-2.9 (overlay) and T-2.5 are still blocked on ADR-001 / `pw.clients`.
+- Ingest and render primitives are done; T-2.2 (SAM chunks), T-2.4 (masks) and T-2.5 still need ADR-001 / `pw.clients`.
+- T-2.9 unblocks the set-of-mark input for T-3.4, which still needs Wonder/ADR-002; T-4.1 can now render chosen frames.
 - Three pull-forwards are logged in `06_Plan.md` §7 (T-0.9 before T-0.8, T-6.7 before G5, T-2.1 before G2/T-0.4).
 
 ## Last 5 completed (newest first)
 | Task | Commit | Evidence (command → result) | Date |
 |---|---|---|---|
-| T-2.1 video ingest: ffprobe wrapper, CFR/≤720p/silent normalisation, PTS time map (VFR detection), sha256, keyframes, cap + hostile-filename tests | `task/T-2.1-ingest` | `uv run pytest tests/ingest -q` → 30 passed · coverage `pw.ingest` → 88% · `uv run python -m pw.ingest <clip> --out …` → `fps=15`, `frame_count=90` for a 6.000 s clip · ruff/mypy clean | 2026-10-27 |
+| T-2.9 render primitives + debug overlay: alpha mask/box overlays, collision-free `#id concept` labels, timestamp/caption burn-in, numbered set-of-mark, streaming `pw overlay` CLI | `task/T-2.9-overlay` | `uv run pytest tests/evidence -q` → 15 passed · coverage `pw.evidence` → 83% · `uv run pw overlay <synthetic run> --out …` → 30 frames, duration 2.000 s · golden pHash ≤ 4 | 2026-10-28 |
+| T-2.1 video ingest: ffprobe wrapper, CFR/≤720p/silent normalisation, PTS time map (VFR detection), sha256, keyframes, cap + hostile-filename tests | `task/T-2.1-ingest` · PR #14 · merged | `uv run pytest tests/ingest -q` → 30 passed · coverage `pw.ingest` → 88% · `uv run python -m pw.ingest <clip> --out …` → `fps=15`, `frame_count=90` for a 6.000 s clip · ruff/mypy clean | 2026-10-27 |
 | T-6.7 a11y polish: axe over the 4 shipped routes (+ planted-violation self-check), token-contrast contract, type/motion guards | `task/T-6.7-a11y-polish` · PR #13 · merged | `npm --prefix web run test:a11y` → 5 passed, 0 serious/critical · suite → 119 passed | 2026-10-27 |
 | T-0.9 CI: backend (ruff, mypy, pytest, pw-data checks), web (lint/types/tests/build, generated-types freshness), gitleaks history | `task/T-0.9-ci` · PR #12 · merged | `gh run list --limit 1 --json conclusion -q ".[0].conclusion"` → `success` | 2026-10-27 |
 | T-5.12 demo gallery: 3 frozen cases (IT/lab/mechanical), offline badge, one-click load into the review core | `task/T-5.12-demo-gallery` · PR #11 · merged | `--run web/src/features/demo` → 10 passed · suite → 98 passed | 2026-10-27 |
-| T-5.9 review core: time↔pixel scale, dual-lane timeline, type-coloured markers, playhead, keyboard transport | `task/T-5.9-review-core` · PR #10 · merged | `--run web/src/features/review/timeline` → 24 passed · suite → 88 passed | 2026-10-27 |
 
 ## Blockers / Decisions needed from human
 - **META_API_KEY missing** → T-0.4/0.5/0.6 cannot start; T-0.7/0.8, all of P2 beyond ingest, T-3.2 and the API cards behind them wait on those ADRs. Every remaining card except gated polish work needs this.
@@ -43,9 +44,11 @@ Scope violations: 0 · Tasks reopened: 0 · Tasks added: 0 · Failed-attempt str
 - CI (T-0.9) runs on Linux, re-runs the axe suite and both test suites on every push, and installs ffmpeg so the ingest fixtures are generated on the runner; the skeleton step stays `if:`-guarded until T-0.8 lands.
 - Demo data is inline and deterministic (`web/src/features/demo/cases.ts`); T-7.1 replaces it with checksummed `demo/cases/` files.
 - Design tokens live in `web/src/ui/tokens.css`; components carry no raw hex. `web/src/api/client.ts` maps every HTTP failure to a typed `ApiError` code.
-- New npm dependencies (AGENTS.md §4): `react-router-dom`, `axe-core` (dev). New Python deps: `jsonschema`, `types-jsonschema`, `pymupdf`.
+- New npm dependencies (AGENTS.md §4): `react-router-dom`, `axe-core` (dev). New Python deps: `jsonschema`, `types-jsonschema`, `pymupdf`, `pillow 12.3.0` (T-2.9; released 2026-07-01, inside the 14-day rule).
+- **`pw` console script currently points at `pw.evidence.overlay_cli:main`** (T-2.9) because `src/pw/cli.py` is still T-0.8; T-0.8 must take over the `pw` entry point and delegate `overlay` to this module.
+- The render golden is `tests/fixtures/evidence/golden_overlay.png` (geometry only, no text): fonts differ across hosts, so labels are asserted by layout, not by pHash.
 - Host toolchain: `uv 0.13.6`, `ffmpeg 9.0.2`, `gitleaks 8.30.1` (winget; the 14-day rule is enforced for project deps).
 - DSH sandbox: ACL/label repair needed once; `pre-commit` cannot bootstrap upstream hooks (gitleaks is a local hook; CI installs the CLI); the web toolchain cannot be sandboxed locally; pytest `tmp_path` and `tempfile` temp dirs are unusable (tests use `.uv/tests-tmp`).
 
 ## Next up
-**No card is startable without a human decision.** Supply `META_API_KEY` (unblocks T-0.4 → T-0.7 → T-0.8 → all of P2/P3), film T-1.4/T-1.5 (unblocks T-1.7/T-1.8), or explicitly name the next pull-forward. Remaining honest candidates are thin: T-2.4 (mask utilities — needs ADR-001's mask encoding), T-3.2 (SOP compiler — needs Wonder), T-5.10 (overlay — needs T-2.4).
+**No perception/reasoning card is startable without a human decision.** Supply `META_API_KEY` (unblocks T-0.4 → T-0.7 → T-0.8 → all of P2/P3/T-3.4), film T-1.4/T-1.5 (unblocks T-1.7/T-1.8), or explicitly name the next pull-forward. Remaining honest candidates are thin: T-2.4 (mask utilities — needs ADR-001's mask encoding), T-3.2 (SOP compiler — needs Wonder), T-5.10 (SAM overlay layer — needs T-2.4).

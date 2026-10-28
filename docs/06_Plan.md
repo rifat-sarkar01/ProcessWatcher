@@ -423,7 +423,7 @@ Standard checks S1–S9 plus the G1 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** boundaries at events · short segments merged · long segment split · no events → one idle segment.
 - **Done when:** `uv run pytest tests/timeline/test_segments.py -q` → pass.
 
-### T-2.9 · Render primitives and debug overlay                                           [ ]
+### T-2.9 · Render primitives and debug overlay                                           [x]
 - **Track:** BE | **Serves:** FR-09 | **Size:** M | **Tier:** standard | **Depends:** T-2.1, T-1.1 | **Blocks:** T-3.4, T-4.1
 - **Context pack (read only these):** `contracts/tracks.schema.json` · §1A (evidence rule)
 - **Goal:** pure functions to draw mask overlays (alpha, colour by track ID), `#id concept` labels, timestamp burn-in, set-of-mark numbered keyframes, caption bar; `pw overlay` writes a debug mp4.
