@@ -5,24 +5,24 @@
 ## Now (one row per owner; one task in progress per owner)
 | Owner | Track | Current task | Status | Branch / last green commit |
 |---|---|---|---|---|
-| O3 | BE | T-3.5 · Constrained global aligner (DP) | done | task/T-3.5-aligner |
+| O3 | BE | T-3.6 · Deviation derivation (missed, out-of-order, wrong-tool) | done | task/T-3.6-deviations |
 | O4 | FE | T-6.7 · State, accessibility and projector polish | done | 18b072a (merged) |
 | O1 | ML | T-1.6 · Metrics module | done | 82360e8 (merged) |
 | O2 | ML | T-3.1 · SOP ingest (md, txt, pdf) | done | 28e831f (merged) |
-Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 17/74 cards [x]
+Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 18/74 cards [x]
 Micro-plan (M tasks only, 3–6 lines):
-- Ingest, render primitives and the deterministic aligner are done; T-2.2 (SAM chunks), T-2.4 (masks) and T-3.4 (scorer) still need ADR-001/002 + `pw.clients`.
-- T-3.5 consumes the `likelihoods` shape directly, so T-3.4 can plug in without interface changes; T-3.11's domain guard is still open.
-- Four pull-forwards are logged in `06_Plan.md` §7 (T-0.9, T-6.7, T-2.1, T-3.5 before their dependencies).
+- Aligner and deviations are done; T-2.2 (SAM chunks), T-2.4 (masks), T-2.7 (identities) and T-3.4 (scorer) still need ADR-001/002 + `pw.clients`.
+- T-3.11 (domain guard) and T-4.1 (evidence selector) are now unblocked; T-3.7/T-3.8 still need Wonder.
+- Five pull-forwards are logged in `06_Plan.md` §7 (T-0.9, T-6.7, T-2.1, T-3.5, T-3.6 before their dependencies).
 
 ## Last 5 completed (newest first)
 | Task | Commit | Evidence (command → result) | Date |
 |---|---|---|---|
-| T-3.5 constrained aligner: Viterbi/DP with null state, shared ranks for unordered groups, critical-skip penalty, counterfactual per-interval margin, merges intervals and emits contract-valid `alignment.json` | `task/T-3.5-aligner` | `uv run pytest tests/align/test_aligner.py -q --cov=src/pw/align --cov-fail-under=90` → 26 passed, **100%** coverage · full suite → 187 passed · artifact validated against `alignment.schema.json` | 2026-10-28 |
+| T-3.6 deviations: missed (max P < 0.25), out-of-order (LIS over partial-order ranks), wrong-tool (≥50% contact with a confident non-required tool), severity/status, mandatory track refs, time-ordered `dev_NNN` ids | `task/T-3.6-deviations` | `uv run pytest tests/align/test_deviations.py -q` → 16 passed · `--cov=src/pw/align` → 96% · full suite → 203 passed · each type + compound + refs rejection tested | 2026-10-28 |
+| T-3.5 constrained aligner: Viterbi/DP with null state, shared ranks for unordered groups, critical-skip penalty, counterfactual per-interval margin, merges intervals and emits contract-valid `alignment.json` | `task/T-3.5-aligner` · PR #16 · merged | `uv run pytest tests/align/test_aligner.py -q --cov=src/pw/align --cov-fail-under=90` → 26 passed, **100%** coverage · full suite → 187 passed · artifact validated against `alignment.schema.json` | 2026-10-28 |
 | T-2.9 render primitives + debug overlay: alpha mask/box overlays, collision-free `#id concept` labels, timestamp/caption burn-in, numbered set-of-mark, streaming `pw overlay` CLI | `task/T-2.9-overlay` · PR #15 · merged | `uv run pytest tests/evidence -q` → 15 passed · coverage `pw.evidence` → 83% · `uv run pw overlay <synthetic run> --out …` → 30 frames, duration 2.000 s · golden pHash ≤ 4 | 2026-10-28 |
 | T-2.1 video ingest: ffprobe wrapper, CFR/≤720p/silent normalisation, PTS time map (VFR detection), sha256, keyframes, cap + hostile-filename tests | `task/T-2.1-ingest` · PR #14 · merged | `uv run pytest tests/ingest -q` → 30 passed · coverage `pw.ingest` → 88% · `uv run python -m pw.ingest <clip> --out …` → `fps=15`, `frame_count=90` for a 6.000 s clip · ruff/mypy clean | 2026-10-27 |
 | T-6.7 a11y polish: axe over the 4 shipped routes (+ planted-violation self-check), token-contrast contract, type/motion guards | `task/T-6.7-a11y-polish` · PR #13 · merged | `npm --prefix web run test:a11y` → 5 passed, 0 serious/critical · suite → 119 passed | 2026-10-27 |
-| T-0.9 CI: backend (ruff, mypy, pytest, pw-data checks), web (lint/types/tests/build, generated-types freshness), gitleaks history | `task/T-0.9-ci` · PR #12 · merged | `gh run list --limit 1 --json conclusion -q ".[0].conclusion"` → `success` | 2026-10-27 |
 
 ## Blockers / Decisions needed from human
 - **META_API_KEY missing** → T-0.4/0.5/0.6 cannot start; T-0.7/0.8, all of P2 beyond ingest, T-3.2 and the API cards behind them wait on those ADRs. Every remaining card except gated polish work needs this.
@@ -40,8 +40,9 @@ Scope violations: 0 · Tasks reopened: 0 · Tasks added: 0 · Failed-attempt str
 - Time is always PTS-derived (`frames / nominal_fps` never appears); `TimeMap.is_variable` flags phone VFR input, and normalisation is what makes analysis frames unambiguous.
 - T-2.1's card smoke references `bench/dev/A1.mp4`, which does not exist until T-1.4; the run used a generated stand-in (deleted afterwards). The pytest gate is the authoritative check and does not depend on filmed data.
 - **Ruff reads every text file under the repo root, including `docs/*.md`**; a ledger saved in a non-UTF-8 encoding fails `ruff format --check` (happened once in T-0.9 — the ledger is now always written as UTF-8).
-- Pull-forwards logged in `06_Plan.md` §7: T-0.9 before T-0.8, T-6.7 before G5, T-2.1 before G2/T-0.4, T-3.5 before T-3.4. All keep their original scope.
+- Pull-forwards logged in `06_Plan.md` §7: T-0.9 before T-0.8, T-6.7 before G5, T-2.1 before G2/T-0.4, T-3.5 before T-3.4, T-3.6 before T-2.7/T-3.7. All keep their original scope.
 - **Abstention is a real DP outcome, not a threshold after the fact:** with weak step probabilities the `none` state can be cheaper than a skip or back transition, so the aligner naturally drops a step instead of forcing it (calibrated abstention, §1A item 4). Tests use strong likelihoods when they intend to exercise skip/back costs.
+- Deviations consume three small views (`TrackIdentity`, `TrackActivity`, `IntervalObservation`) instead of timeline/tracks artifacts, because T-2.6/T-2.7 are still blocked. T-2.6/T-2.7/T-3.9 must fill these views in the pipeline; statuses here are pre-verifier and T-3.7 may downgrade them.
 - CI (T-0.9) runs on Linux, re-runs the axe suite and both test suites on every push, and installs ffmpeg so the ingest fixtures are generated on the runner; the skeleton step stays `if:`-guarded until T-0.8 lands.
 - Demo data is inline and deterministic (`web/src/features/demo/cases.ts`); T-7.1 replaces it with checksummed `demo/cases/` files.
 - Design tokens live in `web/src/ui/tokens.css`; components carry no raw hex. `web/src/api/client.ts` maps every HTTP failure to a typed `ApiError` code.
@@ -52,4 +53,4 @@ Scope violations: 0 · Tasks reopened: 0 · Tasks added: 0 · Failed-attempt str
 - DSH sandbox: ACL/label repair needed once; `pre-commit` cannot bootstrap upstream hooks (gitleaks is a local hook; CI installs the CLI); the web toolchain cannot be sandboxed locally; pytest `tmp_path` and `tempfile` temp dirs are unusable (tests use `.uv/tests-tmp`).
 
 ## Next up
-**No open card has all dependencies satisfied.** Supply `META_API_KEY` (unblocks T-0.4 → T-0.7 → all of P2/P3, including T-3.4 and the API cards), film T-1.4/T-1.5 (unblocks T-1.7/T-1.8 and the evidence/bench chain), or name the next pull-forward. Honest candidates now: T-3.6 (deviations — needs T-2.7 identities, itself blocked on Wonder), T-3.11 (procedure-not-recognized guard — needs T-3.6), T-4.1 (needs T-3.6), T-5.1 (needs T-0.8).
+**T-3.11 (procedure-not-recognized guard) and T-4.1 (evidence frame selector) are now unblocked.** Otherwise supply `META_API_KEY` (unblocks T-0.4 → T-0.7 → T-3.4/T-3.7/T-3.8 and the API cards) or film T-1.4/T-1.5 (unblocks T-1.7/T-1.8).
