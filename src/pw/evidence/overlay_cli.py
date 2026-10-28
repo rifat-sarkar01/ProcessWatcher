@@ -174,12 +174,18 @@ def render_video(video: Path, run: RunVideo, destination: Path) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    arguments = sys.argv[1:] if argv is None else list(argv)
+    if arguments[:1] == ["verify-evidence"]:
+        from pw.evidence.provenance import verify_cli
+
+        return verify_cli(arguments[1:])
+
     parser = argparse.ArgumentParser(prog="pw", description="Process Watcher CLI.")
     commands = parser.add_subparsers(dest="command", required=True)
     overlay = commands.add_parser("overlay", help="burn tracks onto the analysis video")
     overlay.add_argument("run_dir", type=Path, help="run directory (runs/<run_id>)")
     overlay.add_argument("--out", type=Path, required=True, help="output mp4 path")
-    args = parser.parse_args(argv)
+    args = parser.parse_args(arguments)
 
     try:
         video, run = load_run(args.run_dir)
