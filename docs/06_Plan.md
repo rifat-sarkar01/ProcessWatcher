@@ -396,7 +396,7 @@ Standard checks S1–S9 plus the G1 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** static object · brief touch (< 0.3 s ignored) · sustained hold · occlusion flicker bridged · two hands.
 - **Done when:** `uv run pytest tests/timeline/test_features.py -q` → pass.
 
-### T-2.6 · Event extraction → timeline.json                                             [ ]
+### T-2.6 · Event extraction → timeline.json                                             [x]
 - **Track:** ML | **Serves:** FR-04 | **Size:** M | **Tier:** deep | **Depends:** T-2.5 | **Blocks:** T-2.8, T-2.10, T-3.4
 - **Context pack (read only these):** `contracts/timeline.schema.json` · `src/pw/timeline/features.py`
 - **Goal:** events `hold_start/hold_end`, `contact_start/contact_end` (tool↔part), `move`, `enter/exit` (object ↔ tracked zone concept), debounced, each citing track IDs and times with a confidence.
