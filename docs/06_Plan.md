@@ -592,7 +592,7 @@ Standard checks S1–S9 plus the G3 extras in the Phase Profile. `config/thresho
 - **Tests first:** each type on synthetic tracks · deterministic output · no usable frame → graceful fallback.
 - **Done when:** `uv run pytest tests/evidence/test_selector.py -q` → pass.
 
-### T-4.2 · Evidence clip and provenance                                                    [ ]
+### T-4.2 · Evidence clip and provenance                                                    [x]
 - **Track:** BE | **Serves:** FR-09, NFR-06 | **Size:** M | **Tier:** standard | **Depends:** T-4.1 | **Blocks:** T-4.6
 - **Context pack (read only these):** `src/pw/evidence/selector.py`
 - **Goal:** 3–5 s overlay clip per deviation; `evidence_manifest.json` with source sha256, frame index, render-params version, output sha256; `pw verify-evidence` re-renders and compares perceptual hashes.
