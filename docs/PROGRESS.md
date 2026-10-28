@@ -7,18 +7,19 @@
 |---|---|---|---|---|
 | O3 | BE | T-4.6 · Report assembly | done | task/T-4.6-report-assembly |
 | O4 | FE | T-6.7 · State, accessibility and projector polish | done | 18b072a (merged) |
-| O1 | ML | T-2.3 · Track stitching across chunks | done | task/T-2.3-stitching |
+| O1 | ML | T-2.5 · Hand–object interaction features | done | task/T-2.5-interaction-features |
 | O2 | ML | T-3.8 · Grounded explanation writer | done | task/T-3.8-explanation-writer |
-Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 24/74 cards [x]
+Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 25/74 cards [x]
 Micro-plan (M tasks only, 3–6 lines):
 - T-3.8's validator/retry/fallback are done behind a `Writer` callable; T-3.9 must pass a `pw.clients` writer and feed the result into `build_report(explanations=...)`.
-- T-2.3 stitching is done behind chunk views; T-2.2 must emit those views, T-2.4 adds mask IoU from ADR-001, T-2.5/T-2.6/T-2.8 are the next buildable chain (T-2.5 can start now, T-2.6/T-2.8 import its module).
+- T-2.3 stitching and T-2.5 features are done; T-2.6 (events) and T-2.8 (segments) are the last buildable cards and both import `pw.timeline.features`.
 - Still blocked: T-2.2/T-2.4/T-2.7/T-3.4 on ADR-001/002 + `pw.clients`; T-3.7/T-3.8 on Wonder; T-4.3/T-4.4 on Muse Image/Wonder; T-3.12 on T-0.5/T-1.7.
 - Five pull-forwards are logged in `06_Plan.md` §7 (T-0.9, T-6.7, T-2.1, T-3.5, T-3.6 before their dependencies).
 
 ## Last 5 completed (newest first)
 | Task | Commit | Evidence (command → result) | Date |
 |---|---|---|---|
+| T-2.5 interaction features: dilated hand-mask contact over object area (polygon, box fallback), hold hysteresis with gap bridging, proximity in hand diagonals, velocity normalised by frame diagonal | `task/T-2.5-interaction-features` · PR #24 | `uv run pytest tests/timeline/test_features.py -q` → 13 passed · `pw.timeline` coverage → 95% · full suite → 327 passed (with T-2.3 merged) · static/brief-touch/flicker/two-hands cases | 2026-10-28 |
 | T-2.3 cross-chunk stitching: Hungarian IoU matching in overlaps, appearance re-association over gaps, concept barrier, deterministic `trk_NNN` ids, contract-valid `tracks.json` with `source_chunks` + fragmentation stats | `task/T-2.3-stitching` | `uv run pytest tests/perception/test_stitch.py -q` → 15 passed · `pw.perception` coverage → 94% · full suite → 314 passed · artifact validated against `tracks.schema.json` | 2026-10-28 |
 | T-3.8 grounded explanations: constrained prompt, validator (≤ 2 sentences / ≤ 40 words / step cited / ±0.5 s timestamps / procedure-vocabulary tools), ≤ 2 retries, deterministic template fallback behind an injected `Writer` | `task/T-3.8-explanation-writer` | `uv run pytest tests/align/test_explain.py -q` → 20 passed · explain.py coverage → 100% · full suite → 299 passed · retry/fallback/invented-time/unknown-tool cases | 2026-10-28 |
 | T-4.6 report assembly: joins lanes/deviation/evidence/illustration, deterministic ordering, summary counts, `procedure_not_recognized` shape, kind guard, report + manifest validated against the contracts, `write_report` writes both | `task/T-4.6-report-assembly` | `uv run pytest tests/report/test_build.py -q` → 16 passed · `pw.report` coverage → 92% · full suite → 279 passed · `uv run pw-data validate-artifact <run>/report.json` → `OK (report)` and `manifest.json` → `OK (manifest)` | 2026-10-28 |
@@ -35,14 +36,12 @@ Scope violations: 0 · Tasks reopened: 0 · Tasks added: 0 · Failed-attempt str
 
 ## Discoveries (found, not yet planned)
 - **ffmpeg 9 can no longer write rotation metadata** (`-metadata:s:v rotate=90` is silently dropped), so a rotated fixture cannot be generated locally. Rotation handling is therefore covered by unit tests on the ffprobe payload (side-data and tag paths) and must be re-checked against a real phone clip once T-1.4 films one.
-- The ingest CLI takes `--out` because this host's sandbox cannot use `tempfile` directories; the default path (throwaway temp dir) still works on CI. Cleanup failures are non-fatal (`ignore_cleanup_errors=True`).
 - Time is always PTS-derived (`frames / nominal_fps` never appears); `TimeMap.is_variable` flags phone VFR input, and normalisation is what makes analysis frames unambiguous.
 - **Ruff reads every text file under the repo root, including `docs/*.md`**; a ledger saved in a non-UTF-8 encoding fails `ruff format --check` (happened once in T-0.9 — the ledger is now always written as UTF-8).
-- Pull-forwards logged in `06_Plan.md` §7: T-0.9 before T-0.8, T-6.7 before G5, T-2.1 before G2/T-0.4, T-3.5 before T-3.4, T-3.6 before T-2.7/T-3.7. All keep their original scope.
 - **Abstention is a real DP outcome, not a threshold after the fact:** with weak step probabilities the `none` state can be cheaper than a skip or back transition, so the aligner naturally drops a step instead of forcing it (calibrated abstention, §1A item 4). Tests use strong likelihoods when they intend to exercise skip/back costs.
 - Deviations consume three small views (`TrackIdentity`, `TrackActivity`, `IntervalObservation`) instead of timeline/tracks artifacts, because T-2.6/T-2.7 are still blocked. T-2.6/T-2.7/T-3.9 must fill these views in the pipeline; statuses here are pre-verifier and T-3.7 may downgrade them.
 - The domain guard reuses the aligner's `coverage` (steps with interval and mean P ≥ 0.4 ÷ K) and leaves `domain_cost_max` null until T-3.10 calibrates it, matching `contracts/examples/thresholds.example.json`; with `null` the cost rule is inactive.
-- Stitching consumes global analysis frame indices in overlap frames, so correspondence is computed on shared indices; polygon IoU is rasterised at 64x64 and box IoU is the fallback. Mask-encoding IoU stays with T-2.4/ADR-001.
+- Stitching matches on shared analysis frame indices (polygon IoU at 64x64, box fallback); features rasterise masks the same way with a 2-cell dilation, score contact as `overlap / object area` and bridge hold gaps up to `bridge_s`. Mask-encoding IoU stays with T-2.4/ADR-001.
 - Explanations use `mm:ss.cc` timestamps so the ±0.5 s check is exact; the report builder still formats its template as `mm:ss`. Tool detection is a narrow phrase pattern around with/using/used/needs/requires, and the caller passes the procedure vocabulary (tools and parts), so parts such as `bolt` are not misread as unknown tools.
 - Evidence items and illustration blocks are optional inputs to the report builder: a deviation with no evidence gets `evidence_unavailable: true` and a deviation with no illustration gets a reason string, so T-3.9 can assemble partial reports before T-4.3/T-4.4 land.
 - The illustration watermark is drawn with Pillow's default font (no font files are vendored); the guard lives in `pw.evidence.labeling` and the report builder calls `assert_evidence_kinds` before schema validation.
@@ -56,4 +55,4 @@ Scope violations: 0 · Tasks reopened: 0 · Tasks added: 0 · Failed-attempt str
 - DSH sandbox: ACL/label repair needed once; `pre-commit` cannot bootstrap upstream hooks (gitleaks is a local hook; CI installs the CLI); the web toolchain cannot be sandboxed locally; pytest `tmp_path` and `tempfile` temp dirs are unusable (tests use `.uv/tests-tmp`).
 
 ## Next up
-**Remaining buildable cards: T-2.5 → T-2.6 → T-2.8 (timeline features/events/segments).** Everything else needs `META_API_KEY` (T-0.4–0.8, T-2.2/T-2.4/T-2.7, T-3.2–T-3.4/T-3.7/T-3.9, T-4.3/T-4.4, all P5), filmed clips (T-1.4/T-1.5/T-1.7/T-1.8/T-3.12/T-6.x/T-7.x) or ADR-001/002/003. Next real input needed: `META_API_KEY`, filmed T-1.4/T-1.5, or a new pull-forward approval. Supply `META_API_KEY` (unblocks T-0.4 → T-0.7 → the model/API chain) or film T-1.4/T-1.5 (unblocks T-1.7/T-1.8).
+**T-2.6 (events) and T-2.8 (segments) are the only buildable cards left** (both need T-2.5 merged). Everything else needs `META_API_KEY` (T-0.4–0.8, T-2.2/T-2.4/T-2.7, T-3.2–T-3.4/T-3.7/T-3.9, T-4.3/T-4.4, all P5), filmed clips (T-1.4/T-1.5/T-1.7/T-1.8/T-3.12/T-6.x/T-7.x) or ADR-001/002/003. Next real input needed: `META_API_KEY`, filmed T-1.4/T-1.5, or a new pull-forward approval.
