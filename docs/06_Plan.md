@@ -583,7 +583,7 @@ Standard checks S1–S9 plus the G3 extras in the Phase Profile. `config/thresho
 - Gate extras: for all flagged dev deviations `pw verify-evidence` → VERIFIED · illustrations present or explicit fallback · human reviews 10 illustrations (≥ 8 acceptable) · test proves an illustration cannot enter an evidence list.
 - Exit evidence: verify-evidence output, illustration review note.
 
-### T-4.1 · Evidence frame selector                                                        [ ]
+### T-4.1 · Evidence frame selector                                                        [x]
 - **Track:** BE | **Serves:** FR-09 | **Size:** M | **Tier:** standard | **Depends:** T-2.9, T-3.6 | **Blocks:** T-4.2, T-4.6
 - **Context pack (read only these):** `src/pw/evidence/render.py` · `contracts/report.schema.json` (evidence)
 - **Goal:** choose 2–4 frames per deviation by type (missed: bracket before/after the gap; out-of-order: the two swapped steps; wrong-tool: wrong tool in hand), scored by mask area, Laplacian sharpness, low occlusion; render with SAM masks via the render primitives.
