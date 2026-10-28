@@ -40,7 +40,7 @@ Scope violations: 0 · Tasks reopened: 0 · Tasks added: 0 · Failed-attempt str
 - T-2.1's card smoke references `bench/dev/A1.mp4`, which does not exist until T-1.4; the run used a generated stand-in (deleted afterwards). The pytest gate is the authoritative check and does not depend on filmed data.
 - **Ruff reads every text file under the repo root, including `docs/*.md`**; a ledger saved in a non-UTF-8 encoding fails `ruff format --check` (happened once in T-0.9 — the ledger is now always written as UTF-8).
 - Pull-forwards logged in `06_Plan.md` §7: T-0.9 before T-0.8, T-6.7 before G5, T-2.1 before G2/T-0.4. All keep their original scope.
-- CI (T-0.9) runs on Linux, re-runs the axe suite and both test suites on every push; the skeleton step stays `if:`-guarded until T-0.8 lands.
+- CI (T-0.9) runs on Linux, re-runs the axe suite and both test suites on every push, and installs ffmpeg so the ingest fixtures are generated on the runner; the skeleton step stays `if:`-guarded until T-0.8 lands.
 - Demo data is inline and deterministic (`web/src/features/demo/cases.ts`); T-7.1 replaces it with checksummed `demo/cases/` files.
 - Design tokens live in `web/src/ui/tokens.css`; components carry no raw hex. `web/src/api/client.ts` maps every HTTP failure to a typed `ApiError` code.
 - New npm dependencies (AGENTS.md §4): `react-router-dom`, `axe-core` (dev). New Python deps: `jsonschema`, `types-jsonschema`, `pymupdf`.
