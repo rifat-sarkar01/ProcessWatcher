@@ -9,7 +9,7 @@
 | O4 | FE | T-6.7 · State, accessibility and projector polish | done | 18b072a (merged) |
 | O1 | ML | T-1.6 · Metrics module | done | 82360e8 (merged) |
 | O2 | ML | T-3.1 · SOP ingest (md, txt, pdf) | done | 28e831f (merged) |
-Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 21/74 cards [x]
+Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 20/74 cards [x]
 Micro-plan (M tasks only, 3–6 lines):
 - Evidence selection + provenance are done; T-4.5 (kind guard) is the only unblocked evidence card and needs T-4.3 for real illustrations.
 - Still blocked: T-2.2/T-2.4/T-2.7/T-3.4 on ADR-001/002 + `pw.clients`; T-3.7/T-3.8 on Wonder; T-4.3/T-4.4 on Muse Image/Wonder; T-3.12 on T-0.5/T-1.7.
