@@ -548,7 +548,7 @@ Standard checks S1–S9 plus the G2 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** synthetic predictions pick the expected optimum · constraint violated → rejected.
 - **Done when:** `uv run pw-bench tune --split dev` → prints chosen thresholds with dev F1 ≥ baseline B; `uv run pw-data verify-lock` → `LOCK OK`.
 
-### T-3.11 · Procedure-not-recognized guard                                                [ ]
+### T-3.11 · Procedure-not-recognized guard                                                [x]
 - **Track:** ML | **Serves:** FR-06 | **Size:** S | **Tier:** standard | **Depends:** T-3.5, T-3.6 | **Blocks:** T-4.6
 - **Context pack (read only these):** `contracts/report.schema.json` (status)
 - **Goal:** if matched-step coverage < 0.3 or alignment cost > τ, return `procedure_not_recognized` with a message and no deviations.
