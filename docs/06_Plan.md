@@ -654,7 +654,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - Gate extras: every state in §1B implemented · e2e green ×3 · Range seeking works in Chrome and Edge · overlay p95 draw ≤ 8 ms · `openapi.json` and generated types in sync · a human walks the full journey on a held-out-like clip.
 - Exit evidence: e2e output, perf output, walkthrough note.
 
-### T-5.1 · Security guards                                                                  [ ]
+### T-5.1 · Security guards                                                                  [x]
 - **Track:** SEC | **Serves:** FR-01, NFR-05 | **Size:** M | **Tier:** deep | **Depends:** T-0.8 | **Blocks:** T-5.2
 - **Context pack (read only these):** NFR-05 · ADR-001 (caps)
 - **Goal:** upload validation (magic bytes, extension allowlist, ≤500 MB, ≤180 s via ffprobe in a no-shell subprocess, max resolution), filename sanitation; constant-time access-code dependency; per-IP token-bucket rate limit; traversal-safe artifact resolver; 24 h retention purge (demo cases exempt); log redaction.
