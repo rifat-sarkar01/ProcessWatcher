@@ -7,6 +7,7 @@ takes over the `pw` entry point and delegates the remaining arguments verbatim.
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -30,15 +31,35 @@ def _build_parser() -> argparse.ArgumentParser:
     run.add_argument("--sop", required=True, type=Path)
     run.add_argument("--runs-dir", type=Path, default=None)
 
+    openapi = commands.add_parser("openapi", help="export the OpenAPI document")
+    openapi.add_argument("--check", action="store_true", help="fail if it is out of date")
+    openapi.add_argument("--out", type=Path, default=Path("openapi.json"))
+
     commands.add_parser("overlay", add_help=False, help="render the debug overlay video")
     commands.add_parser("verify-evidence", add_help=False, help="verify evidence re-derivability")
     return parser
+
+
+def _openapi(target: Path, *, check: bool) -> int:
+    from pw.api.main import create_app
+
+    text = json.dumps(create_app().openapi(), indent=2) + "\n"
+    if check:
+        if not target.is_file() or target.read_text(encoding="utf-8") != text:
+            print(f"pw: {target} is out of date; run `pw openapi`", file=sys.stderr)
+            return 1
+        return EXIT_OK
+    target.write_text(text, encoding="utf-8")
+    print(target)
+    return EXIT_OK
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = _build_parser()
     args, extras = parser.parse_known_args(argv)
 
+    if args.command == "openapi":
+        return _openapi(args.out, check=args.check)
     if args.command == "overlay":
         return int(overlay_main(list(extras)))
     if args.command == "verify-evidence":

@@ -5,11 +5,11 @@
 ## Now (one row per owner; one task in progress per owner)
 | Owner | Track | Current task | Status | Branch / last green commit |
 |---|---|---|---|---|
-| O3 | BE | T-5.1 · Security guards | done | task/T-5.1-security-guards |
+| O3 | BE | T-5.2 · Runs API and artifact serving | done | task/T-5.2-runs-api |
 | O4 | FE | T-6.7 · State, accessibility and projector polish | done | 18b072a (merged) |
 | O1 | ML | T-2.8 · Candidate action segmentation | done | task/T-2.8-segments |
 | O2 | ML | T-3.8 · Grounded explanation writer | done | task/T-3.8-explanation-writer |
-Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 31/74 cards [x]
+Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 32/74 cards [x]
 Micro-plan (M tasks only, 3–6 lines):
 - T-3.8's validator/retry/fallback are done behind a `Writer` callable; T-3.9 must pass a `pw.clients` writer and feed the result into `build_report(explanations=...)`.
 - T-2.6 events and T-2.8 segments now emit the full contract-valid `timeline.json` (events + non-overlapping 1–20 s activity segments); T-3.4 scoring is the next consumer once `META_API_KEY` lands.
@@ -19,11 +19,11 @@ Micro-plan (M tasks only, 3–6 lines):
 ## Last 5 completed (newest first)
 | Task | Commit | Evidence (command → result) | Date |
 |---|---|---|---|
+| T-5.2 runs API: guarded `POST /runs` (multipart video + SOP or `sop_text`, streaming cap, security validation, background fake run), `GET /runs`, `GET /runs/{id}` stage table, report 409-while-running, Range-capable artifact serving through the traversal guard, `{error:{code,message}}` envelope, `pw openapi --check` | `task/T-5.2-runs-api` (stacked on #29) | `uv run pytest tests/api -q` → 17 passed · `uv run pw openapi --check` → exit 0 · full suite → 401 passed · 401/404/409/413/415/422/429/206 cases | 2026-10-29 |
 | T-5.1 security guards: upload validator (extension allowlist + ftyp/Matroska magic, zip-bomb rejection, 500 MB / 180 s / 3840x2160 caps, UTF-8 SOP, filename sanitation), constant-time fail-closed access-code dependency, thread-safe per-IP token bucket (30/min, burst 10), traversal-safe artifact resolver with dir allowlist, 24 h purge with exemptions, secret redaction | `task/T-5.1-security-guards` (stacked on #28) | `uv run pytest tests/security -q` → 42 passed · full suite → 384 passed · caps from TRD §5 (ADR-001 absent) · magic, bomb, cap-boundary, traversal (`../`, `%2f`, backslash, drive), auth, concurrent-burst and purge cases | 2026-10-29 |
 | T-0.8 walking skeleton: 12-stage fake DAG with per-stage content-hash cache and `.key` files, run store (`input/stages/media/evidence/illustrations` + root `report.json`), `pw run --mode fake`, FastAPI `/healthz` + `GET /runs`, `pw` entry point now `pw.cli:main` delegating `overlay`/`verify-evidence` | `task/T-0.8-walking-skeleton` | `uv run pytest tests/pipeline -q` → 16 passed · `uv run pw run --mode fake …` → exit 0, 12 json files · `curl /healthz` → `{"status":"ok"}` · full suite → 342 passed | 2026-10-29 |
 | T-2.8 candidate segments: change-point cuts at event times, start events open the following interval and end events close the preceding one so tails stay idle, idle gaps < 2 s absorbed, activity < 1 s merged, activity > 20 s split, contiguous `seg_NNN` coverage with salient tracks and event ids, contract-valid segmented `timeline.json` | `task/T-2.8-segments` · PR #27 | `uv run pytest tests/timeline/test_segments.py -q` → 9 passed · timeline coverage → 96.56% (segments.py 95%) · full suite → 351 passed · boundaries/short-merge/idle-gap/split/coverage/artifact/write cases | 2026-10-28 |
 | T-2.6 event extraction: hold/contact start-end (tool↔part while held), moves from normalised velocity, zone enter/exit via centroid-in-mask, 0.3 s debounce merge, confidence = mean score × coverage, deterministic `evt_NNN` ids, contract-valid `timeline.json` | `task/T-2.6-events` · PR #26 | `uv run pytest tests/timeline -q --cov=src/pw/timeline --cov-fail-under=90` → 29 passed, 97% · events.py → 99% · full suite → 342 passed · `gitleaks detect` → no leaks · pick-up/put-down, tool swap, drop, zone, debounce, idempotent/reversed-input cases | 2026-10-28 |
-| T-2.5 interaction features: dilated hand-mask contact over object area (polygon, box fallback), hold hysteresis with gap bridging, proximity in hand diagonals, velocity normalised by frame diagonal | `task/T-2.5-interaction-features` · PR #24 | `uv run pytest tests/timeline/test_features.py -q` → 13 passed · `pw.timeline` coverage → 95% · full suite → 327 passed (with T-2.3 merged) · static/brief-touch/flicker/two-hands cases | 2026-10-28 |
 
 ## Blockers / Decisions needed from human
 - **META_API_KEY missing** → T-0.4/0.5/0.6 cannot start; T-0.7/0.8, all of P2 beyond ingest, T-3.2 and the API cards behind them wait on those ADRs. Every remaining card except gated polish work needs this.
@@ -54,4 +54,4 @@ Scope violations: 0 · Tasks reopened: 0 · Tasks added: 0 · Failed-attempt str
 - DSH sandbox: ACL/label repair needed once; `pre-commit` cannot bootstrap upstream hooks (gitleaks is a local hook; CI installs the CLI); the web toolchain cannot be sandboxed locally; pytest `tmp_path` and `tempfile` temp dirs are unusable (tests use `.uv/tests-tmp`).
 
 ## Next up
-**Key-free queue (approved 2026-10-29):** T-5.2 → T-5.4 → T-5.5 are open PRs #30–#32; T-5.8 progress view is next. T-2.6/T-2.8 are merged. Everything else needs `META_API_KEY` (T-0.4–0.7, T-2.2/T-2.4/T-2.7, T-3.2–T-3.4/T-3.7/T-3.9, T-4.3/T-4.4), filmed clips (T-1.4/T-1.5/T-1.7/T-1.8/T-2.10/T-3.12/T-6.1/T-6.2) or ADR-001/002/003.
+**Key-free queue (approved 2026-10-29):** T-5.4 → T-5.5 are open PRs #31–#32; T-5.8 progress view is next. T-2.6/T-2.8 are merged. Everything else needs `META_API_KEY` (T-0.4–0.7, T-2.2/T-2.4/T-2.7, T-3.2–T-3.4/T-3.7/T-3.9, T-4.3/T-4.4), filmed clips (T-1.4/T-1.5/T-1.7/T-1.8/T-2.10/T-3.12/T-6.1/T-6.2) or ADR-001/002/003.
