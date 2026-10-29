@@ -1,0 +1,137 @@
+:root {
+  color-scheme: light;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  line-height: 1.45;
+  color: #1b1f24;
+  background: #ffffff;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 60rem;
+  padding: 2rem 1.5rem 4rem;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin-bottom: 0.2rem;
+}
+
+h2 {
+  font-size: 1.15rem;
+  border-bottom: 2px solid #d0d7de;
+  padding-bottom: 0.25rem;
+  margin-top: 2rem;
+}
+
+.meta,
+.summary {
+  color: #57606a;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #ddf4ff;
+  border: 1px solid #54aeff;
+}
+
+.badge.high {
+  background: #ffebe9;
+  border-color: #ff8182;
+}
+
+.badge.needs_review {
+  background: #fff8c5;
+  border-color: #d4a72c;
+}
+
+.deviation {
+  border: 1px solid #d0d7de;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+  break-inside: avoid;
+}
+
+.deviation h3 {
+  margin: 0 0 0.35rem;
+}
+
+.explanation {
+  font-size: 1.05rem;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.2rem 1rem;
+  font-size: 0.9rem;
+  color: #57606a;
+}
+
+.facts dt {
+  font-weight: 600;
+}
+
+.evidence,
+.illustration {
+  margin-top: 0.9rem;
+}
+
+.evidence img,
+.illustration img {
+  max-width: 100%;
+  border-radius: 0.35rem;
+  border: 1px solid #d0d7de;
+}
+
+.missing {
+  font-style: italic;
+  color: #57606a;
+}
+
+.watermark {
+  display: inline-block;
+  margin-top: 0.35rem;
+  padding: 0.15rem 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: #fff8c5;
+  border: 1px dashed #d4a72c;
+  border-radius: 0.25rem;
+}
+
+.disclaimer {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #d0d7de;
+  font-size: 0.85rem;
+  color: #57606a;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.25rem 0.75rem 0.25rem 0;
+  border-bottom: 1px solid #d0d7de;
+}
+
+@media print {
+  body {
+    max-width: none;
+    padding: 0;
+  }
+
+  .deviation {
+    break-inside: avoid;
+  }
+}

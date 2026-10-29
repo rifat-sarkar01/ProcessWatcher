@@ -691,7 +691,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** ordering · replay · disconnect cleanup · unknown run → 404.
 - **Done when:** `uv run pytest tests/api/test_sse.py -q` → pass; `curl -N http://localhost:8000/runs/<id>/events` on a fake run → ≥ 12 `stage` events then `done`.
 
-### T-5.5 · Self-contained report export (HTML, PDF)                                           [ ]
+### T-5.5 · Self-contained report export (HTML, PDF)                                           [x]
 - **Track:** BE | **Serves:** FR-12 | **Size:** M | **Tier:** standard | **Depends:** T-4.6, T-5.2 | **Blocks:** T-5.11, T-5.13
 - **Context pack (read only these):** `contracts/report.schema.json` · §1A (evidence rule)
 - **Goal:** one HTML file with embedded images, deviations, evidence hashes, model versions, thresholds, and the illustration disclaimer; PDF via headless Chromium print.
