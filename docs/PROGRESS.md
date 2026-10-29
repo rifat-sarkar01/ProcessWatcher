@@ -5,25 +5,25 @@
 ## Now (one row per owner; one task in progress per owner)
 | Owner | Track | Current task | Status | Branch / last green commit |
 |---|---|---|---|---|
-| O3 | BE | T-4.6 · Report assembly | done | task/T-4.6-report-assembly |
+| O3 | BE | T-0.8 · Walking-skeleton pipeline, CLI and API health | done | task/T-0.8-walking-skeleton |
 | O4 | FE | T-6.7 · State, accessibility and projector polish | done | 18b072a (merged) |
 | O1 | ML | T-2.5 · Hand–object interaction features | done | task/T-2.5-interaction-features |
 | O2 | ML | T-3.8 · Grounded explanation writer | done | task/T-3.8-explanation-writer |
-Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 25/74 cards [x]
+Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 26/74 cards [x]
 Micro-plan (M tasks only, 3–6 lines):
 - T-3.8's validator/retry/fallback are done behind a `Writer` callable; T-3.9 must pass a `pw.clients` writer and feed the result into `build_report(explanations=...)`.
 - T-2.3 stitching and T-2.5 features are done; T-2.6 (events) and T-2.8 (segments) are the last buildable cards and both import `pw.timeline.features`.
 - Still blocked: T-2.2/T-2.4/T-2.7/T-3.4 on ADR-001/002 + `pw.clients`; T-3.7/T-3.8 on Wonder; T-4.3/T-4.4 on Muse Image/Wonder; T-3.12 on T-0.5/T-1.7.
-- Five pull-forwards are logged in `06_Plan.md` §7 (T-0.9, T-6.7, T-2.1, T-3.5, T-3.6 before their dependencies).
+- Pull-forwards are logged in `06_Plan.md` §7; latest is T-0.8 before T-0.7 (human-approved 2026-10-29: build every key-free card now).
 
 ## Last 5 completed (newest first)
 | Task | Commit | Evidence (command → result) | Date |
 |---|---|---|---|
+| T-0.8 walking skeleton: 12-stage fake DAG with per-stage content-hash cache and `.key` files, run store (`input/stages/media/evidence/illustrations` + root `report.json`), `pw run --mode fake`, FastAPI `/healthz` + `GET /runs`, `pw` entry point now `pw.cli:main` delegating `overlay`/`verify-evidence` | `task/T-0.8-walking-skeleton` | `uv run pytest tests/pipeline -q` → 16 passed · `uv run pw run --mode fake …` → exit 0, 12 json files · `curl /healthz` → `{"status":"ok"}` · full suite → 342 passed | 2026-10-29 |
 | T-2.5 interaction features: dilated hand-mask contact over object area (polygon, box fallback), hold hysteresis with gap bridging, proximity in hand diagonals, velocity normalised by frame diagonal | `task/T-2.5-interaction-features` · PR #24 | `uv run pytest tests/timeline/test_features.py -q` → 13 passed · `pw.timeline` coverage → 95% · full suite → 327 passed (with T-2.3 merged) · static/brief-touch/flicker/two-hands cases | 2026-10-28 |
 | T-2.3 cross-chunk stitching: Hungarian IoU matching in overlaps, appearance re-association over gaps, concept barrier, deterministic `trk_NNN` ids, contract-valid `tracks.json` with `source_chunks` + fragmentation stats | `task/T-2.3-stitching` | `uv run pytest tests/perception/test_stitch.py -q` → 15 passed · `pw.perception` coverage → 94% · full suite → 314 passed · artifact validated against `tracks.schema.json` | 2026-10-28 |
 | T-3.8 grounded explanations: constrained prompt, validator (≤ 2 sentences / ≤ 40 words / step cited / ±0.5 s timestamps / procedure-vocabulary tools), ≤ 2 retries, deterministic template fallback behind an injected `Writer` | `task/T-3.8-explanation-writer` | `uv run pytest tests/align/test_explain.py -q` → 20 passed · explain.py coverage → 100% · full suite → 299 passed · retry/fallback/invented-time/unknown-tool cases | 2026-10-28 |
 | T-4.6 report assembly: joins lanes/deviation/evidence/illustration, deterministic ordering, summary counts, `procedure_not_recognized` shape, kind guard, report + manifest validated against the contracts, `write_report` writes both | `task/T-4.6-report-assembly` | `uv run pytest tests/report/test_build.py -q` → 16 passed · `pw.report` coverage → 92% · full suite → 279 passed · `uv run pw-data validate-artifact <run>/report.json` → `OK (report)` and `manifest.json` → `OK (manifest)` | 2026-10-28 |
-| T-4.5 illustration labeling + kind guard: burned-in `AI ILLUSTRATION · NOT EVIDENCE` band with no off switch, font shrinks to fit narrow images, and `assert_evidence_kinds` rejects an illustration in `evidence[]` or evidence in the illustration slot | `task/T-4.5-kind-guard` | `uv run pytest tests/evidence/test_kinds.py -q` → 10 passed · full suite → 263 passed · labeling coverage → 95% · `pw.evidence` → 88% · pixel/round-trip/determinism checks · `KindError` subclasses `jsonschema.ValidationError` | 2026-10-28 |
 
 ## Blockers / Decisions needed from human
 - **META_API_KEY missing** → T-0.4/0.5/0.6 cannot start; T-0.7/0.8, all of P2 beyond ingest, T-3.2 and the API cards behind them wait on those ADRs. Every remaining card except gated polish work needs this.
@@ -48,11 +48,11 @@ Scope violations: 0 · Tasks reopened: 0 · Tasks added: 0 · Failed-attempt str
 - Evidence provenance compares a 64-bit dHash with an 8-bit budget rather than bytes: ffmpeg/font builds differ across hosts, so re-renders are never byte-identical. The item still carries exact `output_sha256` for tamper detection of the stored PNG, and verification re-renders from `stages/tracks.json` + `media/analysis.mp4` next to the report.
 - The evidence selector takes a `FrameProvider` callable, not a video path: T-4.2/T-3.9 can pass a decoder, tests pass synthetic PIL frames. Missed deviations seed the gap brackets and out-of-order seeds one frame per swapped window before score-filling, so the strategy survives noisy scores; zero usable frames or unreadable frames return `evidence_unavailable` reasons instead of placeholders.
 - CI (T-0.9) runs on Linux, re-runs the axe suite and both test suites on every push, and installs ffmpeg so the ingest fixtures are generated on the runner; the skeleton step stays `if:`-guarded until T-0.8 lands.
-- New npm dependencies (AGENTS.md §4): `react-router-dom`, `axe-core` (dev). New Python deps: `jsonschema`, `types-jsonschema`, `pymupdf`, `pillow 12.3.0` (T-2.9; released 2026-07-01, inside the 14-day rule).
-- **`pw` console script currently points at `pw.evidence.overlay_cli:main`** (T-2.9) because `src/pw/cli.py` is still T-0.8; T-0.8 must take over the `pw` entry point and delegate `overlay` and `verify-evidence` (dispatched in `overlay_cli.main` to `provenance.verify_cli`).
+- New npm dependencies (AGENTS.md §4): `react-router-dom`, `axe-core` (dev). New Python deps: `jsonschema`, `types-jsonschema`, `pymupdf`, `pillow 12.3.0` (T-2.9), `fastapi` + `uvicorn` (T-0.8 runtime), `httpx` (dev, TestClient) — all mature releases inside the 14-day rule.
+- The `pw` entry point is now `pw.cli:main` (T-0.8) and delegates `overlay` and `verify-evidence`; `pw run` only supports `--mode fake` until T-0.7/T-3.9 wire the real stages. The 12-stage fake DAG writes `stages/<stage>.key` = sha256(stage_version ‖ video/sop hashes ‖ dependency artifact hashes ‖ mode), so reruns are no-ops.
 - The render golden is `tests/fixtures/evidence/golden_overlay.png` (geometry only, no text): fonts differ across hosts, so labels are asserted by layout, not by pHash.
 - Host toolchain: `uv 0.13.6`, `ffmpeg 9.0.2`, `gitleaks 8.30.1` (winget; the 14-day rule is enforced for project deps).
 - DSH sandbox: ACL/label repair needed once; `pre-commit` cannot bootstrap upstream hooks (gitleaks is a local hook; CI installs the CLI); the web toolchain cannot be sandboxed locally; pytest `tmp_path` and `tempfile` temp dirs are unusable (tests use `.uv/tests-tmp`).
 
 ## Next up
-**T-2.6 (events) and T-2.8 (segments) are the only buildable cards left** (both need T-2.5 merged). Everything else needs `META_API_KEY` (T-0.4–0.8, T-2.2/T-2.4/T-2.7, T-3.2–T-3.4/T-3.7/T-3.9, T-4.3/T-4.4, all P5), filmed clips (T-1.4/T-1.5/T-1.7/T-1.8/T-3.12/T-6.x/T-7.x) or ADR-001/002/003. Next real input needed: `META_API_KEY`, filmed T-1.4/T-1.5, or a new pull-forward approval.
+**Key-free queue (approved 2026-10-29):** T-5.1 security guards → T-5.2 runs API → T-5.4 SSE → T-5.5 HTML/PDF export, then the FE cards that consume them. T-2.6/T-2.8 are in PRs #26/#27. Everything else needs `META_API_KEY` (T-0.4–0.7, T-2.2/T-2.4/T-2.7, T-3.2–T-3.4/T-3.7/T-3.9, T-4.3/T-4.4), filmed clips (T-1.4/T-1.5/T-1.7/T-1.8/T-2.10/T-3.12/T-6.1/T-6.2) or ADR-001/002/003.

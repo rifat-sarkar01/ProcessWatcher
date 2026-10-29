@@ -11,17 +11,20 @@ requires-python = ">=3.12,<3.13"
 license = { file = "LICENSE" }
 authors = [{ name = "Process Watcher team" }]
 dependencies = [
+    "fastapi>=0.115",
     "jsonschema>=4.23",
     "pillow>=12.3.0",
     "pymupdf>=1.24",
+    "uvicorn>=0.32",
 ]
 
 [project.scripts]
 pw-data = "pw.data.cli:main"
-pw = "pw.evidence.overlay_cli:main"
+pw = "pw.cli:main"
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28",
     "mypy>=1.13",
     "pre-commit>=4.0",
     "pytest>=8.3",
