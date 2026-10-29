@@ -414,7 +414,7 @@ Standard checks S1–S9 plus the G1 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** consistent label · split vote → low confidence · `other` · API failure → `unknown`.
 - **Done when:** `uv run pytest tests/perception/test_identity.py -q` → pass; `uv run pw identify runs/<id> --mode replay` → ≥ 80% of tool tracks labeled with confidence ≥ 0.6.
 
-### T-2.8 · Candidate action segmentation                                                [ ]
+### T-2.8 · Candidate action segmentation                                                [x]
 - **Track:** ML | **Serves:** FR-04 | **Size:** S | **Tier:** standard | **Depends:** T-2.6 | **Blocks:** T-3.4
 - **Context pack (read only these):** `contracts/timeline.schema.json`
 - **Goal:** segments from change-points (hold start/stop, contact start/stop, idle > 2 s); min 1 s, max 20 s (split); each lists salient tracks and event IDs.
