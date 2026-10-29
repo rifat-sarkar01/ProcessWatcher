@@ -654,7 +654,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - Gate extras: every state in §1B implemented · e2e green ×3 · Range seeking works in Chrome and Edge · overlay p95 draw ≤ 8 ms · `openapi.json` and generated types in sync · a human walks the full journey on a held-out-like clip.
 - Exit evidence: e2e output, perf output, walkthrough note.
 
-### T-5.1 · Security guards                                                                  [ ]
+### T-5.1 · Security guards                                                                  [x]
 - **Track:** SEC | **Serves:** FR-01, NFR-05 | **Size:** M | **Tier:** deep | **Depends:** T-0.8 | **Blocks:** T-5.2
 - **Context pack (read only these):** NFR-05 · ADR-001 (caps)
 - **Goal:** upload validation (magic bytes, extension allowlist, ≤500 MB, ≤180 s via ffprobe in a no-shell subprocess, max resolution), filename sanitation; constant-time access-code dependency; per-IP token-bucket rate limit; traversal-safe artifact resolver; 24 h retention purge (demo cases exempt); log redaction.
@@ -664,7 +664,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Done when:** `uv run pytest tests/security -q` → pass (≥ 20 tests).
 - **Risk or security notes:** this is the only task guarding API spend; the cap must hold under concurrent requests.
 
-### T-5.2 · Runs API and artifact serving                                                    [ ]
+### T-5.2 · Runs API and artifact serving                                                    [x]
 - **Track:** BE | **Serves:** FR-01 | **Size:** M | **Tier:** standard | **Depends:** T-3.9, T-4.6, T-5.1 | **Blocks:** T-5.3, T-5.4, T-5.5, T-5.13
 - **Context pack (read only these):** `contracts/report.schema.json` · `src/pw/security/*`
 - **Goal:** `POST /runs` (multipart video + SOP), `GET /runs`, `GET /runs/{id}`, `GET /runs/{id}/report`, `GET /runs/{id}/artifacts/{path}` with HTTP Range; consistent error shape `{error:{code,message}}`; all routes behind guards; OpenAPI exported.
@@ -682,7 +682,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** happy · invalid graph → 422 · unknown deviation id → 404 · missing code → 401.
 - **Done when:** `uv run pytest tests/api/test_sop_review.py -q` → pass.
 
-### T-5.4 · SSE progress stream                                                               [ ]
+### T-5.4 · SSE progress stream                                                               [x]
 - **Track:** BE | **Serves:** FR-15 | **Size:** S | **Tier:** standard | **Depends:** T-3.9, T-5.2 | **Blocks:** T-5.8
 - **Context pack (read only these):** `src/pw/pipeline/events.py`
 - **Goal:** `GET /runs/{id}/events`: stage start/finish, % within stage, running cost, elapsed; late joiners get a replay; 15 s heartbeat.
