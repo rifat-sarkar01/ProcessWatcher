@@ -682,7 +682,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** happy · invalid graph → 422 · unknown deviation id → 404 · missing code → 401.
 - **Done when:** `uv run pytest tests/api/test_sop_review.py -q` → pass.
 
-### T-5.4 · SSE progress stream                                                               [ ]
+### T-5.4 · SSE progress stream                                                               [x]
 - **Track:** BE | **Serves:** FR-15 | **Size:** S | **Tier:** standard | **Depends:** T-3.9, T-5.2 | **Blocks:** T-5.8
 - **Context pack (read only these):** `src/pw/pipeline/events.py`
 - **Goal:** `GET /runs/{id}/events`: stage start/finish, % within stage, running cost, elapsed; late joiners get a replay; 15 s heartbeat.
