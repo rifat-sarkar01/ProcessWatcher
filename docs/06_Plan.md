@@ -718,7 +718,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** invalid graph blocked · reorder preserved · labels and focus order correct.
 - **Done when:** `npm --prefix web run test -- --run web/src/features/upload` → pass.
 
-### T-5.8 · Run progress view                                                                  [ ]
+### T-5.8 · Run progress view                                                                  [x]
 - **Track:** FE | **Serves:** FR-15 | **Size:** S | **Tier:** standard | **Depends:** T-5.4, T-5.6 | **Blocks:** T-5.13
 - **Context pack (read only these):** SSE event shape in `openapi.json`
 - **Goal:** 12-stage stepper from SSE with live $ and elapsed, partial results, per-stage failure banner, "continue with partial".
