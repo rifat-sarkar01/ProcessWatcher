@@ -27,6 +27,7 @@ pw = "pw.cli:main"
 dev = [
     "httpx>=0.28",
     "mypy>=1.13",
+    "pip-audit>=2.10.1",
     "pre-commit>=4.0",
     "pytest>=8.3",
     "pytest-cov>=6.0",
