@@ -664,7 +664,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Done when:** `uv run pytest tests/security -q` → pass (≥ 20 tests).
 - **Risk or security notes:** this is the only task guarding API spend; the cap must hold under concurrent requests.
 
-### T-5.2 · Runs API and artifact serving                                                    [ ]
+### T-5.2 · Runs API and artifact serving                                                    [x]
 - **Track:** BE | **Serves:** FR-01 | **Size:** M | **Tier:** standard | **Depends:** T-3.9, T-4.6, T-5.1 | **Blocks:** T-5.3, T-5.4, T-5.5, T-5.13
 - **Context pack (read only these):** `contracts/report.schema.json` · `src/pw/security/*`
 - **Goal:** `POST /runs` (multipart video + SOP), `GET /runs`, `GET /runs/{id}`, `GET /runs/{id}/report`, `GET /runs/{id}/artifacts/{path}` with HTTP Range; consistent error shape `{error:{code,message}}`; all routes behind guards; OpenAPI exported.

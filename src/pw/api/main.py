@@ -1,7 +1,8 @@
-"""FastAPI app: liveness and run listing for the walking skeleton.
+"""FastAPI app: public liveness plus the guarded runs API.
 
-Route coverage is T-0.8 only: `/healthz` (public, per TRD §5) and `GET /runs`
-listing filesystem runs. Guards, uploads and SSE arrive with T-5.1/T-5.2/T-5.4.
+`/healthz` is public (TRD §5); every `/runs` route requires `X-Access-Code` and is
+rate limited on creation. Uploads are validated by `pw.security` before a fake run
+is started in the background.
 """
 
 from __future__ import annotations
@@ -10,20 +11,33 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
-from pw.pipeline.runstore import list_runs, runs_root
+from pw.api.errors import install_handlers
+from pw.api.routes_runs import ApiSettings
+from pw.api.routes_runs import router as runs_router
+from pw.pipeline.runstore import runs_root
+from pw.security.ratelimit import RateLimiter
+from pw.security.uploads import UploadCaps
 
 
-def create_app(*, runs_dir: Path | None = None) -> FastAPI:
+def create_app(
+    *,
+    runs_dir: Path | None = None,
+    caps: UploadCaps | None = None,
+    rate_limiter: RateLimiter | None = None,
+) -> FastAPI:
     root = runs_dir if runs_dir is not None else runs_root()
     app = FastAPI(title="Process Watcher", version="0.0.0")
+    app.state.settings = ApiSettings(
+        runs_dir=root,
+        caps=caps or UploadCaps(),
+        limiter=rate_limiter or RateLimiter(),
+    )
+    install_handlers(app)
+    app.include_router(runs_router)
 
     @app.get("/healthz")
     def healthz() -> dict[str, str]:
         return {"status": "ok"}
-
-    @app.get("/runs")
-    def runs() -> list[dict[str, object]]:
-        return [summary.to_artifact() for summary in list_runs(root)]
 
     return app
 
