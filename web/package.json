@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:a11y": "vitest --run web/src/ui/a11y.test.tsx",
+    "test:perf": "vitest web/src/features/review/overlay/perf.test.ts",
     "gen:types": "node scripts/gen-types.mjs"
   },
   "dependencies": {

@@ -736,7 +736,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** mapping unit tests · marker click seeks · keyboard actions · 3 deviations at expected x positions.
 - **Done when:** `npm --prefix web run test -- --run web/src/features/review/timeline` → pass.
 
-### T-5.10 · SAM overlay layer and track inspector                                              [ ]
+### T-5.10 · SAM overlay layer and track inspector                                              [x]
 - **Track:** FE | **Serves:** FR-11 | **Size:** M | **Tier:** deep | **Depends:** T-2.4, T-5.9 | **Blocks:** T-5.13
 - **Context pack (read only these):** `contracts/tracks.schema.json` · `web/src/features/review/player/*`
 - **Goal:** canvas synced via `requestVideoFrameCallback`; draws simplified polygons; toggles per concept/track; hover `#id concept`; inspector listing a track's holds over time.
