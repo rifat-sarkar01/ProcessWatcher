@@ -7,6 +7,7 @@ takes over the `pw` entry point and delegates the remaining arguments verbatim.
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -30,15 +31,39 @@ def _build_parser() -> argparse.ArgumentParser:
     run.add_argument("--sop", required=True, type=Path)
     run.add_argument("--runs-dir", type=Path, default=None)
 
+    export = commands.add_parser("export", help="export a run report as HTML or PDF")
+    export.add_argument("run_dir", type=Path)
+    export.add_argument("--format", choices=("html", "pdf"), default="html")
+    export.add_argument("--out", type=Path, default=None)
+
     commands.add_parser("overlay", add_help=False, help="render the debug overlay video")
     commands.add_parser("verify-evidence", add_help=False, help="verify evidence re-derivability")
     return parser
+
+
+def _export(run_dir: Path, *, fmt: str, out: Path | None) -> int:
+    from pw.report.export import ExportError, write_export
+
+    report_path = run_dir / "report.json"
+    if not report_path.is_file():
+        print(f"pw: no report.json in {run_dir}", file=sys.stderr)
+        return EXIT_USAGE
+    try:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        result = write_export(report, run_dir, fmt=fmt, out_dir=out)
+    except (OSError, ValueError, ExportError) as error:
+        print(f"pw: export failed: {error}", file=sys.stderr)
+        return 1
+    print(result.path)
+    return EXIT_OK
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = _build_parser()
     args, extras = parser.parse_known_args(argv)
 
+    if args.command == "export":
+        return _export(args.run_dir, fmt=args.format, out=args.out)
     if args.command == "overlay":
         return int(overlay_main(list(extras)))
     if args.command == "verify-evidence":
