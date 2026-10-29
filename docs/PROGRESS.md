@@ -7,23 +7,23 @@
 |---|---|---|---|---|
 | O3 | BE | T-4.6 · Report assembly | done | task/T-4.6-report-assembly |
 | O4 | FE | T-6.7 · State, accessibility and projector polish | done | 18b072a (merged) |
-| O1 | ML | T-2.5 · Hand–object interaction features | done | task/T-2.5-interaction-features |
+| O1 | ML | T-2.6 · Event extraction → timeline.json | done | task/T-2.6-events |
 | O2 | ML | T-3.8 · Grounded explanation writer | done | task/T-3.8-explanation-writer |
-Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 25/74 cards [x]
+Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 26/74 cards [x]
 Micro-plan (M tasks only, 3–6 lines):
 - T-3.8's validator/retry/fallback are done behind a `Writer` callable; T-3.9 must pass a `pw.clients` writer and feed the result into `build_report(explanations=...)`.
-- T-2.3 stitching and T-2.5 features are done; T-2.6 (events) and T-2.8 (segments) are the last buildable cards and both import `pw.timeline.features`.
+- T-2.6 emits contract-valid `timeline.json` events (holds, contacts, moves, zone enter/exit, debounced); T-2.8 (segments) is the last buildable card and consumes `pw.timeline.events`.
 - Still blocked: T-2.2/T-2.4/T-2.7/T-3.4 on ADR-001/002 + `pw.clients`; T-3.7/T-3.8 on Wonder; T-4.3/T-4.4 on Muse Image/Wonder; T-3.12 on T-0.5/T-1.7.
 - Five pull-forwards are logged in `06_Plan.md` §7 (T-0.9, T-6.7, T-2.1, T-3.5, T-3.6 before their dependencies).
 
 ## Last 5 completed (newest first)
 | Task | Commit | Evidence (command → result) | Date |
 |---|---|---|---|
+| T-2.6 event extraction: hold/contact start-end (tool↔part while held), moves from normalised velocity, zone enter/exit via centroid-in-mask, 0.3 s debounce merge, confidence = mean score × coverage, deterministic `evt_NNN` ids, contract-valid `timeline.json` | `task/T-2.6-events` | `uv run pytest tests/timeline -q --cov=src/pw/timeline --cov-fail-under=90` → 29 passed, 97% · events.py → 99% · full suite → 342 passed · `gitleaks detect` → no leaks · pick-up/put-down, tool swap, drop, zone, debounce, idempotent/reversed-input cases | 2026-10-28 |
 | T-2.5 interaction features: dilated hand-mask contact over object area (polygon, box fallback), hold hysteresis with gap bridging, proximity in hand diagonals, velocity normalised by frame diagonal | `task/T-2.5-interaction-features` · PR #24 | `uv run pytest tests/timeline/test_features.py -q` → 13 passed · `pw.timeline` coverage → 95% · full suite → 327 passed (with T-2.3 merged) · static/brief-touch/flicker/two-hands cases | 2026-10-28 |
 | T-2.3 cross-chunk stitching: Hungarian IoU matching in overlaps, appearance re-association over gaps, concept barrier, deterministic `trk_NNN` ids, contract-valid `tracks.json` with `source_chunks` + fragmentation stats | `task/T-2.3-stitching` | `uv run pytest tests/perception/test_stitch.py -q` → 15 passed · `pw.perception` coverage → 94% · full suite → 314 passed · artifact validated against `tracks.schema.json` | 2026-10-28 |
 | T-3.8 grounded explanations: constrained prompt, validator (≤ 2 sentences / ≤ 40 words / step cited / ±0.5 s timestamps / procedure-vocabulary tools), ≤ 2 retries, deterministic template fallback behind an injected `Writer` | `task/T-3.8-explanation-writer` | `uv run pytest tests/align/test_explain.py -q` → 20 passed · explain.py coverage → 100% · full suite → 299 passed · retry/fallback/invented-time/unknown-tool cases | 2026-10-28 |
 | T-4.6 report assembly: joins lanes/deviation/evidence/illustration, deterministic ordering, summary counts, `procedure_not_recognized` shape, kind guard, report + manifest validated against the contracts, `write_report` writes both | `task/T-4.6-report-assembly` | `uv run pytest tests/report/test_build.py -q` → 16 passed · `pw.report` coverage → 92% · full suite → 279 passed · `uv run pw-data validate-artifact <run>/report.json` → `OK (report)` and `manifest.json` → `OK (manifest)` | 2026-10-28 |
-| T-4.5 illustration labeling + kind guard: burned-in `AI ILLUSTRATION · NOT EVIDENCE` band with no off switch, font shrinks to fit narrow images, and `assert_evidence_kinds` rejects an illustration in `evidence[]` or evidence in the illustration slot | `task/T-4.5-kind-guard` | `uv run pytest tests/evidence/test_kinds.py -q` → 10 passed · full suite → 263 passed · labeling coverage → 95% · `pw.evidence` → 88% · pixel/round-trip/determinism checks · `KindError` subclasses `jsonschema.ValidationError` | 2026-10-28 |
 
 ## Blockers / Decisions needed from human
 - **META_API_KEY missing** → T-0.4/0.5/0.6 cannot start; T-0.7/0.8, all of P2 beyond ingest, T-3.2 and the API cards behind them wait on those ADRs. Every remaining card except gated polish work needs this.
@@ -52,7 +52,8 @@ Scope violations: 0 · Tasks reopened: 0 · Tasks added: 0 · Failed-attempt str
 - **`pw` console script currently points at `pw.evidence.overlay_cli:main`** (T-2.9) because `src/pw/cli.py` is still T-0.8; T-0.8 must take over the `pw` entry point and delegate `overlay` and `verify-evidence` (dispatched in `overlay_cli.main` to `provenance.verify_cli`).
 - The render golden is `tests/fixtures/evidence/golden_overlay.png` (geometry only, no text): fonts differ across hosts, so labels are asserted by layout, not by pHash.
 - Host toolchain: `uv 0.13.6`, `ffmpeg 9.0.2`, `gitleaks 8.30.1` (winget; the 14-day rule is enforced for project deps).
+- Timeline events derive contacts as held-tool ↔ contacted-part (the hand's contact window with the part while the same hand holds the tool), deduped by unordered pair with the earliest sorted hold winning; zones arrive as `Track`s passed via `zones=`, so no SOP import is needed. Debounce merges same-type/same-tracks events, keeping the earliest start, latest end and max confidence.
 - DSH sandbox: ACL/label repair needed once; `pre-commit` cannot bootstrap upstream hooks (gitleaks is a local hook; CI installs the CLI); the web toolchain cannot be sandboxed locally; pytest `tmp_path` and `tempfile` temp dirs are unusable (tests use `.uv/tests-tmp`).
 
 ## Next up
-**T-2.6 (events) and T-2.8 (segments) are the only buildable cards left** (both need T-2.5 merged). Everything else needs `META_API_KEY` (T-0.4–0.8, T-2.2/T-2.4/T-2.7, T-3.2–T-3.4/T-3.7/T-3.9, T-4.3/T-4.4, all P5), filmed clips (T-1.4/T-1.5/T-1.7/T-1.8/T-3.12/T-6.x/T-7.x) or ADR-001/002/003. Next real input needed: `META_API_KEY`, filmed T-1.4/T-1.5, or a new pull-forward approval.
+**T-2.8 (segments) is the only buildable card left** (needs T-2.6 merged). Everything else needs `META_API_KEY` (T-0.4–0.8, T-2.2/T-2.4/T-2.7, T-3.2–T-3.4/T-3.7/T-3.9, T-4.3/T-4.4, all P5), filmed clips (T-1.4/T-1.5/T-1.7/T-1.8/T-3.12/T-6.x/T-7.x) or ADR-001/002/003. Next real input needed: `META_API_KEY`, filmed T-1.4/T-1.5, or a new pull-forward approval.
