@@ -825,7 +825,7 @@ Standard checks S1–S9 (with e2e) plus the G5 extras in the Phase Profile. **Fe
 - **Tests first:** the suite is the test.
 - **Done when:** `uv run pytest tests/robustness/failure -q` → pass.
 
-### T-6.5 · Security audit (ASVS-lite) and fixes                                                   [ ]
+### T-6.5 · Security audit (ASVS-lite) and fixes                                                   [x]
 - **Track:** SEC | **Serves:** NFR-05 | **Size:** M | **Tier:** deep | **Depends:** G5 | **Blocks:** G6
 - **Context pack (read only these):** NFR-05 · `src/pw/security/*` · `openapi.json`
 - **Goal:** upload fuzz (zip bomb, giant dimensions, wrong extension), traversal, CORS and security headers, CSP, secret scan, dependency audits (now blocking), key redaction in logs, retention purge test, written privacy statement (no identification or scoring of individuals).

@@ -28,7 +28,7 @@ from pw.pipeline.runstore import (
 )
 from pw.pipeline.stages import FAKE_STAGES
 from pw.security.access import require_access_code
-from pw.security.errors import FileTooLarge, PathNotAllowed
+from pw.security.errors import FileTooLarge, PathNotAllowed, SecurityError
 from pw.security.paths import resolve_artifact
 from pw.security.ratelimit import RateLimiter
 from pw.security.uploads import (
@@ -131,10 +131,15 @@ def create_run(
     scratch = settings.runs_dir / ".uploads" / run_id
     scratch.mkdir(parents=True, exist_ok=True)
 
-    video_path = scratch / sanitise_filename(video.filename or "video.mp4")
-    _save_upload(video, video_path, settings.caps.max_bytes)
-    validate_video_upload(video_path, caps=settings.caps)
-    sop_path = _store_sop(sop, sop_text, scratch, settings.caps)
+    try:
+        video_path = scratch / sanitise_filename(video.filename or "video.mp4")
+        _save_upload(video, video_path, settings.caps.max_bytes)
+        validate_video_upload(video_path, caps=settings.caps)
+        sop_path = _store_sop(sop, sop_text, scratch, settings.caps)
+    except SecurityError:
+        # A rejected upload must not leave its part-written copy behind.
+        shutil.rmtree(scratch, ignore_errors=True)
+        raise
 
     background.add_task(_execute, run_id, video_path, sop_path, settings.runs_dir, scratch)
     return JSONResponse({"run_id": run_id, "status": "queued"}, status_code=202)
