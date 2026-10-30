@@ -745,7 +745,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** correct frame selection at time t · toggle hides track · empty tracks no-op.
 - **Done when:** `npm --prefix web run test:perf -- --run` → p95 draw ≤ 8 ms with 12 tracks at 720p; unit tests pass.
 
-### T-5.11 · Deviation panel                                                                    [ ]
+### T-5.11 · Deviation panel                                                                    [x]
 - **Track:** FE | **Serves:** FR-11, FR-10 | **Size:** M | **Tier:** standard | **Depends:** T-5.3, T-5.5, T-5.9 | **Blocks:** T-5.13
 - **Context pack (read only these):** `contracts/report.schema.json` · fixture reports
 - **Goal:** cards sorted by time/severity; type badge; confidence; `needs_review` styling; explanation; evidence carousel (frames + clip); illustration with a permanent "AI illustration, not evidence" badge; accept/dismiss/note (PATCH); filter chips; export button.
