@@ -807,7 +807,7 @@ Standard checks S1–S9 (with e2e) plus the G5 extras in the Phase Profile. **Fe
 - **Tests first:** n/a (measurement). Pre-check: lock verifies.
 - **Done when:** `uv run pw-bench run --split heldout --config config/thresholds.json --mode live` → summary (F1, false flags per compliant clip, MAE, $/min); `Select-String docs/results/heldout.md -Pattern "lock: OK"` → 1 match.
 
-### T-6.3 · Robustness suite                                                                      [ ]
+### T-6.3 · Robustness suite                                                                      [x]
 - **Track:** QA | **Serves:** NFR-03 | **Size:** M | **Tier:** standard | **Depends:** G5 | **Blocks:** T-6.2
 - **Context pack (read only these):** `tests/robustness/*` · fixtures
 - **Goal:** cases: variable-frame-rate phone video, camera shake, low light, heavy occlusion, 3-minute clip, no-hands clip, mismatched SOP (expect `procedure_not_recognized`), repeated step; each asserts graceful behaviour and records expected degradation.
