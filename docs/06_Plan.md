@@ -467,7 +467,7 @@ Standard checks S1–S9 plus the G2 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** md · txt · text PDF · scanned PDF fixture · empty file · oversize.
 - **Done when:** `uv run pytest tests/sop/test_ingest.py -q` → pass.
 
-### T-3.2 · SOP compiler → step graph + SAM vocabulary                                    [ ]
+### T-3.2 · SOP compiler → step graph + SAM vocabulary                                    [x]
 - **Track:** ML | **Serves:** FR-02 | **Size:** M | **Tier:** deep | **Depends:** T-0.5, T-1.1, T-3.1 | **Blocks:** T-3.3, T-3.4, T-5.3
 - **Context pack (read only these):** ADR-002 · `contracts/sop.schema.json` · `bench/golden/*.json`
 - **Goal:** strict-JSON compile into steps (id, text, action, tools, parts, ordering `strict|unordered_group`, `critical`, `visual_check`) and a generic-noun-phrase SAM vocabulary that always includes `hand`.
