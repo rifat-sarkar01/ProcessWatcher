@@ -1,0 +1,21 @@
+{
+  "model": "sam-3.1",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "red circle"
+        },
+        {
+          "type": "input_video",
+          "video_url": "data:video/mp4;base64,<clip.mp4>"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "include_confidence": "true"
+  }
+}
