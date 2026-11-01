@@ -634,6 +634,7 @@ version = "0.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
+    { name = "httpx" },
     { name = "jsonschema" },
     { name = "pillow" },
     { name = "pymupdf" },
@@ -643,7 +644,6 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "httpx" },
     { name = "mypy" },
     { name = "pip-audit" },
     { name = "pre-commit" },
@@ -656,6 +656,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115" },
+    { name = "httpx", specifier = ">=0.28" },
     { name = "jsonschema", specifier = ">=4.23" },
     { name = "pillow", specifier = ">=12.3.0" },
     { name = "pymupdf", specifier = ">=1.24" },
@@ -665,7 +666,6 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "httpx", specifier = ">=0.28" },
     { name = "mypy", specifier = ">=1.13" },
     { name = "pip-audit", specifier = ">=2.10.1" },
     { name = "pre-commit", specifier = ">=4.0" },

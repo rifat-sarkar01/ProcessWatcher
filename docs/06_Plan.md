@@ -216,7 +216,7 @@ report.json -> API + SSE -> Review UI + self-contained HTML/PDF audit report
 - **Tests first:** n/a (spike). Questions Q1–Q5: best mode · label legibility · faces/people avoidance · consistency across 3 runs · latency and $.
 - **Done when:** `Select-String docs/adr/ADR-003-image.md -Pattern "^Q[1-5]:"` → 5 matches; fixtures ≥ 3 images.
 
-### T-0.7 · Model client layer (live / replay / fake, retries, cost ledger)          [ ]
+### T-0.7 · Model client layer (live / replay / fake, retries, cost ledger)          [x]
 - **Track:** BE | **Serves:** NFR-02, NFR-03, NFR-05 | **Size:** M | **Tier:** standard | **Depends:** T-0.2, T-0.4, T-0.5, T-0.6 | **Blocks:** T-0.8, T-2.2, T-2.7, T-3.4
 - **Context pack (read only these):** ADR-001, ADR-002, ADR-003 · §1B
 - **Goal:** one `ModelClient` abstraction with typed `SamClient`, `WonderClient`, `ImageClient`; record/replay cache; per-run cost ledger.

@@ -138,4 +138,7 @@ scratch/
 .uv/
 .pre-commit-cache/
 pytest-cache-files-*/
+# T-0.7 model-call cache and this sandbox's temp root for the live selftest
+.cache/
+pw-selftest/
 
