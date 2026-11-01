@@ -1,0 +1,6 @@
+{
+  "model": "muse-image-1.0",
+  "prompt": "Instructional illustration for a PC upgrade manual. Step 5: remove the two mounting screws that hold the old SSD in the drive bay using a Phillips screwdriver. Style: clean flat vector instruction illustration, white background, dark outlines, muted blue and grey palette, no photorealism. Include exactly one short caption label reading 'REMOVE 2 SCREWS'. Do not draw faces or people; at most a single gloved hand.",
+  "n": 1,
+  "response_format": "b64_json"
+}

@@ -1,0 +1,212 @@
+{
+  "model": "muse-image-1.0",
+  "runs_per_mode": 3,
+  "base_url": "https://api.meta.ai/v1",
+  "endpoints": {
+    "generate": "POST /v1/images/generations",
+    "edit": "POST /v1/images/edits (multipart)"
+  },
+  "generate_body": {
+    "model": "muse-image-1.0",
+    "prompt": "<text>",
+    "n": 1,
+    "response_format": "b64_json"
+  },
+  "edit_multipart": {
+    "model": "muse-image-1.0",
+    "prompt": "<text>",
+    "image": "<png>",
+    "multi_image": "image[0], image[1], ..."
+  },
+  "rejected": {
+    "image[]": {
+      "status": 400,
+      "message": "`image[]` is not a valid image key; use `image[N]` with indices numbered consecutively from 0, in order"
+    }
+  },
+  "response": {
+    "keys": [
+      "created",
+      "data"
+    ],
+    "data_item_keys": [
+      "b64_json"
+    ],
+    "format": "WEBP",
+    "usage_field": false
+  },
+  "size_parameter": "accepted but not honored: 512x512 and 1024x1024 both returned 1600x1600; omitted size returned 1920x1280",
+  "modes": {
+    "text": {
+      "seconds": [
+        13.15,
+        9.46,
+        17.34
+      ],
+      "dimensions": [
+        1920,
+        1280
+      ],
+      "bytes": [
+        616828,
+        672801,
+        757739
+      ],
+      "wire_shape": "POST /v1/images/generations JSON",
+      "median_seconds": 13.15,
+      "dhash_pairwise": [
+        123,
+        92,
+        115
+      ],
+      "qa_pass": "3/3",
+      "qa": [
+        {
+          "correct_tool_shown": true,
+          "hallucinated_labels": [],
+          "matches_step": true,
+          "people_visible": false,
+          "reason": "The illustration shows a gloved hand using a Phillips screwdriver to remove two cross-head screws from an SSD in a drive bay with the legible caption 'REMOVE 2 SCREWS' and no faces or people.",
+          "text_legible": true,
+          "verdict": "pass"
+        },
+        {
+          "correct_tool_shown": true,
+          "hallucinated_labels": [],
+          "matches_step": true,
+          "people_visible": false,
+          "reason": "The illustration shows Step 5 with a Phillips screwdriver removing two Phillips screws from an SSD in its drive bay, the caption 'REMOVE 2 SCREWS' is legible, and only a hand is visible.",
+          "text_legible": true,
+          "verdict": "pass"
+        },
+        {
+          "correct_tool_shown": true,
+          "hallucinated_labels": [],
+          "matches_step": true,
+          "people_visible": false,
+          "reason": "The illustration shows a gloved hand using a Phillips screwdriver to remove two Phillips screws from an SSD in a drive bay, with the legible caption 'REMOVE 2 SCREWS' and no faces or people.",
+          "text_legible": true,
+          "verdict": "pass"
+        }
+      ]
+    },
+    "edit": {
+      "seconds": [
+        21.14,
+        11.82,
+        10.45
+      ],
+      "dimensions": [
+        1792,
+        1344
+      ],
+      "bytes": [
+        291099,
+        195388,
+        254012
+      ],
+      "wire_shape": "POST /v1/images/edits multipart (single field `image`)",
+      "median_seconds": 11.82,
+      "dhash_pairwise": [
+        79,
+        86,
+        77
+      ],
+      "qa_pass": "3/3",
+      "qa": [
+        {
+          "correct_tool_shown": true,
+          "hallucinated_labels": [],
+          "matches_step": true,
+          "people_visible": false,
+          "reason": "The illustration shows a hand using a screwdriver on one of two Phillips-head screws on the drive, with no faces or people visible.",
+          "text_legible": true,
+          "verdict": "pass"
+        },
+        {
+          "correct_tool_shown": true,
+          "hallucinated_labels": [],
+          "matches_step": true,
+          "people_visible": false,
+          "reason": "The illustration shows a Phillips screwdriver at one of two cross-head screws on the SSD, with the legible caption 'REMOVE 2 SCREWS' and only a hand visible.",
+          "text_legible": true,
+          "verdict": "pass"
+        },
+        {
+          "correct_tool_shown": true,
+          "hallucinated_labels": [],
+          "matches_step": true,
+          "people_visible": false,
+          "reason": "The illustration shows a hand using a Phillips screwdriver on one of two Phillips screws on the SSD, with no faces or people visible.",
+          "text_legible": true,
+          "verdict": "pass"
+        }
+      ]
+    },
+    "compose": {
+      "seconds": [
+        18.16,
+        12.4,
+        15.19
+      ],
+      "dimensions": [
+        1920,
+        1280
+      ],
+      "bytes": [
+        682797,
+        698657,
+        746744
+      ],
+      "wire_shape": "POST /v1/images/edits multipart (`image[0]`, `image[1]`)",
+      "median_seconds": 15.19,
+      "dhash_pairwise": [
+        6,
+        22,
+        20
+      ],
+      "qa_pass": "3/3",
+      "qa": [
+        {
+          "correct_tool_shown": true,
+          "hallucinated_labels": [],
+          "matches_step": true,
+          "people_visible": false,
+          "reason": "The illustration shows Step 5 with a Phillips screwdriver removing two cross-head screws from an SSD in a drive bay, the caption 'REMOVE 2 SCREWS' is legible, and only a hand is visible.",
+          "text_legible": true,
+          "verdict": "pass"
+        },
+        {
+          "correct_tool_shown": true,
+          "hallucinated_labels": [],
+          "matches_step": true,
+          "people_visible": false,
+          "reason": "The illustration shows a gloved hand using a Phillips screwdriver on one of two visible cross-head screws securing an SSD in a drive bay, with legible 'REMOVE 2 SCREWS' text and no faces or people.",
+          "text_legible": true,
+          "verdict": "pass"
+        },
+        {
+          "correct_tool_shown": true,
+          "hallucinated_labels": [],
+          "matches_step": true,
+          "people_visible": false,
+          "reason": "The illustration shows a Phillips screwdriver removing one of two cross-head screws from an SSD in a drive bay, with a legible 'REMOVE 2 SCREWS' caption and only a gloved hand visible.",
+          "text_legible": true,
+          "verdict": "pass"
+        }
+      ]
+    }
+  },
+  "wonder_qa": {
+    "model": "muse-wonder-1.0",
+    "median_seconds": 6.22,
+    "median_input_tokens": 616,
+    "median_output_tokens": 666,
+    "median_reasoning_tokens": 558,
+    "estimated_usd_per_check": 0.0158
+  },
+  "pricing": {
+    "image_usd_each": 0.01,
+    "source": "04_TRD.md line 65 (last read)"
+  }
+}
