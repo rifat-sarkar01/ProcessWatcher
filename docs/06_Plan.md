@@ -512,7 +512,7 @@ Standard checks S1–S9 plus the G2 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** each type · compound · compliant → 0 · any-order group not flagged · critical → high severity · deviation without refs rejected.
 - **Done when:** `uv run pytest tests/align/test_deviations.py -q` → pass.
 
-### T-3.7 · Verifier pass                                                                   [ ]
+### T-3.7 · Verifier pass                                                                   [x]
 - **Track:** ML | **Serves:** FR-08 | **Size:** M | **Tier:** deep | **Depends:** T-0.7, T-3.6 | **Blocks:** T-3.9
 - **Context pack (read only these):** ADR-002 · `src/pw/align/deviations.py`
 - **Goal:** for each `missed`, ask Wonder (video clip of the gap window) "did step X occur? cite times" (negative-evidence check); for `wrong_tool`/`out_of_order`, an independent second look with different framing; disagreement → `needs_review`.
