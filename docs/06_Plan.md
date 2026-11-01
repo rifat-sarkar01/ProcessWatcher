@@ -207,7 +207,7 @@ report.json -> API + SSE -> Review UI + self-contained HTML/PDF audit report
 - **Tests first:** n/a (spike). Questions Q1–Q7: video limits · images per call · JSON validity rate (target ≥ 9/10) · variance at T=0 · latency/cost per call type · parallelism/rate limits · quirks.
 - **Done when:** `Select-String docs/adr/ADR-002-wonder.md -Pattern "^Q[1-7]:"` → 7 matches; fixtures ≥ 2.
 
-### T-0.6 · Spike: Muse Image (generate vs edit-with-reference, labels, cost)       [ ]
+### T-0.6 · Spike: Muse Image (generate vs edit-with-reference, labels, cost)       [x]
 - **Track:** ML | **Serves:** FR-10 | **Size:** S | **Tier:** standard | **Depends:** T-0.1 | **Blocks:** T-0.7, T-4.3
 - **Context pack (read only these):** Meta Model API docs for `muse-image-1.0`
 - **Goal:** ADR-003 decides how to produce a clean, labeled "what correct looks like" schematic.
