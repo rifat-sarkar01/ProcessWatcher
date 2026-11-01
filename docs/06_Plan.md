@@ -188,7 +188,7 @@ report.json -> API + SSE -> Review UI + self-contained HTML/PDF audit report
 - **Tests first:** App renders heading.
 - **Done when:** `npm --prefix web ci; npm --prefix web run lint; npm --prefix web run typecheck; npm --prefix web run test -- --run; npm --prefix web run build` → exit 0, 1 test passed.
 
-### T-0.4 · Spike: SAM 3.1 on Meta Model API (video, concepts, masks, limits)        [ ]
+### T-0.4 · Spike: SAM 3.1 on Meta Model API (video, concepts, masks, limits)        [x]
 - **Track:** ML | **Serves:** FR-03, NFR-01, NFR-02 | **Size:** M | **Tier:** deep | **Depends:** T-0.1 | **Blocks:** T-0.7, T-2.1, T-2.2
 - **Context pack (read only these):** Meta Model API docs for SAM 3.1 (dev.meta.ai) · SAM 3.1 model card · §1B
 - **Goal:** ADR-001 decides call shape, mask decoding path, chunk length, object cap, ID persistence, price per minute, and API vs open-weights.
