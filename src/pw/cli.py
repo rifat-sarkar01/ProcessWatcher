@@ -12,10 +12,16 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+from pw.core.settings import (
+    MODES,
+    ConfigError,
+    Settings,
+    load_env_file,
+    load_settings,
+)
 from pw.evidence.overlay_cli import main as overlay_main
 from pw.evidence.provenance import verify_cli as verify_main
 from pw.pipeline.orchestrator import PipelineError, run_pipeline
-from pw.pipeline.runstore import runs_root
 
 EXIT_OK = 0
 EXIT_USAGE = 2
@@ -25,11 +31,18 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="pw", description="Process Watcher commands")
     commands = parser.add_subparsers(dest="command", required=True)
 
-    run = commands.add_parser("run", help="run the fake walking-skeleton pipeline")
-    run.add_argument("--mode", default="fake", help="live | replay | fake (fake only until T-3.9)")
+    run = commands.add_parser("run", help="run the walking-skeleton pipeline")
+    run.add_argument(
+        "--mode",
+        default=None,
+        choices=MODES,
+        help="live | replay | fake | demo (default: PW_MODE, else replay)",
+    )
     run.add_argument("--video", required=True, type=Path)
     run.add_argument("--sop", required=True, type=Path)
     run.add_argument("--runs-dir", type=Path, default=None)
+
+    commands.add_parser("config", help="print the loaded, redacted settings")
 
     export = commands.add_parser("export", help="export a run report as HTML or PDF")
     export.add_argument("run_dir", type=Path)
@@ -76,10 +89,23 @@ def _openapi(target: Path, *, check: bool) -> int:
     return EXIT_OK
 
 
+def _config() -> int:
+    try:
+        settings = load_settings()
+    except ConfigError as error:
+        print(f"pw: {error}", file=sys.stderr)
+        return EXIT_USAGE
+    print(json.dumps(settings.describe(), indent=2))
+    return EXIT_OK
+
+
 def main(argv: Sequence[str] | None = None) -> int:
+    load_env_file()
     parser = _build_parser()
     args, extras = parser.parse_known_args(argv)
 
+    if args.command == "config":
+        return _config()
     if args.command == "export":
         return _export(args.run_dir, fmt=args.format, out=args.out)
     if args.command == "openapi":
@@ -89,9 +115,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "verify-evidence":
         return int(verify_main(list(extras)))
 
-    root = args.runs_dir if args.runs_dir is not None else runs_root()
     try:
-        result = run_pipeline(video=args.video, sop=args.sop, mode=args.mode, runs_dir=root)
+        settings: Settings = load_settings()
+    except ConfigError as error:
+        print(f"pw: {error}", file=sys.stderr)
+        return EXIT_USAGE
+    mode = args.mode or settings.mode
+    root = args.runs_dir if args.runs_dir is not None else settings.runs_dir
+    try:
+        result = run_pipeline(video=args.video, sop=args.sop, mode=mode, runs_dir=root)
     except PipelineError as error:
         print(f"pw: {error}", file=sys.stderr)
         return error.exit_code

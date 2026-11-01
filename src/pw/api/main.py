@@ -17,7 +17,7 @@ from pw.api.errors import install_handlers
 from pw.api.routes_events import router as events_router
 from pw.api.routes_runs import ApiSettings
 from pw.api.routes_runs import router as runs_router
-from pw.pipeline.runstore import runs_root
+from pw.core.settings import load_env_file, load_settings
 from pw.security.ratelimit import RateLimiter
 from pw.security.uploads import UploadCaps
 
@@ -60,7 +60,9 @@ def create_app(
     caps: UploadCaps | None = None,
     rate_limiter: RateLimiter | None = None,
 ) -> FastAPI:
-    root = runs_dir if runs_dir is not None else runs_root()
+    load_env_file()
+    settings = load_settings()
+    root = runs_dir if runs_dir is not None else settings.runs_dir
     app = FastAPI(title="Process Watcher", version="0.0.0")
     app.state.settings = ApiSettings(
         runs_dir=root,
