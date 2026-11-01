@@ -38,10 +38,12 @@ class SamClient(ModelClient):
         usage = body.get("usage")
         if not isinstance(usage, Mapping):
             return Usage()
-        processed = usage.get("images_processed")
-        # ADR-001: SAM bills per processed frame; the API reports `images_processed`.
-        if isinstance(processed, int) and not isinstance(processed, bool):
-            return Usage(sam_units=processed)
+        # ADR-001: SAM bills per processed frame (`video_frames_processed` for clips,
+        # `images_processed` for stills).
+        for key in ("video_frames_processed", "images_processed"):
+            value = usage.get(key)
+            if isinstance(value, int) and not isinstance(value, bool):
+                return Usage(sam_units=value)
         return Usage()
 
 

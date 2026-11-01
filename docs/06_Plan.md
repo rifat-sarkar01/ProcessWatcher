@@ -360,7 +360,7 @@ Standard checks S1–S9 plus the G1 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** happy (CFR in → out) · edge (variable-frame-rate phone video; rotation metadata) · failure (corrupt file, no video stream, too long) · security (malicious filename never reaches a shell).
 - **Done when:** `uv run pytest tests/ingest -q` → pass; `uv run python -m pw.ingest bench/dev/A1.mp4` → prints fps=15 and frame count within ±1 of duration×15.
 
-### T-2.2 · SAM chunk runner                                                            [ ]
+### T-2.2 · SAM chunk runner                                                            [x]
 - **Track:** ML | **Serves:** FR-03 | **Size:** M | **Tier:** deep | **Depends:** T-0.4, T-0.7, T-1.1, T-2.1 | **Blocks:** T-2.3, T-2.4
 - **Context pack (read only these):** ADR-001 · `contracts/tracks.schema.json` · `src/pw/clients/sam.py`
 - **Goal:** split video into overlapping chunks, call SAM per chunk × concept group (respecting the object cap), parse to per-chunk raw tracks, resumable.
