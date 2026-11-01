@@ -1,0 +1,65 @@
+{
+  "model": "muse-wonder-1.0",
+  "temperature": 0,
+  "reasoning": {
+    "effort": "low"
+  },
+  "text": {
+    "format": {
+      "type": "json_schema",
+      "name": "compile",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "steps": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "idx": {
+                  "type": "integer"
+                },
+                "action": {
+                  "type": "string"
+                },
+                "tools": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "idx",
+                "action",
+                "tools"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "steps"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  },
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "The SOP below is the ground truth for a procedure. Watch the clip and return the steps you can see as JSON with idx, action and tools. If the clip does not show this procedure, still return your best JSON.\n\nSOP:\n1. Power the PC down, unplug the power cable and clip the antistatic wrist strap to bare metal. (critical)\n2. Remove the two rear thumbscrews and slide the side panel off the desktop case.\n3. Unplug the SATA data cable from the old SSD.\n4. Unplug the SATA power cable from the old SSD.\n5. Remove the two mounting screws with the Phillips screwdriver and slide the old SSD out of the bay.\n"
+        },
+        {
+          "type": "input_video",
+          "video_url": "data:video/mp4;base64,<base64 clip>"
+        }
+      ]
+    }
+  ]
+}

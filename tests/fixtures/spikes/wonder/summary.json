@@ -1,0 +1,129 @@
+{
+  "compile": {
+    "kind": "compile",
+    "runs": 10,
+    "workers": 4,
+    "wall_s": 27.1,
+    "http_failures": 0,
+    "schema_valid": 10,
+    "latencies": [
+      9.29,
+      16.24,
+      8.4,
+      9.91,
+      9.11,
+      17.8,
+      7.09,
+      9.47,
+      7.46,
+      8.87
+    ],
+    "usage": {
+      "input_tokens": 7110,
+      "output_tokens": 9112,
+      "reasoning_tokens": 8592
+    },
+    "rate_limit": "3000",
+    "distinct_outputs": 2,
+    "identical_rate": 0.9,
+    "step_counts": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "sample": {
+      "steps": [
+        {
+          "action": "Remove the two mounting screws with the Phillips screwdriver and slide the old SSD out of the bay.",
+          "idx": 5,
+          "tools": [
+            "Phillips screwdriver"
+          ]
+        }
+      ]
+    }
+  },
+  "scoring": {
+    "kind": "scoring",
+    "runs": 10,
+    "workers": 4,
+    "wall_s": 28.58,
+    "http_failures": 0,
+    "schema_valid": 10,
+    "latencies": [
+      8.79,
+      9.35,
+      10.81,
+      10.6,
+      8.66,
+      7.08,
+      9.47,
+      15.02,
+      6.52,
+      11.13
+    ],
+    "usage": {
+      "input_tokens": 32170,
+      "output_tokens": 10814,
+      "reasoning_tokens": 10054
+    },
+    "rate_limit": "3000",
+    "probs": {
+      "stp_01": {
+        "n": 10,
+        "mean": 0.05,
+        "stdev": 0.019,
+        "min": 0.01,
+        "max": 0.08
+      },
+      "stp_02": {
+        "n": 10,
+        "mean": 0.405,
+        "stdev": 0.336,
+        "min": 0.08,
+        "max": 0.85
+      },
+      "stp_03": {
+        "n": 10,
+        "mean": 0.94,
+        "stdev": 0.032,
+        "min": 0.85,
+        "max": 0.97
+      },
+      "stp_04": {
+        "n": 10,
+        "mean": 0.042,
+        "stdev": 0.015,
+        "min": 0.01,
+        "max": 0.06
+      }
+    },
+    "sample": {
+      "steps": [
+        {
+          "id": "stp_01",
+          "prob": 0.05
+        },
+        {
+          "id": "stp_02",
+          "prob": 0.08
+        },
+        {
+          "id": "stp_03",
+          "prob": 0.95
+        },
+        {
+          "id": "stp_04",
+          "prob": 0.04
+        }
+      ]
+    }
+  }
+}

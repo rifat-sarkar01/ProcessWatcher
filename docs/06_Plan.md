@@ -198,7 +198,7 @@ report.json -> API + SSE -> Review UI + self-contained HTML/PDF audit report
 - **Done when:** `Select-String docs/adr/ADR-001-sam.md -Pattern "^Q[1-7]:"` → 7 matches each with a measured value; `(Get-ChildItem tests/fixtures/spikes/sam).Count` ≥ 2.
 - **Risk or security notes:** time-box 3 h; if the API cannot meet needs, switch to self-hosted weights immediately and log in §7.
 
-### T-0.5 · Spike: Muse Wonder (video + image input, strict JSON, latency, cost)    [ ]
+### T-0.5 · Spike: Muse Wonder (video + image input, strict JSON, latency, cost)    [x]
 - **Track:** ML | **Serves:** FR-02, FR-06, NFR-02 | **Size:** M | **Tier:** deep | **Depends:** T-0.1 | **Blocks:** T-0.7, T-2.7, T-3.2, T-3.12
 - **Context pack (read only these):** Meta Model API docs for `muse-wonder-1.0` · §1B
 - **Goal:** ADR-002 decides prompt/response shapes and budgets for SOP compile, segment scoring, identity, verification.
