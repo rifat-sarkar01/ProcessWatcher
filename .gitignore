@@ -142,3 +142,7 @@ pytest-cache-files-*/
 .cache/
 pw-selftest/
 
+
+# Playwright e2e output
+web/test-results/
+web/playwright-report/
