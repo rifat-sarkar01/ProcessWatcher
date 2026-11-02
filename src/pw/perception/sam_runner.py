@@ -16,7 +16,7 @@ import tempfile
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from pw.perception.chunking import (
     DEFAULT_FRAMES_PER_CHUNK,
@@ -32,6 +32,9 @@ from pw.perception.chunking import (
     plan_chunks,
 )
 from pw.perception.stitch import ChunkFrame, ChunkTrack
+
+if TYPE_CHECKING:
+    from pw.pipeline.concurrency import ModelLimiter
 
 SCHEMA_VERSION = "1.0.0"
 STATUS_COMPLETE = "complete"
@@ -149,6 +152,7 @@ def run_chunks(
     params: ChunkParams | None = None,
     cutter: ChunkCutter | None = None,
     resume: bool = True,
+    limiter: ModelLimiter | None = None,
 ) -> ChunkRunResult:
     settings = params or ChunkParams()
     groups = group_concepts(concepts, settings)
@@ -156,21 +160,17 @@ def run_chunks(
     raw_dir = stage_dir / "tracks_raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
     cut = cutter or ffmpeg_cut
-    outcomes: list[ChunkOutcome] = []
 
-    for plan in plans:
+    def run_plan(plan: ChunkPlan) -> ChunkOutcome:
         artifact = raw_dir / f"{plan.chunk_id}.json"
         if resume and _is_complete(artifact):
-            outcomes.append(
-                ChunkOutcome(
-                    chunk_id=plan.chunk_id,
-                    status=STATUS_COMPLETE,
-                    path=artifact,
-                    calls=0,
-                    skipped=True,
-                )
+            return ChunkOutcome(
+                chunk_id=plan.chunk_id,
+                status=STATUS_COMPLETE,
+                path=artifact,
+                calls=0,
+                skipped=True,
             )
-            continue
 
         errors: list[str] = []
         tracks: list[ChunkTrack] = []
@@ -202,15 +202,18 @@ def run_chunks(
 
         payload = _artifact(plan, status=status, tracks=tracks, calls=calls, errors=errors)
         artifact.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-        outcomes.append(
-            ChunkOutcome(
-                chunk_id=plan.chunk_id,
-                status=status,
-                path=artifact,
-                calls=calls,
-                error="; ".join(errors) if errors else None,
-            )
+        return ChunkOutcome(
+            chunk_id=plan.chunk_id,
+            status=status,
+            path=artifact,
+            calls=calls,
+            error="; ".join(errors) if errors else None,
         )
+
+    if limiter is None:
+        outcomes = [run_plan(plan) for plan in plans]
+    else:
+        outcomes = limiter.map("sam", run_plan, plans)
     return ChunkRunResult(outcomes=tuple(outcomes))
 
 
