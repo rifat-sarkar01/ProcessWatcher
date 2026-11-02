@@ -5,7 +5,7 @@
 
 import { ApiError, errorCodeForStatus } from "../../api";
 
-import type { CompilePreview } from "./types";
+import type { CompilePreview, StepGraph } from "./types";
 
 export interface CompileInput {
   text?: string;
@@ -16,6 +16,7 @@ export interface StartRunInput {
   video: File;
   sop?: File | null;
   sopText?: string | null;
+  stepGraph?: StepGraph | null;
 }
 
 export interface StartedRun {
@@ -110,6 +111,7 @@ export function createUploadApi(options: UploadApiOptions = {}): UploadApi {
       form.append("video", input.video, input.video.name);
       if (input.sop) form.append("sop", input.sop, input.sop.name);
       if (input.sopText && !input.sop) form.append("sop_text", input.sopText);
+      if (input.stepGraph) form.append("step_graph", JSON.stringify(input.stepGraph));
       const payload = await send(fetchImpl, `${baseUrl}/runs`, {
         method: "POST",
         headers: headers(),

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from collections.abc import Iterator
 from pathlib import Path
@@ -13,7 +14,7 @@ from pw.clients.errors import SpendCapExceeded
 from pw.core.settings import Settings
 from pw.data.validate import validate_payload
 from pw.pipeline.handlers import StageRun, StageServices
-from pw.pipeline.orchestrator import run_pipeline
+from pw.pipeline.orchestrator import PipelineError, run_pipeline
 
 SCRATCH_ROOT = Path(__file__).resolve().parents[2] / ".uv" / "tests-tmp"
 FPS = 15.0
@@ -174,7 +175,14 @@ def _settings(runs_dir: Path) -> Settings:
     )
 
 
-def _run(tiny_video: Path, tiny_sop: Path, runs_dir: Path, **overrides: Any) -> Any:
+def _run(
+    tiny_video: Path,
+    tiny_sop: Path,
+    runs_dir: Path,
+    *,
+    step_graph: dict[str, Any] | None = None,
+    **overrides: Any,
+) -> Any:
     return run_pipeline(
         video=tiny_video,
         sop=tiny_sop,
@@ -182,6 +190,7 @@ def _run(tiny_video: Path, tiny_sop: Path, runs_dir: Path, **overrides: Any) -> 
         runs_dir=runs_dir,
         settings=_settings(runs_dir),
         services=StageServices(handlers=handlers(**overrides)),
+        step_graph=step_graph,
     )
 
 
@@ -300,3 +309,57 @@ def test_manifest_records_inputs_models_and_costs(
     assert len(manifest["stages"]) == 12
     assert manifest["ledger"]["spend_cap_usd"] == 1.0
     assert manifest["inputs"]["video_sha256"] != manifest["inputs"]["sop_sha256"]
+
+
+@pytest.mark.unit
+def test_edited_step_graph_replaces_the_compiled_one(
+    tiny_video: Path, tiny_sop: Path, scratch_runs: Path
+) -> None:
+    edited = {**GRAPH, "title": "Edited procedure"}
+    result = _run(tiny_video, tiny_sop, scratch_runs, step_graph=edited)
+
+    stored = json.loads((result.run_dir / "stages" / "step_graph.json").read_text(encoding="utf-8"))
+    assert stored == edited
+    manifest = json.loads((result.run_dir / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["inputs"]["edited_by_user"] is True
+    assert (
+        manifest["inputs"]["step_graph_sha256"]
+        == hashlib.sha256(json.dumps(edited, sort_keys=True).encode("utf-8")).hexdigest()
+    )
+    assert result.degraded == ()
+
+
+@pytest.mark.unit
+def test_edited_and_compiled_graphs_do_not_share_a_cache_key(
+    tiny_video: Path, tiny_sop: Path, scratch_runs: Path
+) -> None:
+    edited = {**GRAPH, "title": "Edited procedure"}
+    first = _run(tiny_video, tiny_sop, scratch_runs, step_graph=edited)
+
+    second = run_pipeline(
+        video=tiny_video,
+        sop=tiny_sop,
+        mode="replay",
+        runs_dir=scratch_runs,
+        run_id=first.run_id,
+        settings=_settings(scratch_runs),
+        services=StageServices(handlers=handlers()),
+    )
+
+    compile_stage = next(stage for stage in second.stages if stage.name == "sop_compile")
+    assert compile_stage.cached is False
+    stored = json.loads((second.run_dir / "stages" / "step_graph.json").read_text(encoding="utf-8"))
+    assert stored == GRAPH
+
+
+@pytest.mark.unit
+def test_an_invalid_step_graph_is_rejected(
+    tiny_video: Path, tiny_sop: Path, scratch_runs: Path
+) -> None:
+    with pytest.raises(PipelineError):
+        _run(
+            tiny_video,
+            tiny_sop,
+            scratch_runs,
+            step_graph={"schema_version": "1.0.0"},
+        )
