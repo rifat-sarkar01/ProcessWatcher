@@ -80,9 +80,7 @@ def test_compile_preview_accepts_json_text(client: TestClient) -> None:
 
 
 @pytest.mark.unit
-def test_compile_preview_accepts_a_multipart_file(
-    client: TestClient, runs_dir: Path
-) -> None:
+def test_compile_preview_accepts_a_multipart_file(client: TestClient, runs_dir: Path) -> None:
     _auth(client)
     source = runs_dir / "procedure.md"
     source.write_text(SOP_TEXT, encoding="utf-8")
@@ -200,9 +198,7 @@ def test_review_rejects_an_unknown_deviation(client: TestClient, runs_dir: Path)
 
 
 @pytest.mark.unit
-def test_review_rejects_a_bad_decision_and_a_long_note(
-    client: TestClient, runs_dir: Path
-) -> None:
+def test_review_rejects_a_bad_decision_and_a_long_note(client: TestClient, runs_dir: Path) -> None:
     run_id = _run_with_report(runs_dir)
 
     bad = client.patch(
@@ -221,9 +217,7 @@ def test_review_rejects_a_bad_decision_and_a_long_note(
 
 
 @pytest.mark.unit
-def test_review_unknown_run_and_missing_report(
-    client: TestClient, runs_dir: Path
-) -> None:
+def test_review_unknown_run_and_missing_report(client: TestClient, runs_dir: Path) -> None:
     unknown = client.patch(
         f"/runs/{new_run_id()}/review",
         json={"deviation_id": "dev_001", "decision": "accepted"},
