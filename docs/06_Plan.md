@@ -378,7 +378,7 @@ Standard checks S1–S9 plus the G1 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** two objects crossing in an overlap · occlusion gap · injected ID switch · different concepts never merged.
 - **Done when:** `uv run pytest tests/perception/test_stitch.py -q` → pass; on a dev clip (replay) `uv run pw perceive --stitch-report` → fragmentation ratio (global tracks ÷ GT `instances`) ≤ 1.5.
 
-### T-2.4 · Mask utilities                                                                [ ]
+### T-2.4 · Mask utilities                                                                [x]
 - **Track:** ML | **Serves:** FR-03 | **Size:** S | **Tier:** standard | **Depends:** T-2.2 | **Blocks:** T-2.5, T-5.10
 - **Context pack (read only these):** ADR-001 (mask encoding)
 - **Goal:** decode per ADR-001, RLE↔polygon, simplify polygons for the UI, box fallback, temporal smoothing and ≤3-frame gap fill, coverage report.
