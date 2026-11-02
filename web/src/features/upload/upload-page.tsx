@@ -19,6 +19,7 @@ export interface UploadPageProps {
   baseUrl?: string;
   fetchImpl?: typeof fetch;
   initialSteps?: StepDraft[];
+  onStarted?: (runId: string) => void;
 }
 
 function suffix(name: string): string {
@@ -37,6 +38,7 @@ export function UploadPage({
   baseUrl = "",
   fetchImpl,
   initialSteps = [],
+  onStarted,
 }: UploadPageProps) {
   const client = api ?? createUploadApi({ baseUrl, accessCode, fetchImpl });
   const [video, setVideo] = useState<File | null>(null);
@@ -118,6 +120,7 @@ export function UploadPage({
         sopText: sopFile ? null : sopText,
       });
       setRunId(started.run_id);
+      onStarted?.(started.run_id);
     } catch (caught) {
       setError(caught instanceof ApiError ? caught.message : "The run could not be started.");
     } finally {
