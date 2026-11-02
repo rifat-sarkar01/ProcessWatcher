@@ -601,7 +601,7 @@ Standard checks S1–S9 plus the G3 extras in the Phase Profile. `config/thresho
 - **Tests first:** untouched → VERIFIED · tampered source → fails · changed render params → fails.
 - **Done when:** `uv run pytest tests/evidence/test_provenance.py -q` → pass; `uv run pw verify-evidence runs/<id>/report.json --video bench/dev/A2.mp4` → `VERIFIED n/n`.
 
-### T-4.3 · Muse Image illustration generator                                               [ ]
+### T-4.3 · Muse Image illustration generator                                               [x]
 - **Track:** ML | **Serves:** FR-10 | **Size:** M | **Tier:** standard | **Depends:** T-0.6, T-0.7, T-3.6 | **Blocks:** T-4.4, T-4.5
 - **Context pack (read only these):** ADR-003 · `src/pw/clients/image.py`
 - **Goal:** per flagged step (deduped), build a prompt from step text, expected tool/part and the deviation; pass the annotated real frame as reference (edit mode per ADR-003); flat technical-schematic style, labeled, no people; cache by hash; ledger entry.
