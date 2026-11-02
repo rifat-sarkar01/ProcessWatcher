@@ -15,8 +15,10 @@ from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from pw.api.errors import install_handlers
 from pw.api.routes_events import router as events_router
+from pw.api.routes_review import router as review_router
 from pw.api.routes_runs import ApiSettings
 from pw.api.routes_runs import router as runs_router
+from pw.api.routes_sop import router as sop_router
 from pw.core.settings import load_env_file, load_settings
 from pw.security.ratelimit import RateLimiter
 from pw.security.uploads import UploadCaps
@@ -69,9 +71,12 @@ def create_app(
         caps=caps or UploadCaps(),
         limiter=rate_limiter or RateLimiter(),
     )
+    app.state.sop_compiler = None
     install_handlers(app)
     app.include_router(runs_router)
     app.include_router(events_router)
+    app.include_router(sop_router)
+    app.include_router(review_router)
     app.add_middleware(SecurityHeadersMiddleware)
 
     @app.get("/healthz")
