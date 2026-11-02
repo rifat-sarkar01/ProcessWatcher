@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+from pw.core.settings import Settings
 from pw.pipeline.orchestrator import PipelineError, run_pipeline
 from pw.pipeline.runstore import list_runs, new_run_id
 from pw.pipeline.stages import STAGE_ORDER
@@ -93,11 +94,22 @@ def test_missing_sop_is_a_typed_usage_error(tiny_video: Path, runs_dir: Path) ->
     assert info.value.exit_code == 2
 
 
-def test_only_fake_mode_is_wired(tiny_video: Path, tiny_sop: Path, runs_dir: Path) -> None:
+def test_live_without_a_key_is_a_typed_usage_error(
+    tiny_video: Path, tiny_sop: Path, runs_dir: Path
+) -> None:
+    settings = Settings(
+        mode="live",
+        meta_api_key="",
+        access_code="",
+        spend_cap_usd=3.0,
+        runs_dir=runs_dir,
+    )
     with pytest.raises(PipelineError) as info:
-        run_pipeline(video=tiny_video, sop=tiny_sop, mode="live", runs_dir=runs_dir)
+        run_pipeline(
+            video=tiny_video, sop=tiny_sop, mode="live", runs_dir=runs_dir, settings=settings
+        )
     assert info.value.exit_code == 2
-    assert "fake" in str(info.value)
+    assert "META_API_KEY" in str(info.value)
 
 
 def test_run_store_lists_completed_runs(tiny_video: Path, tiny_sop: Path, runs_dir: Path) -> None:

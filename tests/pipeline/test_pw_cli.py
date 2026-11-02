@@ -48,21 +48,22 @@ def test_run_with_missing_video_exits_two(tiny_sop: Path, runs_dir: Path) -> Non
     assert exit_code == 2
 
 
-def test_run_with_unwired_mode_exits_two(tiny_video: Path, tiny_sop: Path, runs_dir: Path) -> None:
-    exit_code = cli.main(
-        [
-            "run",
-            "--mode",
-            "replay",
-            "--video",
-            str(tiny_video),
-            "--sop",
-            str(tiny_sop),
-            "--runs-dir",
-            str(runs_dir),
-        ]
-    )
-    assert exit_code == 2
+def test_run_rejects_an_unknown_mode(tiny_video: Path, tiny_sop: Path, runs_dir: Path) -> None:
+    with pytest.raises(SystemExit) as info:
+        cli.main(
+            [
+                "run",
+                "--mode",
+                "warp",
+                "--video",
+                str(tiny_video),
+                "--sop",
+                str(tiny_sop),
+                "--runs-dir",
+                str(runs_dir),
+            ]
+        )
+    assert info.value.code == 2
 
 
 def test_overlay_delegates_with_remaining_arguments(monkeypatch: pytest.MonkeyPatch) -> None:

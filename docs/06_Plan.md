@@ -530,7 +530,7 @@ Standard checks S1–S9 plus the G2 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** valid text accepted · invented timestamp rejected · unknown tool rejected · fallback used.
 - **Done when:** `uv run pytest tests/align/test_explain.py -q` → pass.
 
-### T-3.9 · Orchestrator: real stages, caching, spend cap, partial failure                [ ]
+### T-3.9 · Orchestrator: real stages, caching, spend cap, partial failure                [x]
 - **Track:** BE | **Serves:** FR-15, NFR-02, NFR-03 | **Size:** M | **Tier:** standard | **Depends:** T-0.8, T-2.3, T-2.6, T-2.7, T-3.2, T-3.7, T-3.8 | **Blocks:** T-3.10, T-5.2
 - **Context pack (read only these):** `src/pw/pipeline/*` · §1B
 - **Goal:** replace fake stages with real ones; content-hash cache per stage; resume; progress events; `PW_SPEND_CAP_USD` abort with a partial report; a failed stage degrades the report instead of crashing.
