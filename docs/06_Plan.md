@@ -476,7 +476,7 @@ Standard checks S1–S9 plus the G2 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** golden SOP → expected structure · invalid JSON → repair · hallucinated tool rejected · unordered group detected.
 - **Done when:** `uv run pytest tests/sop/test_compiler.py -m "not live" -q` → pass.
 
-### T-3.3 · SOP compiler golden evaluation                                                [ ]
+### T-3.3 · SOP compiler golden evaluation                                                [x]
 - **Track:** ML | **Serves:** FR-02, FR-13 | **Size:** S | **Tier:** standard | **Depends:** T-3.2, T-1.3 | **Blocks:** G3
 - **Context pack (read only these):** `bench/golden/*.json`
 - **Goal:** measure compiler vs golden: exact step count, tool P/R ≥ 0.9, ordering-constraint F1 ≥ 0.9, critical recall 1.0.
