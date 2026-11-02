@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from collections.abc import Sequence
 from pathlib import Path
 
@@ -21,7 +22,7 @@ from pw.core.settings import (
 )
 from pw.evidence.overlay_cli import main as overlay_main
 from pw.evidence.provenance import verify_cli as verify_main
-from pw.pipeline.orchestrator import PipelineError, run_pipeline
+from pw.pipeline.orchestrator import PipelineError, RunResult, run_pipeline
 
 EXIT_OK = 0
 EXIT_USAGE = 2
@@ -41,6 +42,11 @@ def _build_parser() -> argparse.ArgumentParser:
     run.add_argument("--video", required=True, type=Path)
     run.add_argument("--sop", required=True, type=Path)
     run.add_argument("--runs-dir", type=Path, default=None)
+    run.add_argument(
+        "--profile",
+        action="store_true",
+        help="print per-stage wall time, cache hits and cost (T-6.6)",
+    )
 
     commands.add_parser("config", help="print the loaded, redacted settings")
 
@@ -99,6 +105,20 @@ def _config() -> int:
     return EXIT_OK
 
 
+def _profile(result: RunResult, elapsed_ms: int) -> None:
+    total_cost = sum(stage.cost_usd for stage in result.stages)
+    print(
+        f"profile: wall_ms={elapsed_ms} stages={len(result.stages)} "
+        f"cached={result.cached} cost_usd={total_cost:.6f}"
+    )
+    print(f"{'stage':<14}{'status':<9}{'cached':<8}{'duration_ms':>12}{'cost_usd':>12}")
+    for stage in result.stages:
+        print(
+            f"{stage.name:<14}{stage.status:<9}{'yes' if stage.cached else 'no':<8}"
+            f"{stage.duration_ms:>12}{stage.cost_usd:>12.6f}"
+        )
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     load_env_file()
     parser = _build_parser()
@@ -122,13 +142,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         return EXIT_USAGE
     mode = args.mode or settings.mode
     root = args.runs_dir if args.runs_dir is not None else settings.runs_dir
+    started = time.monotonic()
     try:
         result = run_pipeline(video=args.video, sop=args.sop, mode=mode, runs_dir=root)
     except PipelineError as error:
         print(f"pw: {error}", file=sys.stderr)
         return error.exit_code
+    elapsed_ms = int((time.monotonic() - started) * 1000)
 
     print(f"{result.run_id}  {len(result.stages)} stages  {result.cached} cached  {result.run_dir}")
+    if args.profile:
+        _profile(result, elapsed_ms)
     return EXIT_OK
 
 

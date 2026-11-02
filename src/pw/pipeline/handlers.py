@@ -54,6 +54,7 @@ from pw.perception.identity import (
 )
 from pw.perception.sam_runner import run_chunks
 from pw.perception.stitch import ChunkFrame, ChunkTrack, ChunkTracks, stitch_chunks
+from pw.pipeline.concurrency import ModelLimiter
 from pw.report.build import VideoMeta, build_report
 from pw.sop.compiler import compile_sop
 from pw.sop.ingest import read_sop
@@ -334,13 +335,15 @@ def handle_perceive(run: StageRun) -> Payload:
             assert run.services.clients is not None
             return run.services.clients.sam.segment(payload).body
 
-    outcome = run_chunks(
-        analysis,
-        concepts=concepts,
-        stage_dir=run.stages_dir,
-        call=sam,
-        resume=True,
-    )
+    with ModelLimiter() as limiter:
+        outcome = run_chunks(
+            analysis,
+            concepts=concepts,
+            stage_dir=run.stages_dir,
+            call=sam,
+            resume=True,
+            limiter=limiter,
+        )
     chunks = _load_chunks([item.path for item in outcome.outcomes])
     stitched = stitch_chunks(chunks)
     ingest = _require(run.artifacts, "ingest")
@@ -413,13 +416,15 @@ def handle_identify(run: StageRun) -> Payload:
     target = run.stages_dir / "identities.json"
     existing = read_identities(target)
     identity_call = run.services.identity or _json_caller(run.services)
-    result = identify_tracks(
-        tracks,
-        frame_provider=run.frames,
-        vocabulary=_vocabulary(graph),
-        call=identity_call,
-        existing=existing,
-    )
+    with ModelLimiter() as limiter:
+        result = identify_tracks(
+            tracks,
+            frame_provider=run.frames,
+            vocabulary=_vocabulary(graph),
+            call=identity_call,
+            existing=existing,
+            limiter=limiter,
+        )
     payload = IdentitiesFile(identities=result.identities, run_id=run.run_id).to_payload()
     write_identities(target, IdentitiesFile(result.identities, run_id=run.run_id))
     return payload

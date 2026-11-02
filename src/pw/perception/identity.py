@@ -18,11 +18,14 @@ from collections import Counter
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from PIL import Image, ImageFilter, ImageStat
 
 from pw.clients.wonder import extract_text
+
+if TYPE_CHECKING:
+    from pw.pipeline.concurrency import ModelLimiter
 
 SCHEMA_VERSION = "1.0.0"
 PROMPT_VERSION = "identity-v1"
@@ -331,18 +334,26 @@ def identify_tracks(
     call: IdentityCaller,
     existing: Mapping[str, IdentityResult] | None = None,
     max_crops: int = MAX_CROPS,
+    limiter: ModelLimiter | None = None,
 ) -> IdentitiesFile:
     """Identify every non-hand track once; cached results are reused without a call."""
     cached = dict(existing or {})
-    results: list[IdentityResult] = []
+    entries: list[IdentityResult | None] = []
+    pending: list[tuple[int, TrackObservation]] = []
     for track in tracks:
         if track.concept == HAND_CONCEPT:
             continue
         previous = cached.get(track.track_id)
         if previous is not None and previous.label != UNKNOWN_LABEL:
-            results.append(previous)
+            entries.append(previous)
             continue
-        results.append(
+        entries.append(None)
+        pending.append((len(entries) - 1, track))
+
+    def run(item: tuple[int, TrackObservation]) -> tuple[int, IdentityResult]:
+        index, track = item
+        return (
+            index,
             identify_track(
                 track,
                 others=[other for other in tracks if other.track_id != track.track_id],
@@ -350,9 +361,20 @@ def identify_tracks(
                 vocabulary=vocabulary,
                 call=call,
                 max_crops=max_crops,
-            )
+            ),
         )
-    return IdentitiesFile(identities=tuple(results))
+
+    if limiter is None:
+        completed = [run(item) for item in pending]
+    else:
+        completed = limiter.map("wonder", run, pending)
+    for index, result in completed:
+        entries[index] = result
+
+    identities = tuple(entry for entry in entries if entry is not None)
+    if len(identities) != len(entries):  # pragma: no cover - guarded by construction
+        raise IdentityError("identity fan-out lost a track")
+    return IdentitiesFile(identities=identities)
 
 
 def read_identities(path: Path) -> dict[str, IdentityResult]:
