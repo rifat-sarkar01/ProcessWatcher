@@ -225,4 +225,4 @@ Structure and commands: `AGENTS.md` §15. Conventions: one task = one commit (`T
 | ADR-001 | T-0.4 | SAM call shape, mask encoding, limits, ID persistence, $/min, API vs self-hosted |
 | ADR-002 | T-0.5 | Wonder video/image limits, JSON validity, variance, latency/cost, parallelism |
 | ADR-003 | T-0.6 | Muse Image best mode, label legibility, consistency, cost |
-| ADR-004 | T-7.2 | Deploy host (Modal / Render / Fly) |
+| ADR-004 | T-7.2 | Deploy host (Modal / Render / Fly) — **decided: Fly.io** (one always-on Machine + volume, no GPU needed) |

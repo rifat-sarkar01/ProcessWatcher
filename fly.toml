@@ -1,0 +1,40 @@
+# Fly.io deploy for Process Watcher (ADR-004).
+# One always-on Machine: the run store is a local volume and the design assumes a
+# single instance (docs/04_TRD.md §4). No GPU — all models are remote APIs.
+
+app = "process-watcher"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PW_MODE = "live"
+  PW_RUNS_DIR = "/data/runs"
+  PW_CACHE_DIR = "/data/cache"
+  PW_CONTRACTS_DIR = "/app/contracts"
+  PW_CHROMIUM = "/usr/bin/chromium"
+  PW_WEB_DIST = "/app/web/dist"
+  PW_SPEND_CAP_USD = "3"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    interval = "15s"
+    timeout = "5s"
+    grace_period = "30s"
+    method = "GET"
+    path = "/healthz"
+
+[[mounts]]
+  source = "pw_data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-2x"
+  memory = "2gb"
