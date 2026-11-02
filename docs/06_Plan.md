@@ -673,7 +673,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** happy · 404 · 413 · 401 · Range 206 · report 409 while running · concurrent runs queued.
 - **Done when:** `uv run pytest tests/api/test_runs.py -q` → pass; `uv run pw openapi --check` → no diff.
 
-### T-5.3 · SOP compile preview and review-decision endpoints                                [ ]
+### T-5.3 · SOP compile preview and review-decision endpoints                                [x]
 - **Track:** BE | **Serves:** FR-02, FR-11 | **Size:** S | **Tier:** standard | **Depends:** T-3.2, T-5.2 | **Blocks:** T-5.7, T-5.11
 - **Context pack (read only these):** `contracts/sop.schema.json`
 - **Goal:** `POST /sop/compile` (preview before a run), `PATCH /runs/{id}/review` (accept/dismiss/note per deviation, stored in `review.json`), `POST /runs` accepts an edited step-graph override.
