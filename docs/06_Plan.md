@@ -610,7 +610,7 @@ Standard checks S1–S9 plus the G3 extras in the Phase Profile. `config/thresho
 - **Tests first:** dedupe by step · cache hit · disabled switch · API failure → `illustration_unavailable`.
 - **Done when:** `uv run pytest tests/illustrate/test_generator.py -q` → pass; live smoke `uv run pw illustrate runs/<id> --mode live --limit 1` → 1 image, cost ≈ $0.01.
 
-### T-4.4 · Illustration QA loop                                                             [ ]
+### T-4.4 · Illustration QA loop                                                             [x]
 - **Track:** ML | **Serves:** FR-10 | **Size:** M | **Tier:** deep | **Depends:** T-4.3 | **Blocks:** T-4.6
 - **Context pack (read only these):** ADR-002, ADR-003 · `src/pw/illustrate/generator.py`
 - **Goal:** Wonder reviews the diagram against the SOP step (right tool, right action, legible text, no hallucinated labels); ≤ 2 regenerations; else fall back to "no illustration" with a reason.
