@@ -405,7 +405,7 @@ Standard checks S1–S9 plus the G1 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** pick-up/put-down · tool swap · drop · part placed into a zone · idempotent re-run.
 - **Done when:** `uv run pytest tests/timeline -q --cov=src/pw/timeline --cov-fail-under=90` → pass.
 
-### T-2.7 · Track identity classification                                                [ ]
+### T-2.7 · Track identity classification                                                [x]
 - **Track:** ML | **Serves:** FR-05 | **Size:** M | **Tier:** standard | **Depends:** T-0.5, T-0.7, T-2.3 | **Blocks:** T-3.6
 - **Context pack (read only these):** ADR-002 · golden step graph vocabulary · `src/pw/clients/wonder.py`
 - **Goal:** classify each tool/part track once: choose top-3 crops (area × sharpness × non-occlusion), ask Wonder to pick from the SOP vocabulary or `other`, majority vote, confidence; cache per track.
