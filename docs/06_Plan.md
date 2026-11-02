@@ -709,7 +709,7 @@ Standard checks S1–S9 plus the G4 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** state components render · client maps 401/404/413 to typed errors.
 - **Done when:** `npm --prefix web run test -- --run; npm --prefix web run typecheck; npm --prefix web run lint` → exit 0.
 
-### T-5.7 · Upload and SOP editor                                                             [ ]
+### T-5.7 · Upload and SOP editor                                                             [x]
 - **Track:** FE | **Serves:** FR-02, FR-11 | **Size:** M | **Tier:** standard | **Depends:** T-5.3, T-5.6 | **Blocks:** T-5.13
 - **Context pack (read only these):** `contracts/sop.schema.json` · `web/src/api/*`
 - **Goal:** drag-and-drop video + SOP; compile preview; editable step list (reorder, edit text, tool chips, toggle critical, ordering mode); validation; start run.
