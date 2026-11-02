@@ -485,7 +485,7 @@ Standard checks S1–S9 plus the G2 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** identical → 1.0 · dropped step → fails · extra tool → precision drop.
 - **Done when:** `uv run pw-bench sop-eval --mode replay` → `PASS 3/3`.
 
-### T-3.4 · Segment → step likelihood scorer                                               [ ]
+### T-3.4 · Segment → step likelihood scorer                                               [x]
 - **Track:** ML | **Serves:** FR-06 | **Size:** M | **Tier:** deep | **Depends:** T-0.7, T-2.6, T-2.8, T-2.9, T-3.2 | **Blocks:** T-3.5
 - **Context pack (read only these):** ADR-002 · `src/pw/evidence/render.py` (set-of-mark) · `contracts/timeline.schema.json`
 - **Goal:** per segment, send ≤ 4 set-of-mark keyframes + a timeline excerpt + the step list; receive `{step_probs, observed_tools, rationale_short}` (with a `none` option) in strict JSON; batch and cache.
