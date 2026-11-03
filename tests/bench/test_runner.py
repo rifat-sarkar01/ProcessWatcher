@@ -30,7 +30,7 @@ def _truth(
     return {
         "clip_id": clip_id,
         "procedure": "A",
-        "sop_file": "P-A-ssd-swap.md",
+        "sop_file": "P-A-keyboard-clean.md",
         "compliant": compliant,
         "operator": "tester",
         "camera": "tripod",

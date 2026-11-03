@@ -261,12 +261,19 @@ def _wrong_tools(
     tools_by_step: Mapping[str, Sequence[str]],
     observations: Sequence[IntervalObservation],
     params: DeviationParams,
+    neutral: frozenset[str] = frozenset(),
 ) -> list[Deviation]:
     by_interval = {item.interval_id: item for item in observations}
     specs = {spec.step_id: spec for spec in steps}
     found: list[Deviation] = []
     for interval in alignment.intervals:
-        required = tuple(tools_by_step.get(interval.step_id, ()))
+        # The hand and script parts cannot be wrong tools, so a step that only
+        # names them has no tool requirement to violate.
+        required = tuple(
+            tool
+            for tool in tools_by_step.get(interval.step_id, ())
+            if tool.strip().lower() not in neutral
+        )
         if not required:
             continue
         observation = by_interval.get(interval.id)
@@ -280,7 +287,11 @@ def _wrong_tools(
             identity = identities.get(held.track_id)
             if identity is None or identity.confidence < params.identity_confidence:
                 continue
-            if identity.label in _NEUTRAL_LABELS or identity.label in required:
+            if (
+                identity.label in _NEUTRAL_LABELS
+                or identity.label.strip().lower() in neutral
+                or identity.label in required
+            ):
                 continue
             offending_s += max(0.0, held.held_s)
             track_ids.add(held.track_id)
@@ -322,6 +333,7 @@ def derive_deviations(
     tools_by_step: Mapping[str, Sequence[str]] | None = None,
     activity: Sequence[TrackActivity] = (),
     observations: Sequence[IntervalObservation] = (),
+    neutral: frozenset[str] = frozenset(),
     params: DeviationParams | None = None,
 ) -> tuple[Deviation, ...]:
     """Return time-ordered findings; anything below `tau_review` is dropped."""
@@ -334,7 +346,7 @@ def derive_deviations(
     candidates.extend(_missed(alignment, segments, steps, tool_map, activity, settings))
     candidates.extend(_out_of_order(alignment, steps, activity, settings))
     candidates.extend(
-        _wrong_tools(alignment, steps, identity_map, tool_map, observations, settings)
+        _wrong_tools(alignment, steps, identity_map, tool_map, observations, settings, neutral)
     )
     candidates.sort(key=lambda item: (item.t_start, _TYPE_ORDER[item.type], item.step_id))
     return tuple(

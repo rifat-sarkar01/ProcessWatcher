@@ -1,0 +1,359 @@
+{
+  "created_at": "2026-11-03T11:31:07Z",
+  "degraded_stages": [],
+  "deviations": [
+    {
+      "confidence": 0.9989899999999999,
+      "evidence": [
+        {
+          "deviation_id": "dev_001",
+          "evidence_id": "evd_001",
+          "frame_index": 705,
+          "kind": "evidence",
+          "output_path": "evidence/evd_001/dev_001_f000705.png",
+          "output_sha256": "31e887d2c280062991779bbda63f98865e830d00eb84e8002cb429ef1abb20b8",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "f1f194b4246ce4e4",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "4a385926b3911ee51dfa4ea613ebd72f220bf39a1d160f06f257787f20d41db9",
+          "t": 47.0,
+          "track_ids": [
+            "trk_001",
+            "trk_003",
+            "trk_005",
+            "trk_009",
+            "trk_016"
+          ]
+        },
+        {
+          "deviation_id": "dev_001",
+          "evidence_id": "evd_002",
+          "frame_index": 706,
+          "kind": "evidence",
+          "output_path": "evidence/evd_002/dev_001_f000706.png",
+          "output_sha256": "09dfbef125a21b1a3871e95a7a61aa3b4db870087733e5fbeacf4e73ad92590b",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "f1f198bc2c6cecec",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "4a385926b3911ee51dfa4ea613ebd72f220bf39a1d160f06f257787f20d41db9",
+          "t": 47.066667,
+          "track_ids": [
+            "trk_001",
+            "trk_003",
+            "trk_005",
+            "trk_009",
+            "trk_016"
+          ]
+        }
+      ],
+      "evidence_unavailable": false,
+      "expected_tools": [
+        "lint-free cloth"
+      ],
+      "explanation": "Step 6 was missed at 00:47.02: the keyboard frame was not wiped with the lint-free cloth.",
+      "id": "dev_001",
+      "illustration": {
+        "id": "ill_001",
+        "kind": "illustration",
+        "path": "illustrations/ill_001.png",
+        "qa": {
+          "attempts": 1,
+          "verdict": "pass"
+        },
+        "sha256": "716f49faa24b236cc13e155b6491f8e7fd698d758f993ca85550601176fd9194",
+        "watermark": true
+      },
+      "illustration_unavailable_reason": null,
+      "margin": 0.14899,
+      "severity": "medium",
+      "status": "needs_review",
+      "step_id": "stp_06",
+      "t_end": 47.0222,
+      "t_start": 47.0222,
+      "track_ids": [
+        "trk_001",
+        "trk_002",
+        "trk_003",
+        "trk_004",
+        "trk_005",
+        "trk_006",
+        "trk_007",
+        "trk_008",
+        "trk_009",
+        "trk_010",
+        "trk_011",
+        "trk_012",
+        "trk_013",
+        "trk_014",
+        "trk_015",
+        "trk_016"
+      ],
+      "type": "missed",
+      "verifier": {
+        "agreed": true,
+        "note": "confirmed: Zero-length window at 00:47.0 provides no conclusive evidence of lint-free cloth use; inconclusive for the step",
+        "ran": true
+      }
+    }
+  ],
+  "lanes": {
+    "expected": [
+      {
+        "idx": 1,
+        "step_id": "stp_01"
+      },
+      {
+        "idx": 2,
+        "step_id": "stp_02"
+      },
+      {
+        "idx": 3,
+        "step_id": "stp_03"
+      },
+      {
+        "idx": 4,
+        "step_id": "stp_04"
+      },
+      {
+        "idx": 5,
+        "step_id": "stp_05"
+      },
+      {
+        "idx": 6,
+        "step_id": "stp_06"
+      },
+      {
+        "idx": 7,
+        "step_id": "stp_07"
+      },
+      {
+        "idx": 8,
+        "step_id": "stp_08"
+      }
+    ],
+    "observed": [
+      {
+        "interval_id": "int_01",
+        "step_id": "stp_01",
+        "t_end": 12.1333,
+        "t_start": 1.7333
+      },
+      {
+        "interval_id": "int_02",
+        "step_id": "stp_02",
+        "t_end": 16.6333,
+        "t_start": 12.1333
+      },
+      {
+        "interval_id": "int_03",
+        "step_id": "stp_03",
+        "t_end": 19.1333,
+        "t_start": 16.6333
+      },
+      {
+        "interval_id": "int_04",
+        "step_id": "stp_02",
+        "t_end": 30.4,
+        "t_start": 23.1333
+      },
+      {
+        "interval_id": "int_05",
+        "step_id": "stp_04",
+        "t_end": 37.9333,
+        "t_start": 30.4
+      },
+      {
+        "interval_id": "int_06",
+        "step_id": "stp_05",
+        "t_end": 47.0222,
+        "t_start": 37.9333
+      },
+      {
+        "interval_id": "int_07",
+        "step_id": "stp_07",
+        "t_end": 49.9333,
+        "t_start": 47.0222
+      },
+      {
+        "interval_id": "int_08",
+        "step_id": "stp_08",
+        "t_end": 54.3333,
+        "t_start": 49.9333
+      }
+    ]
+  },
+  "manifest_ref": "manifest.json",
+  "run_id": "run_01M6GJTQVVQF26EWF0GYGZKZWD",
+  "schema_version": "1.0.0",
+  "sop": {
+    "schema_version": "1.0.0",
+    "sop_id": "sop_b7afd674",
+    "source": {
+      "kind": "md",
+      "sha256": "b7afd67425638f7cd3d206b8335491c69ca36570d7bc7d4e0c83c8a2b046debb"
+    },
+    "steps": [
+      {
+        "action": "Tilt the keyboard face-down and tap the frame",
+        "critical": false,
+        "group_id": null,
+        "id": "stp_01",
+        "idx": 1,
+        "ordering": "strict",
+        "parts": [
+          "keyboard",
+          "frame"
+        ],
+        "text": "Tilt the keyboard face-down over the work surface and tap the frame to release loose debris.",
+        "tools": [
+          "hand"
+        ],
+        "visual_check": null
+      },
+      {
+        "action": "Brush the upper half of the keycaps",
+        "critical": false,
+        "group_id": "grp_01",
+        "id": "stp_02",
+        "idx": 2,
+        "ordering": "unordered_group",
+        "parts": [
+          "keycaps"
+        ],
+        "text": "Brush the upper half of the keycaps with the cleaning brush.",
+        "tools": [
+          "cleaning brush"
+        ],
+        "visual_check": null
+      },
+      {
+        "action": "Brush the lower half of the keycaps",
+        "critical": false,
+        "group_id": "grp_01",
+        "id": "stp_03",
+        "idx": 3,
+        "ordering": "unordered_group",
+        "parts": [
+          "keycaps"
+        ],
+        "text": "Brush the lower half of the keycaps with the cleaning brush.",
+        "tools": [
+          "cleaning brush"
+        ],
+        "visual_check": null
+      },
+      {
+        "action": "Blow air between the keycaps",
+        "critical": false,
+        "group_id": null,
+        "id": "stp_04",
+        "idx": 4,
+        "ordering": "strict",
+        "parts": [
+          "keycaps"
+        ],
+        "text": "Blow air between the keycaps with the blower.",
+        "tools": [
+          "blower"
+        ],
+        "visual_check": null
+      },
+      {
+        "action": "Wipe the keycap surface",
+        "critical": false,
+        "group_id": null,
+        "id": "stp_05",
+        "idx": 5,
+        "ordering": "strict",
+        "parts": [
+          "keycap surface"
+        ],
+        "text": "Wipe the keycap surface with a lint-free cloth.",
+        "tools": [
+          "lint-free cloth"
+        ],
+        "visual_check": null
+      },
+      {
+        "action": "Wipe the keyboard frame and edges",
+        "critical": false,
+        "group_id": null,
+        "id": "stp_06",
+        "idx": 6,
+        "ordering": "strict",
+        "parts": [
+          "keyboard frame"
+        ],
+        "text": "Wipe the keyboard frame and edges with the lint-free cloth.",
+        "tools": [
+          "lint-free cloth"
+        ],
+        "visual_check": null
+      },
+      {
+        "action": "Inspect the keycaps and frame",
+        "critical": false,
+        "group_id": null,
+        "id": "stp_07",
+        "idx": 7,
+        "ordering": "strict",
+        "parts": [
+          "keycaps",
+          "frame"
+        ],
+        "text": "Inspect the keycaps and frame for remaining dust or residue.",
+        "tools": [],
+        "visual_check": "remaining dust or residue"
+      },
+      {
+        "action": "Reconnect the USB cable and confirm the keyboard is recognis",
+        "critical": true,
+        "group_id": null,
+        "id": "stp_08",
+        "idx": 8,
+        "ordering": "strict",
+        "parts": [
+          "keyboard"
+        ],
+        "text": "Reconnect the USB cable and confirm the keyboard is recognised. (critical)",
+        "tools": [
+          "usb cable"
+        ],
+        "visual_check": "keyboard is recognised"
+      }
+    ],
+    "title": "Clean a mechanical keyboard",
+    "vocabulary": {
+      "sam_concepts": [
+        "hand",
+        "keyboard",
+        "frame",
+        "cleaning brush",
+        "keycaps",
+        "blower",
+        "lint-free cloth",
+        "keycap surface",
+        "keyboard frame",
+        "usb cable"
+      ],
+      "zones": []
+    }
+  },
+  "status": "done",
+  "summary": {
+    "by_type": {
+      "missed": 1,
+      "out_of_order": 0,
+      "wrong_tool": 0
+    },
+    "dropped": 0,
+    "flagged": 0,
+    "needs_review": 1
+  },
+  "video": {
+    "duration_s": 54.3333,
+    "height": 720,
+    "sha256": "4a385926b3911ee51dfa4ea613ebd72f220bf39a1d160f06f257787f20d41db9",
+    "width": 1280
+  }
+}

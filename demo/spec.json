@@ -1,0 +1,22 @@
+{
+  "cases": [
+    {
+      "case_id": "keyboard-compliant",
+      "run_dir": "runs/run_01M6GJTQVVQF26EWF0GYGZKZWD",
+      "title": "Keyboard clean: compliant run",
+      "description": "The operator follows the SOP; no finding is flagged, only one review-level note."
+    },
+    {
+      "case_id": "keyboard-missed-tilt",
+      "run_dir": "runs/run_01M6GERP2Y0GPDYV2AYJV77YAA",
+      "title": "Keyboard clean: tilt and tap omitted",
+      "description": "Step 1 is never performed; the aligner flags it as missed with 1.0 confidence."
+    },
+    {
+      "case_id": "keyboard-heldout-missed-blower",
+      "run_dir": "runs/run_01M6GK7GPYN345CN99WHECZ4CJ",
+      "title": "Held-out clip: blower step omitted",
+      "description": "A held-out recording with the blow-air step missing; flagged from frozen, checksummed artifacts."
+    }
+  ]
+}

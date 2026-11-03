@@ -148,4 +148,5 @@ web/test-results/
 web/playwright-report/
 
 # PW-Bench results (T-1.7)
-results/
+/results/
+pytest-of-*/

@@ -1,0 +1,86 @@
+{
+  "deviations": [
+    {
+      "confidence": 0.916667,
+      "expected_tools": [
+        "hand"
+      ],
+      "id": "dev_001",
+      "margin": 0.166667,
+      "observed_tools": [],
+      "relates_to_step_id": null,
+      "severity": "medium",
+      "status": "flagged",
+      "step_id": "stp_01",
+      "t_end": 1.8,
+      "t_start": 0.0,
+      "track_ids": [
+        "trk_001",
+        "trk_002",
+        "trk_003",
+        "trk_004",
+        "trk_005",
+        "trk_006",
+        "trk_007",
+        "trk_008",
+        "trk_009"
+      ],
+      "type": "missed"
+    },
+    {
+      "confidence": 0.90099,
+      "expected_tools": [
+        "lint-free cloth"
+      ],
+      "id": "dev_002",
+      "margin": 0.15099,
+      "observed_tools": [],
+      "relates_to_step_id": null,
+      "severity": "medium",
+      "status": "flagged",
+      "step_id": "stp_06",
+      "t_end": 28.4667,
+      "t_start": 21.2667,
+      "track_ids": [
+        "trk_001",
+        "trk_002",
+        "trk_003",
+        "trk_004",
+        "trk_005",
+        "trk_006",
+        "trk_007",
+        "trk_008",
+        "trk_009"
+      ],
+      "type": "missed"
+    },
+    {
+      "confidence": 0.8,
+      "expected_tools": [],
+      "id": "dev_003",
+      "margin": 0.04999999999999999,
+      "observed_tools": [],
+      "relates_to_step_id": null,
+      "severity": "medium",
+      "status": "flagged",
+      "step_id": "stp_07",
+      "t_end": 28.4667,
+      "t_start": 21.2667,
+      "track_ids": [
+        "trk_001",
+        "trk_002",
+        "trk_003",
+        "trk_004",
+        "trk_005",
+        "trk_006",
+        "trk_007",
+        "trk_008",
+        "trk_009"
+      ],
+      "type": "missed"
+    }
+  ],
+  "run_id": "run_01M6GERP2Y0GPDYV2AYJV77YAA",
+  "schema_version": "1.0.0",
+  "status": "ok"
+}
