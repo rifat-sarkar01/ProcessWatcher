@@ -1,0 +1,67 @@
+{
+  "clip_id": "A13",
+  "procedure": "A",
+  "sop_file": "bench/sops/P-A-keyboard-clean.md",
+  "compliant": false,
+  "operator": "operator_1",
+  "camera": "front-left overhead 35deg",
+  "instances": {
+    "hand": 2,
+    "keyboard": 1,
+    "brush": 1,
+    "blower": 1,
+    "cloth": 1,
+    "usb cable": 1
+  },
+  "steps": [
+    {
+      "step_id": "stp_01",
+      "t_start": 2.5,
+      "t_end": 8.0
+    },
+    {
+      "step_id": "stp_02",
+      "t_start": 8.5,
+      "t_end": 17.0
+    },
+    {
+      "step_id": "stp_03",
+      "t_start": 17.0,
+      "t_end": 26.0
+    },
+    {
+      "step_id": "stp_04",
+      "t_start": 30.0,
+      "t_end": 36.0
+    },
+    {
+      "step_id": "stp_05",
+      "t_start": 36.5,
+      "t_end": 39.5
+    },
+    {
+      "step_id": "stp_06",
+      "t_start": 39.5,
+      "t_end": 42.0
+    },
+    {
+      "step_id": "stp_07",
+      "t_start": 42.0,
+      "t_end": 43.0
+    },
+    {
+      "step_id": "stp_08",
+      "t_start": 43.0,
+      "t_end": 45.5
+    }
+  ],
+  "deviations": [
+    {
+      "type": "wrong_tool",
+      "step_id": "stp_02",
+      "t_start": 8.5,
+      "t_end": 26.0,
+      "note": "card used instead of the cleaning brush"
+    }
+  ]
+}

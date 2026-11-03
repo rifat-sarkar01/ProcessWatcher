@@ -1,136 +1,112 @@
 {
   "schema_version": "1.0.0",
-  "sop_id": "sop_98f641c7",
-  "title": "SSD swap in a desktop PC",
+  "sop_id": "sop_0e2d4d95",
+  "title": "Clean a mechanical keyboard",
   "source": {
     "kind": "md",
-    "sha256": "98f641c7bdb036f9ac4d410709d16245a45af2ed93bbd0b50c34084706c28d1a"
+    "sha256": "0e2d4d9502107c6fd82b6eb3e792bd58cb0e6f6b276a90d465b229fe47269c40"
   },
   "steps": [
     {
       "id": "stp_01",
       "idx": 1,
-      "text": "Power the PC down, unplug the power cable and clip the antistatic wrist strap to bare metal.",
-      "action": "power down",
-      "tools": ["antistatic wrist strap"],
-      "parts": ["power cable", "desktop case"],
+      "text": "Tilt the keyboard face-down over the work surface and tap the frame to release loose debris.",
+      "action": "tilt and tap",
+      "tools": ["hand"],
+      "parts": ["keyboard"],
       "ordering": "strict",
       "group_id": null,
-      "critical": true,
-      "visual_check": "Power cable disconnected, strap clipped to bare metal"
+      "critical": false,
+      "visual_check": "Keyboard face-down, loose debris falls clear"
     },
     {
       "id": "stp_02",
       "idx": 2,
-      "text": "Remove the two rear thumbscrews and slide the side panel off the desktop case.",
-      "action": "open",
-      "tools": ["hand"],
-      "parts": ["side panel", "thumbscrews"],
-      "ordering": "strict",
-      "group_id": null,
+      "text": "Brush the upper half of the keycaps with the cleaning brush.",
+      "action": "brush",
+      "tools": ["brush"],
+      "parts": ["keycaps"],
+      "ordering": "unordered_group",
+      "group_id": "grp_01",
       "critical": false,
-      "visual_check": "Side panel removed, interior visible"
+      "visual_check": "Upper keycaps free of visible dust"
     },
     {
       "id": "stp_03",
       "idx": 3,
-      "text": "Unplug the SATA data cable from the old SSD.",
-      "action": "disconnect",
-      "tools": ["hand"],
-      "parts": ["sata data cable", "old ssd"],
+      "text": "Brush the lower half of the keycaps with the cleaning brush.",
+      "action": "brush",
+      "tools": ["brush"],
+      "parts": ["keycaps"],
       "ordering": "unordered_group",
       "group_id": "grp_01",
       "critical": false,
-      "visual_check": "Data cable clear of the drive"
+      "visual_check": "Lower keycaps free of visible dust"
     },
     {
       "id": "stp_04",
       "idx": 4,
-      "text": "Unplug the SATA power cable from the old SSD.",
-      "action": "disconnect",
-      "tools": ["hand"],
-      "parts": ["sata power cable", "old ssd"],
-      "ordering": "unordered_group",
-      "group_id": "grp_01",
+      "text": "Blow air between the keycaps with the blower.",
+      "action": "blow",
+      "tools": ["blower"],
+      "parts": ["keycaps"],
+      "ordering": "strict",
+      "group_id": null,
       "critical": false,
-      "visual_check": "Power cable clear of the drive"
+      "visual_check": "No dust plume when air is blown between the keys"
     },
     {
       "id": "stp_05",
       "idx": 5,
-      "text": "Remove the two mounting screws with the Phillips screwdriver and slide the old SSD out of the bay.",
-      "action": "remove",
-      "tools": ["screwdriver"],
-      "parts": ["old ssd", "mounting screws"],
+      "text": "Wipe the keycap surface with a lint-free cloth.",
+      "action": "wipe",
+      "tools": ["cloth"],
+      "parts": ["keycaps"],
       "ordering": "strict",
       "group_id": null,
       "critical": false,
-      "visual_check": "Empty drive bay, old SSD on the bench"
+      "visual_check": "Keycap surface clean and dry"
     },
     {
       "id": "stp_06",
       "idx": 6,
-      "text": "Slide the new SSD into the bay and fasten the two mounting screws with the Phillips screwdriver.",
-      "action": "install",
-      "tools": ["screwdriver"],
-      "parts": ["new ssd", "mounting screws"],
+      "text": "Wipe the keyboard frame and edges with the lint-free cloth.",
+      "action": "wipe",
+      "tools": ["cloth"],
+      "parts": ["keyboard frame"],
       "ordering": "strict",
       "group_id": null,
       "critical": false,
-      "visual_check": "New SSD seated flush, both screws fitted"
+      "visual_check": "Frame and edges free of dust"
     },
     {
       "id": "stp_07",
       "idx": 7,
-      "text": "Plug the SATA data cable into the new SSD.",
-      "action": "connect",
+      "text": "Inspect the keycaps and frame for remaining dust or residue.",
+      "action": "inspect",
       "tools": ["hand"],
-      "parts": ["sata data cable", "new ssd"],
-      "ordering": "unordered_group",
-      "group_id": "grp_02",
+      "parts": ["keycaps", "keyboard frame"],
+      "ordering": "strict",
+      "group_id": null,
       "critical": false,
-      "visual_check": "Data cable latched on the drive"
+      "visual_check": "No visible dust or residue remains"
     },
     {
       "id": "stp_08",
       "idx": 8,
-      "text": "Plug the SATA power cable into the new SSD.",
-      "action": "connect",
-      "tools": ["hand"],
-      "parts": ["sata power cable", "new ssd"],
-      "ordering": "unordered_group",
-      "group_id": "grp_02",
-      "critical": false,
-      "visual_check": "Power cable fully seated on the drive"
-    },
-    {
-      "id": "stp_09",
-      "idx": 9,
-      "text": "Refit the side panel and tighten the two rear thumbscrews.",
-      "action": "close",
-      "tools": ["hand"],
-      "parts": ["side panel", "thumbscrews"],
-      "ordering": "strict",
-      "group_id": null,
-      "critical": false,
-      "visual_check": "Panel flush with the case"
-    },
-    {
-      "id": "stp_10",
-      "idx": 10,
-      "text": "Reconnect the power cable and boot the machine to confirm the new SSD is detected.",
-      "action": "verify boot",
-      "tools": ["hand"],
-      "parts": ["power cable", "new ssd"],
+      "text": "Reconnect the USB cable and confirm the keyboard is recognised.",
+      "action": "reconnect",
+      "tools": ["usb cable"],
+      "parts": ["keyboard", "usb cable"],
       "ordering": "strict",
       "group_id": null,
       "critical": true,
-      "visual_check": "OS storage view lists the new SSD"
+      "visual_check": "Keyboard responds to a key press"
     }
   ],
   "vocabulary": {
-    "sam_concepts": ["hand", "screwdriver", "ssd", "sata cable", "desktop case", "side panel"],
-    "zones": ["drive bay"]
+    "sam_concepts": ["hand", "keyboard", "brush", "blower", "cloth", "usb cable"],
+    "zones": ["work surface"]
   },
   "warnings": []
 }
