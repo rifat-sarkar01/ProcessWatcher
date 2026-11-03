@@ -22,6 +22,7 @@ dependencies = [
 
 [project.scripts]
 pw-data = "pw.data.cli:main"
+pw-bench = "pw.bench.cli:main"
 pw = "pw.cli:main"
 
 [dependency-groups]
