@@ -76,6 +76,16 @@ describe("UploadPage", () => {
 
     await waitFor(() => expect(screen.getByText(/run_01ABC/)).toBeInTheDocument());
     expect(api.startRun).toHaveBeenCalledTimes(1);
+    expect(api.startRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        stepGraph: expect.objectContaining({
+          sop_id: "sop_01234567",
+          steps: expect.arrayContaining([
+            expect.objectContaining({ id: "stp_01", text: "Unplug the power cable." }),
+          ]),
+        }),
+      }),
+    );
   });
 
   it("preserves reordering in the rendered editor", async () => {

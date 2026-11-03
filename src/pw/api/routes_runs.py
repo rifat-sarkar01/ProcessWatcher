@@ -1,7 +1,7 @@
-"""Run routes: upload, background fake run, status, report and artifact serving.
+"""Run routes: upload, background run, status, report and artifact serving.
 
-All routes sit behind the access-code guard. Runs execute on the fake pipeline until
-T-3.9 wires the real stages; the route contract does not change with that swap.
+All routes sit behind the access-code guard. A run executes in the configured
+`PW_MODE`; `step_graph` may carry the human-edited SOP graph from the upload screen.
 """
 
 from __future__ import annotations
@@ -17,6 +17,8 @@ from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, Request, Up
 from fastapi.responses import FileResponse, JSONResponse
 
 from pw.api.errors import InvalidRequest, RunNotFound, RunNotReady
+from pw.core.settings import Settings
+from pw.data.validate import validate_payload
 from pw.pipeline.orchestrator import run_pipeline
 from pw.pipeline.runstore import (
     REPORT_NAME,
@@ -39,6 +41,7 @@ from pw.security.uploads import (
 )
 
 UPLOAD_BLOCK = 1024 * 1024
+MAX_STEP_GRAPH_BYTES = 256 * 1024
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,6 +49,8 @@ class ApiSettings:
     runs_dir: Path
     caps: UploadCaps
     limiter: RateLimiter
+    mode: str = "replay"
+    settings: Settings | None = None
 
 
 router = APIRouter(prefix="/runs", tags=["runs"], dependencies=[Depends(require_access_code)])
@@ -85,11 +90,45 @@ def _save_upload(upload: UploadFile, target: Path, max_bytes: int) -> None:
             out.write(chunk)
 
 
-def _execute(run_id: str, video: Path, sop: Path, runs_dir: Path, scratch: Path) -> None:
+def _execute(
+    run_id: str,
+    video: Path,
+    sop: Path,
+    runs_dir: Path,
+    scratch: Path,
+    mode: str,
+    settings: Settings | None,
+    step_graph: dict[str, Any] | None,
+) -> None:
     try:
-        run_pipeline(video=video, sop=sop, mode="fake", runs_dir=runs_dir, run_id=run_id)
+        run_pipeline(
+            video=video,
+            sop=sop,
+            mode=mode,
+            runs_dir=runs_dir,
+            run_id=run_id,
+            settings=settings,
+            step_graph=step_graph,
+        )
     finally:
         shutil.rmtree(scratch, ignore_errors=True)
+
+
+def _parse_step_graph(raw: str | None) -> dict[str, Any] | None:
+    if raw is None or not raw.strip():
+        return None
+    if len(raw.encode("utf-8")) > MAX_STEP_GRAPH_BYTES:
+        raise InvalidRequest("the step graph is too large")
+    try:
+        payload = json.loads(raw)
+    except ValueError as error:
+        raise InvalidRequest("the step graph is not valid JSON") from error
+    if not isinstance(payload, dict):
+        raise InvalidRequest("the step graph must be a JSON object")
+    errors = validate_payload("sop", payload)
+    if errors:
+        raise InvalidRequest("; ".join(errors[:3]))
+    return payload
 
 
 def _store_sop(
@@ -125,6 +164,7 @@ def create_run(
     video: Annotated[UploadFile, File()],
     sop: Annotated[UploadFile | None, File()] = None,
     sop_text: Annotated[str | None, Form()] = None,
+    step_graph: Annotated[str | None, Form()] = None,
 ) -> JSONResponse:
     settings = _settings(request)
     run_id = new_run_id()
@@ -136,12 +176,23 @@ def create_run(
         _save_upload(video, video_path, settings.caps.max_bytes)
         validate_video_upload(video_path, caps=settings.caps)
         sop_path = _store_sop(sop, sop_text, scratch, settings.caps)
+        graph_payload = _parse_step_graph(step_graph)
     except SecurityError:
         # A rejected upload must not leave its part-written copy behind.
         shutil.rmtree(scratch, ignore_errors=True)
         raise
 
-    background.add_task(_execute, run_id, video_path, sop_path, settings.runs_dir, scratch)
+    background.add_task(
+        _execute,
+        run_id,
+        video_path,
+        sop_path,
+        settings.runs_dir,
+        scratch,
+        settings.mode,
+        settings.settings,
+        graph_payload,
+    )
     return JSONResponse({"run_id": run_id, "status": "queued"}, status_code=202)
 
 

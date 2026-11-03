@@ -68,12 +68,14 @@ def runs_dir() -> Iterator[Path]:
 @pytest.fixture
 def client(runs_dir: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
     monkeypatch.setenv("PW_ACCESS_CODE", ACCESS_CODE)
+    monkeypatch.setenv("PW_MODE", "fake")
     return TestClient(create_app(runs_dir=runs_dir))
 
 
 @pytest.fixture
 def make_client(runs_dir: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator:
     monkeypatch.setenv("PW_ACCESS_CODE", ACCESS_CODE)
+    monkeypatch.setenv("PW_MODE", "fake")
 
     def factory(
         *,
