@@ -35,7 +35,7 @@ FAKE_STAGES: tuple[StageSpec, ...] = (
     StageSpec("deviations", "deviations.json", ("align", "identify")),
     StageSpec("verify", "verify.json", ("deviations",)),
     StageSpec("evidence", "evidence.json", ("verify", "deviations")),
-    StageSpec("illustrate", "illustrations.json", ("verify", "deviations")),
+    StageSpec("illustrate", "illustrations.json", ("verify", "deviations", "evidence")),
     StageSpec("report", "report.json", ("evidence", "illustrate", "verify")),
 )
 
