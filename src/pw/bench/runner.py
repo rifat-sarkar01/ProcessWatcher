@@ -55,6 +55,7 @@ class ClipRef:
     duration_s: float
     gt_path: Path
     storage_ref: str | None = None
+    sha256: str = ""
 
 
 @dataclass(frozen=True, slots=True)
@@ -109,11 +110,62 @@ class EmptyPredictor:
         return ClipPrediction()
 
 
-def build_predictor(name: str) -> Predictor:
+def _latest_run_for(clip: ClipRef, runs_dir: Path) -> Path | None:
+    if not clip.sha256:
+        return None
+    found: tuple[str, Path] | None = None
+    for run_dir in runs_dir.glob("run_*"):
+        manifest_path = run_dir / "manifest.json"
+        if not manifest_path.is_file():
+            continue
+        try:
+            manifest = load_json(manifest_path)
+        except (OSError, ValueError):
+            continue
+        video_hash = manifest.get("inputs", {}).get("video_sha256")
+        if video_hash != clip.sha256:
+            continue
+        created = str(manifest.get("created_at", ""))
+        if found is None or created > found[0]:
+            found = (created, run_dir)
+    return found[1] if found else None
+
+
+@dataclass(frozen=True, slots=True)
+class FullPredictor:
+    """Replay the deviations of the latest finished pipeline run for each clip."""
+
+    runs_dir: Path = Path("runs")
+    name: str = "full"
+
+    def predict(self, clip: ClipRef, truth: Mapping[str, Any]) -> ClipPrediction:
+        del truth
+        run_dir = _latest_run_for(clip, self.runs_dir)
+        if run_dir is None:
+            raise BenchError(f"no run for clip {clip.clip_id} ({clip.sha256[:12]})", exit_code=1)
+        report = load_json(run_dir / "report.json")
+        deviations = tuple(
+            Deviation(
+                step_id=str(item["step_id"]),
+                kind=str(item["type"]),
+                t_start=float(item["t_start"]),
+                t_end=float(item["t_end"]),
+                status=str(item["status"]),
+            )
+            for item in report.get("deviations", ())
+        )
+        manifest = load_json(run_dir / "manifest.json")
+        cost = float(manifest.get("ledger", {}).get("total_usd", 0.0))
+        return ClipPrediction(deviations=deviations, cost_usd=cost)
+
+
+def build_predictor(name: str, *, runs_dir: Path = Path("runs")) -> Predictor:
     if name == "oracle":
         return OraclePredictor()
     if name == "empty":
         return EmptyPredictor()
+    if name == "full":
+        return FullPredictor(runs_dir=runs_dir)
     if name in DECLARED_PREDICTORS:
         raise BenchError(
             f"predictor {name!r} is declared but not implemented yet (T-3.12/T-3.9)",
@@ -175,6 +227,7 @@ def load_split_manifest(bench_dir: Path, split: str) -> SplitManifest:
                 duration_s=duration_s,
                 gt_path=gt_path,
                 storage_ref=str(storage) if storage is not None else None,
+                sha256=str(raw.get("sha256", "")),
             )
         )
     return SplitManifest(split=split, path=path, clips=tuple(clips))
@@ -215,9 +268,10 @@ def run_bench(
     mode: str = "replay",
     run_id: str | None = None,
     tolerance_s: float = TOLERANCE_S,
+    runs_dir: Path = Path("runs"),
 ) -> BenchRun:
     split_manifest = load_split_manifest(bench_dir, split)
-    engine = build_predictor(predictor)
+    engine = build_predictor(predictor, runs_dir=runs_dir)
     config_sha256 = _config_hash(config_path)
     truths = {clip.clip_id: load_truth(clip, bench_dir) for clip in split_manifest.clips}
 
@@ -438,6 +492,7 @@ __all__ = [
     "ClipPrediction",
     "ClipRef",
     "EmptyPredictor",
+    "FullPredictor",
     "OraclePredictor",
     "Predictor",
     "SplitManifest",
