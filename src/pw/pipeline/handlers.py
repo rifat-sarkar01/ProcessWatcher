@@ -691,6 +691,7 @@ def handle_deviations(run: StageRun) -> Payload:
             tools_by_step=_tools_by_step(graph),
             activity=_activity(tracks, float(ingest["video"]["duration_s"])),
             observations=_observations(timeline, alignment, tracks, _neutral_concepts(graph)),
+            neutral=frozenset(_neutral_concepts(graph)),
             params=deviation_params(load_thresholds()),
         )
         payload["deviations"] = [_deviation_payload(deviation) for deviation in found]

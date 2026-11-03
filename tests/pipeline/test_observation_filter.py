@@ -4,7 +4,14 @@ from __future__ import annotations
 
 import pytest
 
-from pw.align.aligner import Alignment, AlignParams, Interval
+from pw.align.aligner import Alignment, AlignParams, Interval, Segment, StepSpec
+from pw.align.deviations import (
+    DeviationParams,
+    HeldTool,
+    IntervalObservation,
+    TrackIdentity,
+    derive_deviations,
+)
 from pw.pipeline.handlers import _neutral_concepts, _observations
 
 
@@ -69,3 +76,35 @@ def test_parts_and_hand_are_not_held_tools() -> None:
 
     assert neutral == {"hand", "keyboard", "keycaps"}
     assert [held.track_id for held in observations[0].held] == ["trk_003"]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("expected", "label", "track_id"),
+    [(["hand"], "cleaning brush", "trk_003"), (["lint-free cloth"], "hand", "trk_004")],
+)
+def test_neutral_labels_never_produce_wrong_tool(
+    expected: list[str], label: str, track_id: str
+) -> None:
+    alignment = _alignment()
+    observations = (
+        IntervalObservation(
+            interval_id="int_001",
+            contact_s=5.0,
+            held=(HeldTool(track_id=track_id, held_s=5.0),),
+        ),
+    )
+    steps = (StepSpec(step_id="stp_02", idx=1),)
+
+    found = derive_deviations(
+        alignment,
+        (Segment(segment_id="seg_001", t_start=0.0, t_end=10.0, probs={"stp_02": 1.0}),),
+        steps,
+        identities={track_id: TrackIdentity(label=label, confidence=0.95)},
+        tools_by_step={"stp_02": expected},
+        observations=observations,
+        neutral=frozenset({"hand", "keyboard", "keycaps"}),
+        params=DeviationParams(),
+    )
+
+    assert [deviation.type for deviation in found] == []
