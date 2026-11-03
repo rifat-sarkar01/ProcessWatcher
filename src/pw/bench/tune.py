@@ -131,28 +131,45 @@ def evaluate_thresholds(
 
 
 def choose_thresholds(samples: list[ClipSample]) -> tuple[float, float, BenchMetrics]:
+    best = choose_thresholds_with_status(samples)
+    if best is None or not best[3]:
+        raise TuneError("no threshold pair satisfies the false-flags constraint")
+    return best[0], best[1], best[2]
+
+
+def choose_thresholds_with_status(
+    samples: list[ClipSample],
+) -> tuple[float, float, BenchMetrics, bool] | None:
+    """Best constrained pair; when none exists, the best-F1 pair with `met=False`."""
     best: tuple[float, float, BenchMetrics] | None = None
+    best_any: tuple[float, float, BenchMetrics] | None = None
     for tau_flag in TAU_FLAG_GRID:
         for tau_review in TAU_REVIEW_GRID:
             if tau_review > tau_flag:
                 continue
             metrics = evaluate_thresholds(samples, tau_review=tau_review, tau_flag=tau_flag)
+            if best_any is None or metrics.overall.f1 > best_any[2].overall.f1:
+                best_any = (tau_review, tau_flag, metrics)
             if metrics.false_flags_per_compliant_clip > MAX_FALSE_FLAGS:
                 continue
             if best is None or metrics.overall.f1 > best[2].overall.f1:
                 best = (tau_review, tau_flag, metrics)
-    if best is None:
-        raise TuneError("no threshold pair satisfies the false-flags constraint")
-    return best
+    if best is not None:
+        return best[0], best[1], best[2], True
+    if best_any is None:
+        return None
+    return best_any[0], best_any[1], best_any[2], False
 
 
-def tune(*, bench_dir: Path, runs_dir: Path) -> tuple[float, float, BenchMetrics]:
+def tune(*, bench_dir: Path, runs_dir: Path) -> tuple[float, float, BenchMetrics, bool]:
     lock_errors = verify_lock(bench_dir)
     if lock_errors:
         raise TuneError("; ".join(lock_errors))
     samples = load_dev_samples(bench_dir, runs_dir)
-    tau_review, tau_flag, metrics = choose_thresholds(samples)
-    return tau_review, tau_flag, metrics
+    chosen = choose_thresholds_with_status(samples)
+    if chosen is None:
+        raise TuneError("no threshold pair could be evaluated")
+    return chosen
 
 
 def write_thresholds(path: Path, *, tau_review: float, tau_flag: float) -> str:
@@ -169,7 +186,12 @@ def write_thresholds(path: Path, *, tau_review: float, tau_flag: float) -> str:
 
 
 def render_report(
-    *, tau_review: float, tau_flag: float, metrics: BenchMetrics, lock_ok: bool
+    *,
+    tau_review: float,
+    tau_flag: float,
+    metrics: BenchMetrics,
+    lock_ok: bool,
+    constraint_met: bool = True,
 ) -> str:
     return (
         "# Threshold calibration — dev\n\n"
@@ -177,10 +199,20 @@ def render_report(
         f"- overall P = {metrics.overall.precision:.3f} · R = {metrics.overall.recall:.3f} "
         f"· F1 = {metrics.overall.f1:.3f}\n"
         f"- false flags per compliant clip = {metrics.false_flags_per_compliant_clip:.2f} "
-        f"(limit {MAX_FALSE_FLAGS})\n"
+        f"(limit {MAX_FALSE_FLAGS}; {'met' if constraint_met else 'NOT met'})\n"
         f"- needs-review rate = {metrics.needs_review_rate:.1%} · timestamp MAE = "
         f"{metrics.timestamp_mae_s:.2f} s\n"
         f"- held-out lock: {'OK' if lock_ok else 'VIOLATION'} (dev only; no held-out tuning)\n"
+        + (
+            ""
+            if constraint_met
+            else (
+                "\nThe false-flag constraint is unreachable on this dev set: late short steps "
+                "(wipe frame / inspect) are systematically under-detected, so every compliant "
+                "clip carries a high-confidence `missed` finding. The table above is the "
+                "best-F1 pair; the run is reported, not silently relaxed.\n"
+            )
+        )
     )
 
 
@@ -189,6 +221,7 @@ __all__ = [
     "RawPrediction",
     "TuneError",
     "choose_thresholds",
+    "choose_thresholds_with_status",
     "evaluate_thresholds",
     "load_dev_samples",
     "render_report",

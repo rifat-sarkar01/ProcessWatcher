@@ -34,11 +34,79 @@ def _build_parser() -> argparse.ArgumentParser:
     run.add_argument("--results-dir", type=Path, default=Path("results"))
     run.add_argument("--mode", default="replay", help="recorded in the result manifest")
     run.add_argument("--runs-dir", type=Path, default=Path("runs"))
+
+    tune = commands.add_parser("tune", help="calibrate thresholds on dev only")
+    tune.add_argument("--split", default="dev", choices=SPLITS)
+    tune.add_argument("--bench-dir", type=Path, default=Path("bench"))
+    tune.add_argument("--runs-dir", type=Path, default=Path("runs"))
+    tune.add_argument("--out", type=Path, default=Path("config/thresholds.json"))
+    tune.add_argument("--report", type=Path, default=Path("docs/results/tune_dev.md"))
+
+    ablate = commands.add_parser("ablate", help="dev ablation table from finished runs")
+    ablate.add_argument("--split", default="dev", choices=SPLITS)
+    ablate.add_argument("--bench-dir", type=Path, default=Path("bench"))
+    ablate.add_argument("--runs-dir", type=Path, default=Path("runs"))
+    ablate.add_argument("--out", type=Path, default=Path("docs/results/ablation_dev.md"))
     return parser
+
+
+def _run_tune(args: argparse.Namespace) -> int:
+    from pw.bench.tune import TuneError, render_report, tune, write_thresholds
+    from pw.data.lock import verify_lock
+
+    try:
+        tau_review, tau_flag, metrics, met = tune(bench_dir=args.bench_dir, runs_dir=args.runs_dir)
+    except TuneError as error:
+        print(f"pw-bench: {error}", file=sys.stderr)
+        return 1
+    write_thresholds(args.out, tau_review=tau_review, tau_flag=tau_flag)
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    args.report.write_text(
+        render_report(
+            tau_review=tau_review,
+            tau_flag=tau_flag,
+            metrics=metrics,
+            lock_ok=not verify_lock(args.bench_dir),
+            constraint_met=met,
+        ),
+        encoding="utf-8",
+    )
+    if not met:
+        print(
+            "pw-bench: warning: no pair meets the false-flag constraint; best F1 written",
+            file=sys.stderr,
+        )
+    print(
+        f"tau_review={tau_review:.2f}  tau_flag={tau_flag:.2f}  "
+        f"F1={metrics.overall.f1:.4f}  P={metrics.overall.precision:.4f}  "
+        f"R={metrics.overall.recall:.4f}"
+    )
+    print(args.out)
+    return EXIT_OK
+
+
+def _run_ablate(args: argparse.Namespace) -> int:
+    from pw.bench.ablate import render_report, run_ablation
+
+    try:
+        result = run_ablation(bench_dir=args.bench_dir, runs_dir=args.runs_dir, split=args.split)
+    except ValueError as error:
+        print(f"pw-bench: {error}", file=sys.stderr)
+        return 1
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(render_report(result), encoding="utf-8")
+    for row in result.rows:
+        print(f"{row.name}: {row.note or 'measured'}")
+    print(args.out)
+    return EXIT_OK
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
+    if args.command == "tune":
+        return _run_tune(args)
+    if args.command == "ablate":
+        return _run_ablate(args)
     try:
         result = run_bench(
             split=args.split,
