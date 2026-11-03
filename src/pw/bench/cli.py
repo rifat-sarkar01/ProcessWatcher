@@ -82,7 +82,7 @@ def _run_perception_check(args: argparse.Namespace) -> int:
         print(f"{clip.clip_id}  {verdict}  {detail}")
     print(
         f"{'PASS' if result.ok else 'FAIL'} {result.passed}/{len(result.clips)} "
-        f"(required {result.required}) → {out}"
+        f"(required {result.required}) -> {out}"
     )
     return EXIT_OK if result.ok else EXIT_INVALID
 
