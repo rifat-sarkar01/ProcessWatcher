@@ -63,6 +63,15 @@ describe("upload API client", () => {
     const started = await api.startRun({
       video: new File(["v"], "clip.mp4", { type: "video/mp4" }),
       sopText: "1. A\n2. B\n",
+      stepGraph: {
+        schema_version: "1.0.0",
+        sop_id: "sop_00000000",
+        title: "Edited",
+        source: { kind: "pasted", sha256: "a".repeat(64) },
+        steps: [],
+        vocabulary: { sam_concepts: ["hand"] },
+        warnings: [],
+      },
     });
 
     expect(started.run_id).toBe("run_1");
@@ -70,6 +79,8 @@ describe("upload API client", () => {
     const form = init.body as FormData;
     expect(form.get("video")).toBeInstanceOf(File);
     expect(form.get("sop_text")).toBe("1. A\n2. B\n");
+    const graph = JSON.parse(String(form.get("step_graph"))) as { title: string };
+    expect(graph.title).toBe("Edited");
   });
 
   it("reports a network failure as ApiError", async () => {

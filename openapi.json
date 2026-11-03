@@ -512,6 +512,17 @@
               }
             ],
             "title": "Sop Text"
+          },
+          "step_graph": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Step Graph"
           }
         },
         "type": "object",
