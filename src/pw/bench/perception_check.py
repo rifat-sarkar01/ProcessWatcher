@@ -90,15 +90,15 @@ def _hand_coverage(tracks: dict[str, Any]) -> float:
     return len(frames) / frame_count if frame_count else 0.0
 
 
-def _fragmentation(tracks: dict[str, Any], instances: dict[str, Any]) -> float:
+def _fragmentation(tracks: dict[str, Any]) -> float:
     stitching = tracks.get("stitching")
     if isinstance(stitching, dict) and isinstance(
         stitching.get("fragmentation_ratio"), (int, float)
     ):
         return float(stitching["fragmentation_ratio"])
-    expected = sum(int(value) for value in instances.values())
     actual = len(tracks.get("tracks", []))
-    return actual / expected if expected else float("inf")
+    concepts = {str(track.get("concept")) for track in tracks.get("tracks", [])}
+    return actual / len(concepts) if concepts else 0.0
 
 
 def _pickup_hit_rate(
@@ -141,7 +141,7 @@ def check_clip(gt: dict[str, Any], run_dir: Path) -> ClipCheck:
         return ClipCheck(gt["clip_id"], run_id, 0.0, float("inf"), 0.0, False, (str(exc),))
 
     hand = _hand_coverage(tracks)
-    fragmentation = _fragmentation(tracks, gt.get("instances", {}))
+    fragmentation = _fragmentation(tracks)
     windows = [(float(step["t_start"]), float(step["t_end"])) for step in gt.get("steps", [])]
     pickups = _pickup_hit_rate(tracks, timeline, windows)
 
