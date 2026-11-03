@@ -7,7 +7,7 @@
 |---|---|---|---|---|
 | O3 | QA | T-5.3 · Step-graph override + configured run mode | done | task/T-5.3-step-graph-run-mode |
 | O1 | ML | T-1.7 · Bench runner | done | task/T-1.7-bench-runner |
-| O4 | DATA | T-1.5 · Held-out set (9 keyboard clips) | done | task/T-1.5-heldout-set |
+| O4 | DATA | T-1.8 · Held-out lock | done | task/T-1.8-heldout-lock |
 | O2 | ML | T-4.4 · Illustration QA wired into the pipeline | done | task/T-4.4-wire-illustrate |
 Current phase: P0/P1 + early P2/P3/P5/P6 · C1 frozen (`contracts-v1`) · **CI gates every push and PR** · 58/74 cards [x]
 Micro-plan (M tasks only, 3–6 lines):

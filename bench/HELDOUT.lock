@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "created_at": "2026-11-03T05:44:19Z",
+  "commit": "74ff3a4",
+  "files": {
+    "heldout/manifest.json": "7d4f5f0e18c6c12c9fa0cef87ff3c7a3b4d933834d337af91b9e063255f43a24",
+    "heldout/gt/A16.json": "8090c716d2e073f7580fbc9b103d9c86e4975b8d6bf88d21ff711ebaf5de06ff",
+    "heldout/gt/A17.json": "60f0194d6888d2f6345dca7483e73ebe27cba82786e0e95622acb561f5fcc8f4",
+    "heldout/gt/A18.json": "312c78d1b11bfdff18b6d2f5c0b57def5af75537dc0629b701724fa3e30058b0",
+    "heldout/gt/A19.json": "7ab793eafb80f494fe737b4acbd4dbcefdc3d9f18835ccc019c8ef078b82724a",
+    "heldout/gt/A20.json": "f2bbeca4438005714e69db9bfe0be4ae79d98eda4253530128ba9c64db2c3c59",
+    "heldout/gt/A21.json": "2174218a910f39a62b7bba5f05d97681289e6184b9e020b2a024eeae9cc3c44e",
+    "heldout/gt/A22.json": "0e12c84a70105465b008df5975ba530412db0ff428d775b88aeb57466984f81d",
+    "heldout/gt/A23.json": "d31fa106bbdffd292f5d28f15eada7ee17dd67c0fe857150d98533c0c69fa65f",
+    "heldout/gt/A24.json": "0fb2f1fc6c0b0af1c6fd0b50c3f1a2ba906eb8ccfba0196a7450f8eae3903449"
+  }
+}

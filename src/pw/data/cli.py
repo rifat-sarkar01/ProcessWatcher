@@ -7,6 +7,7 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+from pw.data.lock import verify_lock
 from pw.data.schemas import KINDS, SCHEMA_NAMES, example_files, load_json
 from pw.data.sopcheck import (
     default_bench_dir,
@@ -110,6 +111,17 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help="bench directory (default: <repo>/bench or $PW_BENCH_DIR)",
     )
+
+    verify = subparsers.add_parser(
+        "verify-lock",
+        help="verify bench/HELDOUT.lock against the held-out manifest and ground truth",
+    )
+    verify.add_argument(
+        "--bench-dir",
+        type=Path,
+        default=None,
+        help="bench directory (default: <repo>/bench or $PW_BENCH_DIR)",
+    )
     return parser
 
 
@@ -184,6 +196,15 @@ def _run_validate_split(split: str, bench_dir: Path | None) -> int:
     return EXIT_OK
 
 
+def _run_verify_lock(bench_dir: Path | None) -> int:
+    base = bench_dir if bench_dir is not None else default_bench_dir()
+    errors = verify_lock(base)
+    if errors:
+        return _print_errors(errors, "")
+    print("LOCK OK")
+    return EXIT_OK
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     _configure_stdio()
     args = _build_parser().parse_args(argv)
@@ -198,6 +219,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _run_validate_gt(args.path, args.golden, args.bench_dir)
     if args.command == "validate":
         return _run_validate_split(args.split, args.bench_dir)
+    if args.command == "verify-lock":
+        return _run_verify_lock(args.bench_dir)
 
     print(f"unknown command: {args.command}", file=sys.stderr)  # pragma: no cover - argparse
     return EXIT_USAGE
