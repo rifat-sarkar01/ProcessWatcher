@@ -37,6 +37,7 @@ from pw.align.verifier import VerifierParams, verify_deviations
 from pw.clients import WONDER_MODEL, Clients
 from pw.clients.errors import SpendCapExceeded
 from pw.core.settings import Settings
+from pw.core.thresholds import deviation_params, load_thresholds
 from pw.data.validate import validate_payload
 from pw.evidence.labeling import watermark_illustration
 from pw.evidence.provenance import write_evidence
@@ -690,6 +691,7 @@ def handle_deviations(run: StageRun) -> Payload:
             tools_by_step=_tools_by_step(graph),
             activity=_activity(tracks, float(ingest["video"]["duration_s"])),
             observations=_observations(timeline, alignment, tracks, _neutral_concepts(graph)),
+            params=deviation_params(load_thresholds()),
         )
         payload["deviations"] = [_deviation_payload(deviation) for deviation in found]
     return payload
