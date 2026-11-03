@@ -33,6 +33,7 @@ def _build_parser() -> argparse.ArgumentParser:
     run.add_argument("--bench-dir", type=Path, default=Path("bench"))
     run.add_argument("--results-dir", type=Path, default=Path("results"))
     run.add_argument("--mode", default="replay", help="recorded in the result manifest")
+    run.add_argument("--runs-dir", type=Path, default=Path("runs"))
     return parser
 
 
@@ -46,6 +47,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             results_dir=args.results_dir,
             config_path=args.config,
             mode=args.mode,
+            runs_dir=args.runs_dir,
         )
     except BenchError as error:
         print(f"pw-bench: {error}", file=sys.stderr)
