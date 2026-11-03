@@ -9,6 +9,8 @@ records a fallback artifact (marked `degraded`) and the report is built as `part
 
 from __future__ import annotations
 
+import hashlib
+import io
 import json
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
@@ -33,13 +35,22 @@ from pw.align.prompts import StepDescription
 from pw.align.scorer import score_segments, timeline_parts, tracks_from_payload
 from pw.align.verifier import VerifierParams, verify_deviations
 from pw.clients import WONDER_MODEL, Clients
+from pw.clients.errors import SpendCapExceeded
 from pw.core.settings import Settings
 from pw.data.validate import validate_payload
+from pw.evidence.labeling import watermark_illustration
 from pw.evidence.provenance import write_evidence
 from pw.evidence.selector import FrameProvider as EvidenceFrameProvider
 from pw.evidence.selector import Track as EvidenceTrack
 from pw.evidence.selector import TrackSample as EvidenceSample
 from pw.evidence.selector import select_all
+from pw.illustrate.generator import (
+    Illustration,
+    IllustrationCaller,
+    client_caller,
+    generate_illustrations,
+)
+from pw.illustrate.qa import QACaller, QAOutcome, run_qa_loop
 from pw.ingest.normalise import normalise_video, sha256_file, validate_source
 from pw.ingest.probe import probe_video
 from pw.ingest.timebase import pts_times
@@ -84,6 +95,8 @@ class StageServices:
     scorer: JsonCaller | None = None
     writer: TextCaller | None = None
     verifier: TextCaller | None = None
+    illustrator: IllustrationCaller | None = None
+    qa: QACaller | None = None
     frames: FrameProvider | None = None
     clients: Clients | None = None
     handlers: Mapping[str, StageHandler] = field(default_factory=dict)
@@ -771,15 +784,158 @@ def handle_evidence(run: StageRun) -> Payload:
 # --- illustrate -------------------------------------------------------------
 
 
-def handle_illustrate(run: StageRun) -> Payload:
-    """No-op until T-4.3 wires Muse Image; flagged steps keep the report's default reason."""
+def _illustration_payload(
+    run: StageRun,
+    illustrations: Mapping[str, Any],
+    reasons: Mapping[str, str],
+    *,
+    disabled: bool,
+) -> Payload:
     return {
         "schema_version": SCHEMA_VERSION,
         "run_id": run.run_id,
-        "illustrations": {},
-        "reasons": {},
-        "disabled": True,
+        "illustrations": dict(illustrations),
+        "reasons": dict(reasons),
+        "disabled": disabled,
     }
+
+
+def _illustration_references(evidence: Mapping[str, Any], run_dir: Path) -> dict[str, bytes]:
+    references: dict[str, bytes] = {}
+    for item in evidence.get("evidence", ()):
+        if not isinstance(item, Mapping):
+            continue
+        deviation_id = item.get("deviation_id")
+        relative = item.get("output_path")
+        if not isinstance(deviation_id, str) or not isinstance(relative, str):
+            continue
+        path = run_dir / relative
+        if path.is_file():
+            references[deviation_id] = path.read_bytes()
+    return references
+
+
+def _write_illustration(run: StageRun, item: Illustration, qa: QAOutcome) -> dict[str, Any]:
+    assert item.image is not None and qa.image is not None
+    target_dir = run.run_dir / "illustrations"
+    target_dir.mkdir(parents=True, exist_ok=True)
+    image = Image.open(io.BytesIO(qa.image)).convert("RGB")
+    marked = watermark_illustration(image)
+    path = target_dir / f"{item.id}.png"
+    marked.save(path)
+    return {
+        "kind": "illustration",
+        "path": path.relative_to(run.run_dir).as_posix(),
+        "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        "watermark": True,
+        "qa": qa.to_report(),
+    }
+
+
+def handle_illustrate(run: StageRun) -> Payload:
+    """Generate, QA and watermark one diagram per flagged step (T-4.3/T-4.4)."""
+    verified = _deviations_from_payload(_require(run.artifacts, "verify"))
+    graph = _require(run.artifacts, "sop_compile")
+    disabled = run.settings.disable_illustrations if run.settings is not None else None
+    if disabled:
+        return _illustration_payload(run, {}, {}, disabled=True)
+
+    image_call = run.services.illustrator
+    qa_call = run.services.qa
+    clients = run.services.clients
+    if image_call is None and clients is not None:
+        image_call = client_caller(clients.image)
+    if qa_call is None and clients is not None:
+
+        def wonder_qa(payload: Mapping[str, Any]) -> Mapping[str, Any]:
+            return clients.wonder.create_response(payload).body
+
+        qa_call = wonder_qa
+    if image_call is None or qa_call is None:
+        return _illustration_payload(run, {}, {}, disabled=True)
+
+    cap_errors: list[SpendCapExceeded] = []
+
+    def call_image(prompt: str, reference: bytes | None) -> bytes:
+        try:
+            return image_call(prompt, reference)
+        except SpendCapExceeded as error:
+            cap_errors.append(error)
+            raise
+
+    def call_qa(payload: Mapping[str, Any]) -> Mapping[str, Any]:
+        try:
+            return qa_call(payload)
+        except SpendCapExceeded as error:
+            cap_errors.append(error)
+            raise
+
+    references = _illustration_references(run.artifacts.get("evidence") or {}, run.run_dir)
+    generated = generate_illustrations(
+        verified,
+        graph,
+        call=call_image,
+        references=references,
+        cache_dir=run.stages_dir / "illustration_cache",
+        disabled=False,
+    )
+    if cap_errors:
+        raise cap_errors[0]
+
+    steps = {
+        str(step.get("id")): step for step in graph.get("steps", ()) if isinstance(step, Mapping)
+    }
+    illustrations: dict[str, Any] = {}
+    reasons: dict[str, str] = {}
+    for item in generated.items:
+        if item.image is None:
+            for deviation_id in item.deviation_ids:
+                reasons[deviation_id] = item.reason or "illustration_unavailable: generation failed"
+            continue
+        step = steps.get(item.step_id)
+        if step is None:
+            for deviation_id in item.deviation_ids:
+                reasons[deviation_id] = "illustration_unavailable: step missing"
+            continue
+
+        reference = next(
+            (
+                references[deviation_id]
+                for deviation_id in item.deviation_ids
+                if deviation_id in references
+            ),
+            None,
+        )
+
+        def regenerate(
+            _attempt: int,
+            prompt: str = item.prompt,
+            source: bytes | None = reference,
+        ) -> bytes | None:
+            try:
+                return image_call(prompt, source)
+            except SpendCapExceeded as error:
+                cap_errors.append(error)
+                return None
+            except Exception:  # a failed regeneration degrades, like the first call
+                return None
+
+        outcome = run_qa_loop(step, first_image=item.image, regenerate=regenerate, call=call_qa)
+        if cap_errors:
+            raise cap_errors[0]
+        if outcome.verdict != "pass" or outcome.image is None:
+            reason = outcome.reason or "illustration_unavailable: qa failed"
+            for deviation_id in item.deviation_ids:
+                reasons[deviation_id] = reason
+            continue
+
+        block = _write_illustration(run, item, outcome)
+        for deviation_id in item.deviation_ids:
+            illustrations[deviation_id] = {
+                "id": f"ill_{len(illustrations) + 1:03d}",
+                **block,
+            }
+    return _illustration_payload(run, illustrations, reasons, disabled=False)
 
 
 # --- report -----------------------------------------------------------------
