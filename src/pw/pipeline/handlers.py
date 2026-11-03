@@ -580,8 +580,20 @@ def _windows(
     return windows
 
 
+def _neutral_concepts(graph: Payload) -> set[str]:
+    """Parts and the hand are not tools; holding them must not trigger wrong_tool."""
+    neutral = {"hand"}
+    for step in graph.get("steps", ()):
+        for part in step.get("parts", ()):
+            neutral.add(str(part).strip().lower())
+    return neutral
+
+
 def _observations(
-    timeline: Payload, alignment: Alignment, tracks: Payload
+    timeline: Payload,
+    alignment: Alignment,
+    tracks: Payload,
+    neutral_concepts: set[str] | None = None,
 ) -> list[IntervalObservation]:
     events = [event for event in timeline.get("events", ()) if isinstance(event, Mapping)]
     contacts = _windows(events, "contact")
@@ -598,8 +610,10 @@ def _observations(
             overlap = min(end, interval.t_end) - max(start, interval.t_start)
             if overlap <= 0:
                 continue
+            neutral = neutral_concepts or {"hand"}
             for track_id in key:
-                if concepts.get(track_id) != "hand":
+                concept = str(concepts.get(track_id, "")).strip().lower()
+                if concept not in neutral:
                     held.append(HeldTool(track_id=track_id, held_s=round(overlap, 4)))
         observations.append(
             IntervalObservation(
@@ -675,7 +689,7 @@ def handle_deviations(run: StageRun) -> Payload:
             identities=identities,
             tools_by_step=_tools_by_step(graph),
             activity=_activity(tracks, float(ingest["video"]["duration_s"])),
-            observations=_observations(timeline, alignment, tracks),
+            observations=_observations(timeline, alignment, tracks, _neutral_concepts(graph)),
         )
         payload["deviations"] = [_deviation_payload(deviation) for deviation in found]
     return payload
