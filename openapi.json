@@ -458,6 +458,128 @@
         }
       }
     },
+    "/demo/cases": {
+      "get": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "List Cases",
+        "operationId": "list_cases_demo_cases_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response List Cases Demo Cases Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/demo/cases/{case_id}/files/{path}": {
+      "get": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Get Case File",
+        "operationId": "get_case_file_demo_cases__case_id__files__path__get",
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Case Id"
+            }
+          },
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Path"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/demo/cases/{case_id}/{path}": {
+      "get": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Get Case Artifact",
+        "description": "Mirror the run artifact layout (`media/analysis.mp4`, `evidence/*.png`).",
+        "operationId": "get_case_artifact_demo_cases__case_id___path__get",
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Case Id"
+            }
+          },
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Path"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/healthz": {
       "get": {
         "summary": "Healthz",

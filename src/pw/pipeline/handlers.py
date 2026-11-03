@@ -37,6 +37,7 @@ from pw.align.verifier import VerifierParams, verify_deviations
 from pw.clients import WONDER_MODEL, Clients
 from pw.clients.errors import SpendCapExceeded
 from pw.core.settings import Settings
+from pw.core.thresholds import deviation_params, load_thresholds
 from pw.data.validate import validate_payload
 from pw.evidence.labeling import watermark_illustration
 from pw.evidence.provenance import write_evidence
@@ -580,8 +581,20 @@ def _windows(
     return windows
 
 
+def _neutral_concepts(graph: Payload) -> set[str]:
+    """Parts and the hand are not tools; holding them must not trigger wrong_tool."""
+    neutral = {"hand"}
+    for step in graph.get("steps", ()):
+        for part in step.get("parts", ()):
+            neutral.add(str(part).strip().lower())
+    return neutral
+
+
 def _observations(
-    timeline: Payload, alignment: Alignment, tracks: Payload
+    timeline: Payload,
+    alignment: Alignment,
+    tracks: Payload,
+    neutral_concepts: set[str] | None = None,
 ) -> list[IntervalObservation]:
     events = [event for event in timeline.get("events", ()) if isinstance(event, Mapping)]
     contacts = _windows(events, "contact")
@@ -598,8 +611,10 @@ def _observations(
             overlap = min(end, interval.t_end) - max(start, interval.t_start)
             if overlap <= 0:
                 continue
+            neutral = neutral_concepts or {"hand"}
             for track_id in key:
-                if concepts.get(track_id) != "hand":
+                concept = str(concepts.get(track_id, "")).strip().lower()
+                if concept not in neutral:
                     held.append(HeldTool(track_id=track_id, held_s=round(overlap, 4)))
         observations.append(
             IntervalObservation(
@@ -675,7 +690,9 @@ def handle_deviations(run: StageRun) -> Payload:
             identities=identities,
             tools_by_step=_tools_by_step(graph),
             activity=_activity(tracks, float(ingest["video"]["duration_s"])),
-            observations=_observations(timeline, alignment, tracks),
+            observations=_observations(timeline, alignment, tracks, _neutral_concepts(graph)),
+            neutral=frozenset(_neutral_concepts(graph)),
+            params=deviation_params(load_thresholds()),
         )
         payload["deviations"] = [_deviation_payload(deviation) for deviation in found]
     return payload

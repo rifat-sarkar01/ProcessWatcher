@@ -1,0 +1,98 @@
+{
+  "deviations": [
+    {
+      "confidence": 0.960784,
+      "expected_tools": [
+        "blower"
+      ],
+      "id": "dev_001",
+      "margin": 0.210784,
+      "observed_tools": [],
+      "relates_to_step_id": null,
+      "severity": "medium",
+      "status": "flagged",
+      "step_id": "stp_04",
+      "t_end": 16.3333,
+      "t_start": 16.3333,
+      "track_ids": [
+        "trk_001",
+        "trk_002",
+        "trk_003",
+        "trk_004",
+        "trk_005",
+        "trk_006"
+      ],
+      "type": "missed"
+    },
+    {
+      "confidence": 0.9767,
+      "expected_tools": [
+        "lint-free cloth"
+      ],
+      "id": "dev_002",
+      "margin": 0.6008420309585034,
+      "observed_tools": [
+        "cleaning brush"
+      ],
+      "relates_to_step_id": null,
+      "severity": "medium",
+      "status": "flagged",
+      "step_id": "stp_05",
+      "t_end": 22.2333,
+      "t_start": 16.3333,
+      "track_ids": [
+        "trk_005"
+      ],
+      "type": "wrong_tool"
+    },
+    {
+      "confidence": 0.88,
+      "expected_tools": [
+        "lint-free cloth"
+      ],
+      "id": "dev_003",
+      "margin": 0.13,
+      "observed_tools": [],
+      "relates_to_step_id": null,
+      "severity": "medium",
+      "status": "needs_review",
+      "step_id": "stp_06",
+      "t_end": 28.2,
+      "t_start": 22.2333,
+      "track_ids": [
+        "trk_001",
+        "trk_002",
+        "trk_003",
+        "trk_004",
+        "trk_005",
+        "trk_006"
+      ],
+      "type": "missed"
+    },
+    {
+      "confidence": 0.881188,
+      "expected_tools": [],
+      "id": "dev_004",
+      "margin": 0.131188,
+      "observed_tools": [],
+      "relates_to_step_id": null,
+      "severity": "medium",
+      "status": "needs_review",
+      "step_id": "stp_07",
+      "t_end": 28.2,
+      "t_start": 22.2333,
+      "track_ids": [
+        "trk_001",
+        "trk_002",
+        "trk_003",
+        "trk_004",
+        "trk_005",
+        "trk_006"
+      ],
+      "type": "missed"
+    }
+  ],
+  "run_id": "run_01M6GK7GPYN345CN99WHECZ4CJ",
+  "schema_version": "1.0.0",
+  "status": "ok"
+}

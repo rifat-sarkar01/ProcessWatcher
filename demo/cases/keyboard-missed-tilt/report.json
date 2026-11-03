@@ -1,0 +1,642 @@
+{
+  "created_at": "2026-11-03T10:20:06Z",
+  "degraded_stages": [],
+  "deviations": [
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "deviation_id": "dev_001",
+          "evidence_id": "evd_001",
+          "frame_index": 0,
+          "kind": "evidence",
+          "output_path": "evidence/evd_001/dev_001_f000000.png",
+          "output_sha256": "4bb5b755b9fd1e383aba8d685d1358e450935b3edcbf46196c4a0b73f7e83ad7",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "f4f0e8cad2d0d999",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+          "t": 0.0,
+          "track_ids": [
+            "trk_001",
+            "trk_003",
+            "trk_005",
+            "trk_006",
+            "trk_007"
+          ]
+        },
+        {
+          "deviation_id": "dev_001",
+          "evidence_id": "evd_002",
+          "frame_index": 9,
+          "kind": "evidence",
+          "output_path": "evidence/evd_002/dev_001_f000009.png",
+          "output_sha256": "79c7827a6a1b8e1ffa1d5b1e33be08b2aa06bcce985513b44cb658cad5d734c8",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "f4f0e4c4d6d2da91",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+          "t": 0.6,
+          "track_ids": [
+            "trk_001",
+            "trk_002",
+            "trk_003",
+            "trk_005",
+            "trk_006",
+            "trk_007"
+          ]
+        },
+        {
+          "deviation_id": "dev_001",
+          "evidence_id": "evd_003",
+          "frame_index": 19,
+          "kind": "evidence",
+          "output_path": "evidence/evd_003/dev_001_f000019.png",
+          "output_sha256": "c07a16e2540c1208cddf0ca5f0be1bb02f540bf67f7a73805f27c985c875646f",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "b4f0e4c4d6d09191",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+          "t": 1.266667,
+          "track_ids": [
+            "trk_001",
+            "trk_002",
+            "trk_003",
+            "trk_005",
+            "trk_006",
+            "trk_007"
+          ]
+        },
+        {
+          "deviation_id": "dev_001",
+          "evidence_id": "evd_004",
+          "frame_index": 27,
+          "kind": "evidence",
+          "output_path": "evidence/evd_004/dev_001_f000027.png",
+          "output_sha256": "e9c8d66c132d7a93afa6ecc668803f98d8564fb5879bf0ed0a2258aa48e7a0c7",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "f4f0e4c4d6d09191",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+          "t": 1.8,
+          "track_ids": [
+            "trk_001",
+            "trk_002",
+            "trk_003",
+            "trk_005",
+            "trk_006",
+            "trk_007"
+          ]
+        }
+      ],
+      "evidence_unavailable": false,
+      "expected_tools": [
+        "hand"
+      ],
+      "explanation": "Step 1 missed: At 00:00.00\u201300:01.80, no hand tilted the keyboard face-down over the work surface or tapped the frame.",
+      "id": "dev_001",
+      "illustration": {
+        "id": "ill_001",
+        "kind": "illustration",
+        "path": "illustrations/ill_001.png",
+        "qa": {
+          "attempts": 1,
+          "verdict": "pass"
+        },
+        "sha256": "d494496926ff2ed98d8953169d7534bea59f6278c00e5ff43203b63846555c54",
+        "watermark": true
+      },
+      "illustration_unavailable_reason": null,
+      "margin": 0.166667,
+      "severity": "medium",
+      "status": "flagged",
+      "step_id": "stp_01",
+      "t_end": 1.8,
+      "t_start": 0.0,
+      "track_ids": [
+        "trk_001",
+        "trk_002",
+        "trk_003",
+        "trk_004",
+        "trk_005",
+        "trk_006",
+        "trk_007",
+        "trk_008",
+        "trk_009"
+      ],
+      "type": "missed",
+      "verifier": {
+        "agreed": true,
+        "note": "confirmed: No visual evidence available for the 00:00.0-00:01.8 window to confirm the hand step; clip is inconclusive",
+        "ran": true
+      }
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "deviation_id": "dev_002",
+          "evidence_id": "evd_005",
+          "frame_index": 319,
+          "kind": "evidence",
+          "output_path": "evidence/evd_005/dev_002_f000319.png",
+          "output_sha256": "fc71ae655b0046ab7b7759a7c73a7d7ed0c7a629b106413ab46aa9bde78abec4",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "e0f1e9cdd4d4d0b2",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+          "t": 21.266667,
+          "track_ids": [
+            "trk_001",
+            "trk_003",
+            "trk_005",
+            "trk_006",
+            "trk_007"
+          ]
+        },
+        {
+          "deviation_id": "dev_002",
+          "evidence_id": "evd_006",
+          "frame_index": 353,
+          "kind": "evidence",
+          "output_path": "evidence/evd_006/dev_002_f000353.png",
+          "output_sha256": "3cea072ae9c52bfbb643203ea0b63f690837baec2430ff25f4b59ee1632e5327",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "ecededcdcccccecb",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+          "t": 23.533333,
+          "track_ids": [
+            "trk_001",
+            "trk_003",
+            "trk_005",
+            "trk_006",
+            "trk_007",
+            "trk_008"
+          ]
+        },
+        {
+          "deviation_id": "dev_002",
+          "evidence_id": "evd_007",
+          "frame_index": 366,
+          "kind": "evidence",
+          "output_path": "evidence/evd_007/dev_002_f000366.png",
+          "output_sha256": "165700d0ffee0ff50e1b29bbcd0c7ec3aa7b420e018e8dc2d2d83a73c4f6dedb",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "e0e1e9cdacb43433",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+          "t": 24.4,
+          "track_ids": [
+            "trk_001",
+            "trk_003",
+            "trk_005",
+            "trk_006",
+            "trk_007",
+            "trk_008"
+          ]
+        },
+        {
+          "deviation_id": "dev_002",
+          "evidence_id": "evd_008",
+          "frame_index": 376,
+          "kind": "evidence",
+          "output_path": "evidence/evd_008/dev_002_f000376.png",
+          "output_sha256": "60923ed1e009be51713b6e2f7c57acaa0332a6a3b8b928f0472d107790dd7923",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "e0e1e9cdcc94b432",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+          "t": 25.066667,
+          "track_ids": [
+            "trk_001",
+            "trk_003",
+            "trk_005",
+            "trk_006",
+            "trk_007",
+            "trk_008"
+          ]
+        }
+      ],
+      "evidence_unavailable": false,
+      "expected_tools": [
+        "lint-free cloth"
+      ],
+      "explanation": "Step 6 missed: Wipe the keyboard frame and edges with the lint-free cloth was not performed between 00:21.27 and 00:28.47. No lint-free cloth was observed.",
+      "id": "dev_002",
+      "illustration": {
+        "id": "ill_002",
+        "kind": "illustration",
+        "path": "illustrations/ill_002.png",
+        "qa": {
+          "attempts": 1,
+          "verdict": "pass"
+        },
+        "sha256": "d3daa1893ac715b6a624c0a2b4d04d61664c6e7e99ea48c88692deb0fb4b9e29",
+        "watermark": true
+      },
+      "illustration_unavailable_reason": null,
+      "margin": 0.15099,
+      "severity": "medium",
+      "status": "flagged",
+      "step_id": "stp_06",
+      "t_end": 28.4667,
+      "t_start": 21.2667,
+      "track_ids": [
+        "trk_001",
+        "trk_002",
+        "trk_003",
+        "trk_004",
+        "trk_005",
+        "trk_006",
+        "trk_007",
+        "trk_008",
+        "trk_009"
+      ],
+      "type": "missed",
+      "verifier": {
+        "agreed": true,
+        "note": "confirmed: Inconclusive in window 00:21.3-00:28.5; no clear lint-free cloth use visible to confirm the step occurred",
+        "ran": true
+      }
+    },
+    {
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "deviation_id": "dev_003",
+          "evidence_id": "evd_009",
+          "frame_index": 319,
+          "kind": "evidence",
+          "output_path": "evidence/evd_009/dev_003_f000319.png",
+          "output_sha256": "fc71ae655b0046ab7b7759a7c73a7d7ed0c7a629b106413ab46aa9bde78abec4",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "e0f1e9cdd4d4d0b2",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+          "t": 21.266667,
+          "track_ids": [
+            "trk_001",
+            "trk_003",
+            "trk_005",
+            "trk_006",
+            "trk_007"
+          ]
+        },
+        {
+          "deviation_id": "dev_003",
+          "evidence_id": "evd_010",
+          "frame_index": 353,
+          "kind": "evidence",
+          "output_path": "evidence/evd_010/dev_003_f000353.png",
+          "output_sha256": "3cea072ae9c52bfbb643203ea0b63f690837baec2430ff25f4b59ee1632e5327",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "ecededcdcccccecb",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+          "t": 23.533333,
+          "track_ids": [
+            "trk_001",
+            "trk_003",
+            "trk_005",
+            "trk_006",
+            "trk_007",
+            "trk_008"
+          ]
+        },
+        {
+          "deviation_id": "dev_003",
+          "evidence_id": "evd_011",
+          "frame_index": 366,
+          "kind": "evidence",
+          "output_path": "evidence/evd_011/dev_003_f000366.png",
+          "output_sha256": "165700d0ffee0ff50e1b29bbcd0c7ec3aa7b420e018e8dc2d2d83a73c4f6dedb",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "e0e1e9cdacb43433",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+          "t": 24.4,
+          "track_ids": [
+            "trk_001",
+            "trk_003",
+            "trk_005",
+            "trk_006",
+            "trk_007",
+            "trk_008"
+          ]
+        },
+        {
+          "deviation_id": "dev_003",
+          "evidence_id": "evd_012",
+          "frame_index": 376,
+          "kind": "evidence",
+          "output_path": "evidence/evd_012/dev_003_f000376.png",
+          "output_sha256": "60923ed1e009be51713b6e2f7c57acaa0332a6a3b8b928f0472d107790dd7923",
+          "params_hash": "cbc7c61b82545cd55177abc6d92e493fa6cf8e835b81e7a34082747ec80b5ee0",
+          "phash": "e0e1e9cdcc94b432",
+          "render_version": "evidence-render-v1",
+          "source_sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+          "t": 25.066667,
+          "track_ids": [
+            "trk_001",
+            "trk_003",
+            "trk_005",
+            "trk_006",
+            "trk_007",
+            "trk_008"
+          ]
+        }
+      ],
+      "evidence_unavailable": false,
+      "explanation": "Step 7 was missed between 00:21.27 and 00:28.47. The inspection of the keycaps and frame for remaining dust or residue was not observed.",
+      "id": "dev_003",
+      "illustration": {
+        "id": "ill_003",
+        "kind": "illustration",
+        "path": "illustrations/ill_003.png",
+        "qa": {
+          "attempts": 2,
+          "verdict": "pass"
+        },
+        "sha256": "0f6554ea26f9461ab0238b3b4ac265cf7a7d5d0f9ed7e99ee434f7036bd9b86f",
+        "watermark": true
+      },
+      "illustration_unavailable_reason": null,
+      "margin": 0.04999999999999999,
+      "severity": "medium",
+      "status": "flagged",
+      "step_id": "stp_07",
+      "t_end": 28.4667,
+      "t_start": 21.2667,
+      "track_ids": [
+        "trk_001",
+        "trk_002",
+        "trk_003",
+        "trk_004",
+        "trk_005",
+        "trk_006",
+        "trk_007",
+        "trk_008",
+        "trk_009"
+      ],
+      "type": "missed",
+      "verifier": {
+        "agreed": true,
+        "note": "confirmed: Inconclusive: no clear observable evidence of stp_07 occurring in the 00:21.3-00:28.5 window",
+        "ran": true
+      }
+    }
+  ],
+  "lanes": {
+    "expected": [
+      {
+        "idx": 1,
+        "step_id": "stp_01"
+      },
+      {
+        "idx": 2,
+        "step_id": "stp_02"
+      },
+      {
+        "idx": 3,
+        "step_id": "stp_03"
+      },
+      {
+        "idx": 4,
+        "step_id": "stp_04"
+      },
+      {
+        "idx": 5,
+        "step_id": "stp_05"
+      },
+      {
+        "idx": 6,
+        "step_id": "stp_06"
+      },
+      {
+        "idx": 7,
+        "step_id": "stp_07"
+      },
+      {
+        "idx": 8,
+        "step_id": "stp_08"
+      }
+    ],
+    "observed": [
+      {
+        "interval_id": "int_01",
+        "step_id": "stp_02",
+        "t_end": 5.5333,
+        "t_start": 1.8
+      },
+      {
+        "interval_id": "int_02",
+        "step_id": "stp_03",
+        "t_end": 7.8,
+        "t_start": 5.5333
+      },
+      {
+        "interval_id": "int_03",
+        "step_id": "stp_02",
+        "t_end": 10.0667,
+        "t_start": 7.8
+      },
+      {
+        "interval_id": "int_04",
+        "step_id": "stp_03",
+        "t_end": 11.1333,
+        "t_start": 10.0667
+      },
+      {
+        "interval_id": "int_05",
+        "step_id": "stp_04",
+        "t_end": 16.0667,
+        "t_start": 13.6
+      },
+      {
+        "interval_id": "int_06",
+        "step_id": "stp_05",
+        "t_end": 21.2667,
+        "t_start": 18.6667
+      }
+    ]
+  },
+  "manifest_ref": "manifest.json",
+  "run_id": "run_01M6GERP2Y0GPDYV2AYJV77YAA",
+  "schema_version": "1.0.0",
+  "sop": {
+    "schema_version": "1.0.0",
+    "sop_id": "sop_b7afd674",
+    "source": {
+      "kind": "md",
+      "sha256": "b7afd67425638f7cd3d206b8335491c69ca36570d7bc7d4e0c83c8a2b046debb"
+    },
+    "steps": [
+      {
+        "action": "Tilt the keyboard face-down and tap the frame",
+        "critical": false,
+        "group_id": null,
+        "id": "stp_01",
+        "idx": 1,
+        "ordering": "strict",
+        "parts": [
+          "keyboard",
+          "frame",
+          "work surface"
+        ],
+        "text": "Tilt the keyboard face-down over the work surface and tap the frame to release loose debris.",
+        "tools": [
+          "hand"
+        ],
+        "visual_check": "loose debris released"
+      },
+      {
+        "action": "Brush the upper half of the keycaps",
+        "critical": false,
+        "group_id": "grp_01",
+        "id": "stp_02",
+        "idx": 2,
+        "ordering": "unordered_group",
+        "parts": [
+          "keycaps"
+        ],
+        "text": "Brush the upper half of the keycaps with the cleaning brush.",
+        "tools": [
+          "cleaning brush"
+        ],
+        "visual_check": null
+      },
+      {
+        "action": "Brush the lower half of the keycaps",
+        "critical": false,
+        "group_id": "grp_01",
+        "id": "stp_03",
+        "idx": 3,
+        "ordering": "unordered_group",
+        "parts": [
+          "keycaps"
+        ],
+        "text": "Brush the lower half of the keycaps with the cleaning brush.",
+        "tools": [
+          "cleaning brush"
+        ],
+        "visual_check": null
+      },
+      {
+        "action": "Blow air between the keycaps",
+        "critical": false,
+        "group_id": null,
+        "id": "stp_04",
+        "idx": 4,
+        "ordering": "strict",
+        "parts": [
+          "keycaps"
+        ],
+        "text": "Blow air between the keycaps with the blower.",
+        "tools": [
+          "blower"
+        ],
+        "visual_check": null
+      },
+      {
+        "action": "Wipe the keycap surface",
+        "critical": false,
+        "group_id": null,
+        "id": "stp_05",
+        "idx": 5,
+        "ordering": "strict",
+        "parts": [
+          "keycap surface"
+        ],
+        "text": "Wipe the keycap surface with a lint-free cloth.",
+        "tools": [
+          "lint-free cloth"
+        ],
+        "visual_check": null
+      },
+      {
+        "action": "Wipe the keyboard frame and edges",
+        "critical": false,
+        "group_id": null,
+        "id": "stp_06",
+        "idx": 6,
+        "ordering": "strict",
+        "parts": [
+          "keyboard frame",
+          "edges"
+        ],
+        "text": "Wipe the keyboard frame and edges with the lint-free cloth.",
+        "tools": [
+          "lint-free cloth"
+        ],
+        "visual_check": null
+      },
+      {
+        "action": "Inspect the keycaps and frame",
+        "critical": false,
+        "group_id": null,
+        "id": "stp_07",
+        "idx": 7,
+        "ordering": "strict",
+        "parts": [
+          "keycaps",
+          "frame"
+        ],
+        "text": "Inspect the keycaps and frame for remaining dust or residue.",
+        "tools": [],
+        "visual_check": "remaining dust or residue"
+      },
+      {
+        "action": "Reconnect the USB cable and confirm the keyboard is recognis",
+        "critical": true,
+        "group_id": null,
+        "id": "stp_08",
+        "idx": 8,
+        "ordering": "strict",
+        "parts": [
+          "keyboard"
+        ],
+        "text": "Reconnect the USB cable and confirm the keyboard is recognised. (critical)",
+        "tools": [
+          "usb cable"
+        ],
+        "visual_check": "keyboard is recognised"
+      }
+    ],
+    "title": "Clean a mechanical keyboard",
+    "vocabulary": {
+      "sam_concepts": [
+        "hand",
+        "keyboard",
+        "frame",
+        "work surface",
+        "cleaning brush",
+        "keycaps",
+        "blower",
+        "lint-free cloth",
+        "keycap surface",
+        "keyboard frame",
+        "edges",
+        "usb cable"
+      ],
+      "zones": []
+    }
+  },
+  "status": "done",
+  "summary": {
+    "by_type": {
+      "missed": 3,
+      "out_of_order": 0,
+      "wrong_tool": 0
+    },
+    "dropped": 0,
+    "flagged": 3,
+    "needs_review": 0
+  },
+  "video": {
+    "duration_s": 28.4667,
+    "height": 720,
+    "sha256": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+    "width": 1280
+  }
+}

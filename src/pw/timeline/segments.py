@@ -39,7 +39,7 @@ class SegmentError(ValueError):
 @dataclass(frozen=True, slots=True)
 class SegmentParams:
     min_s: float = 1.0
-    max_s: float = 20.0
+    max_s: float = 4.0
     idle_gap_s: float = 2.0
 
     def __post_init__(self) -> None:
@@ -81,9 +81,13 @@ class _Piece:
     start: float
     end: float
     events: list[Event] = field(default_factory=list)
+    # Split parts keep the parent's activity: an open hold has no event in its tail.
+    forced_kind: str | None = None
 
     @property
     def kind(self) -> str:
+        if self.forced_kind is not None:
+            return self.forced_kind
         return ACTIVITY if self.events else IDLE
 
     @property
@@ -171,7 +175,7 @@ def _split_long(pieces: Sequence[_Piece], params: SegmentParams) -> list[_Piece]
                 for event in piece.events
                 if _belongs(event, start, end, last=index == parts - 1)
             ]
-            result.append(_Piece(start, end, events))
+            result.append(_Piece(start, end, events, forced_kind=piece.kind))
     return result
 
 

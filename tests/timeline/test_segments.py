@@ -78,22 +78,31 @@ def test_idle_gap_shorter_than_threshold_is_absorbed() -> None:
         )
     )
     segments = build_segments(events, duration_s=10.0).segments
-    assert [(segment.t_start, segment.t_end, segment.kind) for segment in segments] == [
-        (0.0, 2.0, "idle"),
-        (2.0, 5.2, "activity"),
-        (5.2, 10.0, "activity"),
-    ]
+    assert [(segments[0].t_start, segments[0].t_end, segments[0].kind)] == [(0.0, 2.0, "idle")]
+    tail = [segment for segment in segments if segment.t_start >= 5.2]
+    assert tail[0].t_start == 5.2
+    assert tail[-1].t_end == 10.0
+    assert {segment.kind for segment in tail} == {"activity"}
+    assert all(segment.t_end - segment.t_start <= 4.0 + 1e-6 for segment in tail)
 
 
 def test_long_activity_segment_is_split() -> None:
     events = EventSet((event("evt_001", "hold_start", 0.0), event("evt_002", "hold_end", 30.0)))
     segments = build_segments(events, duration_s=30.0).segments
-    assert [(segment.t_start, segment.t_end, segment.kind) for segment in segments] == [
-        (0.0, 15.0, "activity"),
-        (15.0, 30.0, "activity"),
+    assert len(segments) == 8
+    assert all(segment.t_end - segment.t_start <= 4.0 + 1e-6 for segment in segments)
+    assert [round(segment.t_start, 2) for segment in segments] == [
+        0.0,
+        3.75,
+        7.5,
+        11.25,
+        15.0,
+        18.75,
+        22.5,
+        26.25,
     ]
     assert segments[0].event_ids == ("evt_001",)
-    assert segments[1].event_ids == ("evt_002",)
+    assert segments[-1].event_ids == ("evt_002",)
 
 
 def test_no_events_yields_one_idle_segment() -> None:

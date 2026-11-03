@@ -50,6 +50,13 @@ def _build_parser() -> argparse.ArgumentParser:
 
     commands.add_parser("config", help="print the loaded, redacted settings")
 
+    demo_build = commands.add_parser("demo-build", help="freeze finished runs into demo cases")
+    demo_build.add_argument("--spec", required=True, type=Path)
+    demo_build.add_argument("--cases-dir", type=Path, default=Path("demo/cases"))
+
+    demo_verify = commands.add_parser("demo-verify", help="verify demo case checksums")
+    demo_verify.add_argument("--cases-dir", type=Path, default=Path("demo/cases"))
+
     export = commands.add_parser("export", help="export a run report as HTML or PDF")
     export.add_argument("run_dir", type=Path)
     export.add_argument("--format", choices=("html", "pdf"), default="html")
@@ -95,6 +102,41 @@ def _openapi(target: Path, *, check: bool) -> int:
     return EXIT_OK
 
 
+def _demo_build(spec_path: Path, cases_dir: Path) -> int:
+    from pw.demo.pack import CaseSpec, DemoError, build_from_specs
+
+    try:
+        spec = json.loads(spec_path.read_text(encoding="utf-8"))
+        cases = [
+            CaseSpec(
+                case_id=str(item["case_id"]),
+                run_dir=Path(item["run_dir"]),
+                title=str(item["title"]),
+                description=str(item["description"]),
+            )
+            for item in spec["cases"]
+        ]
+        built = build_from_specs(cases, cases_dir)
+    except (OSError, ValueError, KeyError, DemoError) as error:
+        print(f"pw: {error}", file=sys.stderr)
+        return EXIT_USAGE
+    for path in built:
+        print(path)
+    return EXIT_OK
+
+
+def _demo_verify(cases_dir: Path) -> int:
+    from pw.demo.pack import verify_cases
+
+    count, errors = verify_cases(cases_dir)
+    if errors:
+        for error in errors:
+            print(error, file=sys.stderr)
+        return 1
+    print(f"{count}/{count} cases OK")
+    return EXIT_OK
+
+
 def _config() -> int:
     try:
         settings = load_settings()
@@ -126,6 +168,10 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if args.command == "config":
         return _config()
+    if args.command == "demo-build":
+        return _demo_build(args.spec, args.cases_dir)
+    if args.command == "demo-verify":
+        return _demo_verify(args.cases_dir)
     if args.command == "export":
         return _export(args.run_dir, fmt=args.format, out=args.out)
     if args.command == "openapi":

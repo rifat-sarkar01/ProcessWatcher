@@ -1,0 +1,136 @@
+{
+  "cost": {
+    "coverage": 0.625,
+    "per_segment": 0.6721045958419026,
+    "total": 8.065255150102832
+  },
+  "intervals": [
+    {
+      "id": "int_01",
+      "margin": 0.0,
+      "mean_prob": 0.3125,
+      "segment_ids": [
+        "seg_002"
+      ],
+      "step_id": "stp_02",
+      "t_end": 5.5333,
+      "t_start": 1.8
+    },
+    {
+      "id": "int_02",
+      "margin": 0.5933252776110906,
+      "mean_prob": 0.585859,
+      "segment_ids": [
+        "seg_003"
+      ],
+      "step_id": "stp_03",
+      "t_end": 7.8,
+      "t_start": 5.5333
+    },
+    {
+      "id": "int_03",
+      "margin": 1.763577756052844,
+      "mean_prob": 0.787879,
+      "segment_ids": [
+        "seg_004"
+      ],
+      "step_id": "stp_02",
+      "t_end": 10.0667,
+      "t_start": 7.8
+    },
+    {
+      "id": "int_04",
+      "margin": 1.325149597067614,
+      "mean_prob": 0.693878,
+      "segment_ids": [
+        "seg_005"
+      ],
+      "step_id": "stp_03",
+      "t_end": 11.1333,
+      "t_start": 10.0667
+    },
+    {
+      "id": "int_05",
+      "margin": 3.1115352429851253,
+      "mean_prob": 0.906404,
+      "segment_ids": [
+        "seg_007"
+      ],
+      "step_id": "stp_04",
+      "t_end": 16.0667,
+      "t_start": 13.6
+    },
+    {
+      "id": "int_06",
+      "margin": 3.6312031795321467,
+      "mean_prob": 0.841584,
+      "segment_ids": [
+        "seg_009"
+      ],
+      "step_id": "stp_05",
+      "t_end": 21.2667,
+      "t_start": 18.6667
+    }
+  ],
+  "params": {
+    "back_per_rank": 0.5,
+    "coverage_prob": 0.4,
+    "epsilon": 0.001,
+    "lambda_back": 2.0,
+    "lambda_critical_skip": 3.0,
+    "lambda_skip": 1.5
+  },
+  "path": [
+    {
+      "segment_id": "seg_001",
+      "step_id": "none"
+    },
+    {
+      "segment_id": "seg_002",
+      "step_id": "stp_02"
+    },
+    {
+      "segment_id": "seg_003",
+      "step_id": "stp_03"
+    },
+    {
+      "segment_id": "seg_004",
+      "step_id": "stp_02"
+    },
+    {
+      "segment_id": "seg_005",
+      "step_id": "stp_03"
+    },
+    {
+      "segment_id": "seg_006",
+      "step_id": "none"
+    },
+    {
+      "segment_id": "seg_007",
+      "step_id": "stp_04"
+    },
+    {
+      "segment_id": "seg_008",
+      "step_id": "none"
+    },
+    {
+      "segment_id": "seg_009",
+      "step_id": "stp_05"
+    },
+    {
+      "segment_id": "seg_010",
+      "step_id": "none"
+    },
+    {
+      "segment_id": "seg_011",
+      "step_id": "none"
+    },
+    {
+      "segment_id": "seg_012",
+      "step_id": "none"
+    }
+  ],
+  "run_id": "run_01M6GERP2Y0GPDYV2AYJV77YAA",
+  "schema_version": "1.0.0",
+  "status": "ok"
+}

@@ -52,7 +52,7 @@ def parse_sop_steps(text: str) -> list[str]:
 
 
 def _golden_for(sop_path: Path, bench_dir: Path) -> Path:
-    """P-A-ssd-swap.md -> bench/golden/P-A.json"""
+    """P-A-keyboard-clean.md -> bench/golden/P-A.json"""
     procedure = "-".join(sop_path.name.split("-")[:2])
     return bench_dir / "golden" / f"{procedure}.json"
 

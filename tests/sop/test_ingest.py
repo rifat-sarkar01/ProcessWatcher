@@ -85,14 +85,14 @@ def test_normalise_numbering_keeps_line_structure() -> None:
 
 @pytest.mark.unit
 def test_read_markdown_sop() -> None:
-    source = read_sop(BENCH_SOPS / "P-A-ssd-swap.md")
+    source = read_sop(BENCH_SOPS / "P-A-keyboard-clean.md")
 
     assert source.kind == "md"
     assert source.needs_vision is False
     assert source.page_count is None
     assert source.images == ()
     assert len(source.sha256) == 64
-    assert "1. Power the PC down" in source.text
+    assert "1. Tilt the keyboard face-down" in source.text
 
 
 @pytest.mark.unit

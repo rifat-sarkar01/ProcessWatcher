@@ -19,11 +19,12 @@ LOCK_SCHEMA_VERSION = "1.0"
 
 
 def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1 << 20), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    """Hash the JSON bytes with line endings normalised to LF.
+
+    Git may check these files out as CRLF on Windows and as LF in CI; the lock must not
+    depend on the platform's checkout settings.
+    """
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 def tracked_files(bench_dir: Path) -> list[Path]:

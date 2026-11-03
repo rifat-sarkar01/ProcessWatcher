@@ -20,6 +20,7 @@ from pw.api.routes_runs import ApiSettings
 from pw.api.routes_runs import router as runs_router
 from pw.api.routes_sop import router as sop_router
 from pw.core.settings import load_env_file, load_settings
+from pw.demo.router import router as demo_router
 from pw.security.ratelimit import RateLimiter
 from pw.security.uploads import UploadCaps
 
@@ -61,6 +62,7 @@ def create_app(
     runs_dir: Path | None = None,
     caps: UploadCaps | None = None,
     rate_limiter: RateLimiter | None = None,
+    demo_cases_dir: Path | None = None,
 ) -> FastAPI:
     load_env_file()
     settings = load_settings()
@@ -74,11 +76,13 @@ def create_app(
         settings=settings,
     )
     app.state.sop_compiler = None
+    app.state.demo_cases_dir = demo_cases_dir if demo_cases_dir is not None else Path("demo/cases")
     install_handlers(app)
     app.include_router(runs_router)
     app.include_router(events_router)
     app.include_router(sop_router)
     app.include_router(review_router)
+    app.include_router(demo_router)
     app.add_middleware(SecurityHeadersMiddleware)
 
     @app.get("/healthz")

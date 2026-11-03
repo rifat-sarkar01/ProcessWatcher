@@ -1,196 +1,186 @@
-# 🔍 Process Watcher
+# Process Watcher
 
-> *"Not what the paperwork says: what actually happened."*
+> **Not what the paperwork says — what actually happened.**
 
-Process Watcher verifies recorded physical procedures against standard operating procedures (SOPs). It detects **missed steps**, **out-of-order execution**, and **wrong tools**, providing exact timestamps, explanations, and visual evidence with SAM-annotated real video frames.
+Process Watcher checks a recorded physical procedure against its written SOP and flags
+**missed steps**, **out-of-order steps** and **wrong tools** with exact timestamps, a
+plain-language explanation, and evidence cut from the real video. It was built for the
+**Meta Global AI Developer Hackathon** (theme: *Push the Frontier*).
 
-Built for the **Meta Global AI Developer Hackathon**.
+- **Problem:** SOP audits are manual, slow and inconsistent. Video exists but nobody
+  watches it.
+- **Solution:** a deterministic compliance engine over model-supplied perception. SAM 3.1
+  tracks hands and tools; Muse Wonder compiles the SOP, scores the actions and verifies the
+  findings; a constrained dynamic-programming aligner — not the model — decides compliance.
+  Muse Image draws "what correct looks like" for each finding.
+- **Why it is auditable:** every verdict carries step id, track ids, timestamps and a
+  real-frame image; illustrations are watermarked and never counted as evidence.
 
----
-
-## 📐 System Workflow Architecture
-
-![Process Watcher Workflow](docs/workflow.svg)
-
-The pipeline integrates three Meta AI models with deterministic alignment logic across 12 discrete stages:
-
-```
-[ Video Input ] ──► (1) Ingest 720p CFR ──► (2) SAM 3.1 Tracking ──► (3) Track Stitching
-                                                                           │
-[ Written SOP ] ──► (5) Muse Wonder Compile ──► (6) Cost Gate ───► (4) Interaction Timeline
-                                                        │                  │
-                                                        ▼                  ▼
-                                                  (7) Deterministic DP Alignment
-                                                              │
-                                                              ▼
-                                                  (8) Deviation Classifier
-                                                  [missed | order | tool]
-                                                              │
-                     ┌────────────────────────────────────────┴───────────────────────┐
-                     ▼                                                                ▼
-         (9) Evidence Extractor                                       (11) Muse Image Gen
-         (Real Frames + SAM Masks)                                     ("What correct looks like")
-                     │                                                                │
-                     ▼                                                                ▼
-         (10) Muse Wonder Verifier ───► [ (12) Report JSON + Web UI Dashboard ] ◄─────┘
+```mermaid
+flowchart LR
+    V[Video] --> ING[1 ingest] --> SAM[3 perceive<br/>SAM 3.1] --> TML[4-5 timeline]
+    S[SOP] --> CMP[2 sop_compile<br/>Muse Wonder]
+    TML --> IDN[6 identify<br/>Muse Wonder] --> SEG[7 score<br/>Muse Wonder] --> ALN[8 align<br/>constrained DP]
+    SEG --> ALN --> DEV[9 deviations] --> VER[10 verify<br/>Muse Wonder]
+    VER --> EVD[11 evidence<br/>real frames]
+    VER --> ILL[12 illustrate<br/>Muse Image]
+    EVD --> REP[report.json + HTML/PDF]
+    ILL --> REP
 ```
 
----
+The full stage table is in [docs/architecture.md](docs/architecture.md).
 
-## 🗂️ Project File Architecture
+## 60-second quickstart
 
-Process Watcher follows senior-grade software architecture standards with a clean `src` layout, comprehensive typed contracts, and isolated workspaces:
+Requirements: Python 3.12 + [uv](https://docs.astral.sh/uv/), Node 20+, ffmpeg/ffprobe on
+PATH, and (for live runs) a Meta Model API key.
 
-```
-ProcessWatcher/
-├── contracts/                       # JSON Schemas (Single Source of Truth)
-│   ├── schemas/                     # sop, tracks, timeline, alignment, report schemas
-│   └── examples/                    # Golden JSON fixture examples
-├── docs/                            # Architectural & Specification Documentation
-│   ├── 01_PRD.md                    # Product Requirements & Acceptance Criteria
-│   ├── 02_AppFlow.md                # User Journeys, Screen Map & State Machines
-│   ├── 03_UI_Spec.md                # Design System, Tokens, Accessibility Specs
-│   ├── 04_TRD.md                    # Technical Architecture, Algorithms & Protocols
-│   ├── 05_Schema.md                 # Entity Relations & Access Control Rules
-│   ├── 06_Plan.md                   # 74-Task Master Plan & Gates
-│   ├── PROGRESS.md                  # Active Owner Handoff Ledger
-│   ├── workflow.svg                 # Pipeline Workflow Diagram
-│   ├── adr/                         # Architecture Decision Records (ADR-000 to ADR-005)
-│   ├── bench/                       # Benchmark Protocol & Scorecards
-│   ├── demo/                        # Hackathon Walkthrough Guides
-│   ├── finals/                      # Submission Explainers & Scripts
-│   ├── results/                     # Test Run Artifacts & Verification Logs
-│   ├── security/                    # Threat Models & Security Audits
-│   └── submission/                  # Hackathon Video & Devpost Writeups
-├── src/                             # Python 3.12 Backend Source Root
-│   └── pw/
-│       ├── api/                     # FastAPI Endpoints (/runs, /evidence, /healthz)
-│       ├── clients/                 # Model API Clients (live, replay, fake) + Ledger
-│       ├── core/                    # Run Store, Config, Type Models
-│       ├── ingest/                  # Video CFR normalization & PTS time mapping
-│       ├── pipeline/                # 12-Stage DAG Execution Orchestrator
-│       ├── security/                # Access Code validation, Path Traversal shields
-│       ├── perception/              # SAM 3.1 client, chunking & polygon masks
-│       ├── timeline/                # Hand-object contacts & interaction events
-│       ├── sop/                     # Muse Wonder SOP parsing & step graph builder
-│       ├── align/                   # Constrained DP sequence aligner
-│       ├── illustrate/              # Muse Image reference generator (watermarked)
-│       ├── evidence/                # Keyframe extraction & SVG/mask rendering
-│       ├── report/                  # Report assembly, summaries & JSON export
-│       ├── bench/                   # Benchmark harness, ablation & metric scorers
-│       ├── data/                    # Dataset validation, hashing & integrity
-│       └── demo/                    # Offline demo mode & preloaded bundles
-├── tests/                           # Pytest Test Suites (Mirrors src/pw)
-│   ├── api/                         # REST endpoint tests
-│   ├── clients/                     # Meta API mock/replay tests
-│   ├── perception/                  # SAM chunking and stitching unit tests
-│   ├── align/                       # DP alignment coverage tests (≥90% req)
-│   ├── timeline/                    # Event detection coverage tests (≥90% req)
-│   ├── robustness/                  # Fault injection, corrupt video, dropped frames
-│   └── fixtures/                    # Golden frames, clips & test SOPs
-├── web/                             # Frontend Application (React + Vite + TypeScript)
-│   ├── src/
-│   │   ├── app/                     # App router & layout shell
-│   │   ├── api/                     # Typed client for pw backend
-│   │   ├── ui/                      # Design system primitives & tokens
-│   │   ├── features/                # Runs, Report, Evidence Viewer, SOP Graph
-│   │   └── types/generated/         # Auto-generated TypeScript types from schemas
-│   └── e2e/                         # Playwright End-to-End Test Suite
-├── bench/                           # Benchmark Dataset Workspace
-│   ├── sops/                        # 3 Standard SOP ground truths
-│   ├── golden/                      # Golden step graphs
-│   ├── dev/                         # 15 development evaluation clips
-│   └── heldout/                     # 9 held-out evaluation clips (HELDOUT.lock)
-├── config/                          # Static configuration & frozen thresholds
-├── demo/cases/                      # Packaged, checksummed demo runs
-└── scripts/                         # Operational & Scaffolding Utilities
+```bash
+uv sync
+npm --prefix web ci
+cp .env.example .env      # set META_API_KEY and PW_ACCESS_CODE
+uv run pw config
 ```
 
----
+Windows (PowerShell) uses the same commands; `Copy-Item .env.example .env` replaces `cp`.
+macOS/Linux need `brew install ffmpeg` / `apt install ffmpeg` once.
 
-## 📋 Implementation Phases & Functional Cards
+Run one clip through the pipeline (replay uses the recorded model responses and costs
+nothing):
 
-### Phase 0 — Foundation, Spikes & Walking Skeleton (Day 1)
-- **`[CARD: ENV-SETUP]`** Python 3.12 `uv` workspace, `ruff`, `mypy`, `pytest`, `pre-commit` gitleaks (`T-0.2`)
-- **`[CARD: FE-SCAFFOLD]`** React 18, Vite, TypeScript strict, Vitest, component tokens (`T-0.3`)
-- **`[CARD: MODEL-SPIKES]`** SAM 3.1 API bounds (`T-0.4`), Muse Wonder JSON structured output (`T-0.5`), Muse Image modes (`T-0.6`)
-- **`[CARD: CORE-CLIENTS]`** Unified model client layer (`pw.clients`) with `live`, `replay`, `fake` modes, retries, and spend ledger (`T-0.7`)
-- **`[CARD: SKELETON-DAG]`** 12-stage pipeline DAG, CLI runner, FastAPI service (`T-0.8`)
-- **`[CARD: CI-PIPELINE]`** GitHub Actions CI for lint, typecheck, tests, and gitleaks (`T-0.9`)
+```bash
+uv run pw run --mode replay --video bench/dev/videos/dev_02_correct.mp4 --sop bench/sops/P-A-keyboard-clean.md
+```
 
-### Phase 1 — Data, Contracts & Eval Harness (Days 1–3)
-- **`[CARD: CONTRACTS]`** JSON Schemas for SOP, tracks, timeline, alignment, report + auto-generated TS types (`T-1.1`, `T-1.2`)
-- **`[CARD: BENCH-DATA]`** 3 SOPs, 15 dev clips, 9 held-out clips, golden annotations (`T-1.3` – `T-1.5`)
-- **`[CARD: EVAL-ENGINE]`** Precision/Recall/F1 metrics, false flag penalties, MAE, benchmark runner (`T-1.6` – `T-1.8`)
+Start the API and the web app:
 
-### Phase 2 — Perception & Interaction Timeline (Days 2–4)
-- **`[CARD: VIDEO-INGEST]`** Variable frame rate (VFR) to CFR 720p normalization with PTS time-mapping (`T-2.1`)
-- **`[CARD: SAM-TRACKING]`** SAM 3.1 chunk runner, Hungarian matching track stitcher, mask RLE utilities (`T-2.2` – `T-2.4`)
-- **`[CARD: TIMELINE-EVENTS]`** Hand-object contact detection, action segmentation, event classification (`T-2.5` – `T-2.8`)
-- **`[CARD: PERCEPTION-EVAL]`** Visual mask overlays and perception validation on dev set (`T-2.9`, `T-2.10`)
+```bash
+uv run uvicorn pw.api.main:app --port 8000
+npm --prefix web run dev
+```
 
-### Phase 3 — Reasoning: SOP Compile, Alignment & Deviations (Days 3–5)
-- **`[CARD: SOP-COMPILER]`** Muse Wonder SOP extraction to typed DAG of steps, tools, and constraints (`T-3.1` – `T-3.3`)
-- **`[CARD: DP-ALIGNMENT]`** Deterministic constrained sequence alignment engine with strict monotonicity (`T-3.4`, `T-3.5`)
-- **`[CARD: DEVIATION-LOGIC]`** Classification of missed steps, out-of-order execution, and wrong tools (`T-3.6`)
-- **`[CARD: VERIFIER-GATE]`** Second-pass Muse Wonder verifier for high-confidence flag confirmation (`T-3.7`)
+The demo pack works without a network or an API key:
 
-### Phase 4 — Evidence, Illustration & Report Assembly (Days 4–6)
-- **`[CARD: EVIDENCE-FRAMES]`** Real-frame keyframe extraction with SAM contour overlays (`T-4.1`, `T-4.2`)
-- **`[CARD: MUSE-ILLUSTRATE]`** Muse Image reference diagrams with explicit watermarking (`T-4.3`)
-- **`[CARD: REPORT-BUILDER]`** Final JSON report synthesis, executive summary, and PDF export (`T-4.4` – `T-4.6`)
+```bash
+PW_MODE=demo uv run uvicorn pw.api.main:app --port 8000
+curl http://localhost:8000/demo/cases
+```
 
-### Phase 5 — Web Application (Days 4–7)
-- **`[CARD: WEB-UPLOAD]`** Video/SOP upload screen with client-side validation and progress telemetry (`T-5.1`)
-- **`[CARD: WEB-TIMELINE]`** Interactive video player synchronized with SOP step timeline and SAM tracks (`T-5.2`)
-- **`[CARD: WEB-DEVIATIONS]`** Side-by-side evidence card viewer comparing actual frames against SOP diagrams (`T-5.3`)
-- **`[CARD: WEB-EXPORT]`** Audit report viewing, filtering, and export capabilities (`T-5.4`, `T-5.5`)
+## How each Meta model is used
 
-### Phase 6 — Benchmark, Tuning & Robustness (Days 6–7)
-- **`[CARD: SYSTEM-TUNING]`** Grid search alignment weights and thresholds on dev split (`T-6.1`)
-- **`[CARD: HELDOUT-EVAL]`** Single-pass final evaluation on held-out split (`T-6.2`)
-- **`[CARD: ROBUSTNESS]`** Stress testing on lighting, occlusions, camera jitter, and partial SOPs (`T-6.3`)
+| Model | Role | Why this model |
+|---|---|---|
+| **SAM 3.1** | Tracks hands and tools frame-by-frame in 15 fps chunks and returns one-bit masks. | Promptable segmentation is the only reliable way to get per-object polygons on real frames; masks become the evidence overlay. |
+| **Muse Wonder** | Compiles the SOP into a step graph, labels each track, scores every timeline segment against every step, verifies findings and writes explanations. | Long-context video reasoning with strict JSON output; it is strong at "which of these actions is happening". |
+| **Muse Image** | Draws one "what correct looks like" diagram per flagged step. | A visual reference is faster to review than text; the output is watermarked and kept out of evidence. |
 
-### Phase 7 — Polish, Packaging & Submission (Days 8–9)
-- **`[CARD: DEMO-BUNDLE]`** Standalone offline demo bundle with pre-computed evaluation cases (`T-7.1`)
-- **`[CARD: CLOUD-DEPLOY]`** Production Docker container deployment with access-code protection (`T-7.2`)
-- **`[CARD: SUBMISSION-MEDIA]`** 3-minute demonstration video and Devpost documentation (`T-7.3` – `T-7.5`)
+The model never decides compliance: it produces likelihoods and labels, and the aligner
+turns those into findings. Scoring is repeated three times and the median is used because
+Muse Wonder at temperature 0 is still not deterministic.
 
----
+<!-- RESULTS:models -->
+Measured contribution on the dev split (see [`docs/results/ablation_dev.md`](docs/results/ablation_dev.md)):
 
-## 🛡️ Agent Git & Pull Request Protocol
+- Removing the **verifier** changes F1 from 0.087 to 0.074 — it mostly improves
+  explanations, not verdicts.
+- The **oracle** row (ground-truth deviations fed straight in) scores 1.000 and the
+  **empty** row scores 0.000, which bounds the metric.
+- The two Wonder-only baselines and the `no_aligner` / `no_identity_vote` rows were **not
+  run** in this timebox and are reported as such, not estimated.
+- **Muse Image** has no accuracy role by design: its diagrams never enter evidence or the
+  decision, so its contribution is review speed only.
 
-To ensure repository safety and continuous integration integrity, all agents must adhere to the following rules:
+## Results
 
-1. **`main` is Protected:**
-   - **Agents NEVER commit or push directly to `main`.**
-   - Merges to `main` occur strictly via Pull Requests.
-2. **One Branch per Card:**
-   - Every task/card (`T-x.y`) must be developed in an isolated branch:
-     ```bash
-     git checkout main
-     git pull origin main
-     git checkout -b task/T-x.y-<short-slug>
-     ```
-3. **Commit Convention:**
-   - Exactly one atomic commit per task: `T-x.y: <imperative title>`
-4. **Pull Request Workflow:**
-   - Push branch to remote: `git push -u origin task/T-x.y-<short-slug>`
-   - Open Pull Request with evidence matching the task's "Done when" criteria.
-   - All automated checks (linting, typechecking, tests, gitleaks) must pass before merging.
+Measured with `pw-bench`; dev is the in-sample calibration split, held-out is the single
+pass with frozen thresholds (`config/thresholds.json`, `sha256 1963006…d69a21`).
 
----
+| Split | P | R | F1 | F1 95% CI | False flags / compliant clip | Timestamp MAE |
+|---|---|---|---|---|---|---|
+| dev (15 clips) | 0.054 | 0.222 | 0.087 | 0.000–0.186 | 1.67 | 0.52 s |
+| held-out (9 clips) | 0.182 | 0.333 | 0.235 | 0.000–0.533 | 0.67 | 0.08 s |
 
-## ⚡ Developer Commands
+By type (held-out): `missed` recall **1.00** (both planted missed steps found with
+confidence 1.0), `out_of_order` and `wrong_tool` recall **0.00** at the flag threshold —
+they are detected but sit in the review lane or are typed as `missed`. Full tables:
+[`docs/results/heldout.md`](docs/results/heldout.md) and
+[`docs/results/tune_dev.md`](docs/results/tune_dev.md).
 
-| Purpose | Command |
-|---|---|
-| Install Backend | `uv sync` |
-| Install Frontend | `npm --prefix web ci` |
-| Start Dev API | `uv run uvicorn pw.api.main:app --reload --port 8000` |
-| Start Dev Web | `npm --prefix web run dev` |
-| Run Pipeline | `uv run pw run --mode replay --video <file> --sop <file>` |
-| Run Unit Tests | `uv run pytest -m "not integration and not live" -q` |
-| Check Types | `uv run mypy src` · `npm --prefix web run typecheck` |
-| Check Code Style | `uv run ruff check .` · `npm --prefix web run lint` |
-| Secret Scan | `uv run pre-commit run gitleaks --all-files` |
+**Reading the numbers honestly:** recall on clearly missing steps is high, but precision is
+low because short neighbouring actions (wipe keycaps vs wipe frame) are under-detected, and
+tool substitutions are reported as missing steps. Threshold calibration on dev could not
+reach the planned ≤0.3 false flags per compliant clip; the best-F1 pair is frozen and the
+shortfall is documented rather than hidden.
+
+## Cost and latency
+
+<!-- RESULTS:cost -->
+- Dev: **$52.07** for 15 clips (about **$5.24 per video-minute**), ~20 minutes wall time per
+  clip with 15 fps SAM tracking, three scoring repeats and illustration QA.
+- Held-out: **$27.33** for 9 clips ($5.48 per video-minute).
+- Total live spend for the whole evaluation: **$135.57**, inside the $150 credit budget.
+- A replay run costs **$0**, serves the recorded responses, and is the default development
+  mode; `PW_MODE=demo` makes no outbound calls at all.
+
+## Limitations
+
+<!-- RESULTS:limitations -->
+- **Short, similar actions are the weak spot.** The segment scorer cannot reliably separate
+  a 1.5 s inspection from the wiping that surrounds it, so compliant clips can carry a
+  high-confidence `missed` finding for `stp_06`/`stp_07`.
+- **Wrong-tool and out-of-order findings are under-flagged.** Tool substitutions are
+  reported as missing steps; order violations are classified correctly but land at
+  confidence 0.30, below the 0.90 flag threshold, and therefore appear in the review lane.
+- **Recognition needs a clear view.** Long occlusion or a hand leaving the frame can push
+  the deterministic coverage guard to `procedure_not_recognized` (3 of 15 dev clips in the
+  first pass; the guard is retained because it prevents false acceptance).
+- **The verifier adds explanation quality, not accuracy**, and SAM/identity are the slow
+  stages (identity about half of the wall time).
+- A ranked failure analysis with root causes and fix directions is in
+  [`docs/results/failures.md`](docs/results/failures.md).
+
+## Security and privacy
+
+- Every `/runs` route requires the `X-Access-Code` header; `/healthz` is public.
+- Uploads are capped (500 MB, 180 s, 3840x2160) and rejected before decoding if the
+  container is not a video; zip bombs are refused on magic bytes.
+- Response headers are hardened (`nosniff`, `Referrer-Policy: no-referrer`, a strict CSP).
+- Runs are stored on the local filesystem under `runs/`; no third-party analytics, no
+  database, no secrets in the browser bundle. Model calls go only through `pw.clients`
+  and are recorded in a local ledger.
+- Video never leaves the machine except as frames sent to the Meta Model API during a live
+  run; `replay` and `demo` modes make no outbound calls.
+
+## Licence
+
+The code is MIT licensed (see [LICENSE](LICENSE)). SAM 3.1 weights and materials are
+provided under the **SAM License**; this project uses the hosted Meta Model API and does
+not redistribute weights. Muse Wonder and Muse Image are used through the same API and are
+subject to Meta's model terms.
+
+## Repository map
+
+```
+src/pw/{api,clients,core,ingest,pipeline,security}     platform
+src/pw/{perception,timeline,sop,align,illustrate,evidence,report,bench,data,demo}
+web/src/{app,features,ui,api,types}                    React + TypeScript UI
+contracts/schemas                                      JSON Schemas for every artifact
+bench/{sops,golden,dev,heldout}                        15 dev + 9 held-out clips
+demo/cases                                             three frozen, checksummed cases
+docs/{adr,results,security,demo,submission}            decisions and measured results
+```
+
+## Verification
+
+```bash
+uv run ruff check .
+uv run mypy src
+uv run pytest -m "not integration and not live" -q
+npm --prefix web run test -- --run
+npm --prefix web run typecheck
+uv run python scripts/readme_check.py
+```
+
+## Contributors
+
+- Rifat Sarkar — design, implementation, dataset, evaluation.
