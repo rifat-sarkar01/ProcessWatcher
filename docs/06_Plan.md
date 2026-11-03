@@ -316,7 +316,7 @@ Standard checks S1–S9 plus the G0 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** perfect · empty · shifted within tolerance · shifted outside · wrong type · duplicate predictions · compliant clip with a false flag · `needs_review` excluded from "flagged" counts.
 - **Done when:** `uv run pytest tests/bench/test_metrics.py -q` → pass (≥ 15 tests).
 
-### T-1.7 · Bench runner with oracle and empty predictors                              [~]
+### T-1.7 · Bench runner with oracle and empty predictors                              [x]
 - **Track:** ML | **Serves:** FR-13 | **Size:** M | **Tier:** standard | **Depends:** T-1.4, T-1.6 | **Blocks:** T-3.10, T-3.12
 - **Context pack (read only these):** T-1.6 API · manifests
 - **Goal:** `pw-bench run --split --predictor oracle|empty|full|baseline_a|baseline_b --config` writes `results/<run>/{summary.json,table.md,per_clip.json,manifest.json}`.
