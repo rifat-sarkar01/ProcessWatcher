@@ -118,6 +118,7 @@ export function UploadPage({
         video,
         sop: sopFile,
         sopText: sopFile ? null : sopText,
+        stepGraph: preview ? { ...preview.step_graph, steps } : null,
       });
       setRunId(started.run_id);
       onStarted?.(started.run_id);

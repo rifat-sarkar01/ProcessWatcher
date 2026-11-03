@@ -70,6 +70,8 @@ def create_app(
         runs_dir=root,
         caps=caps or UploadCaps(),
         limiter=rate_limiter or RateLimiter(),
+        mode=settings.mode,
+        settings=settings,
     )
     app.state.sop_compiler = None
     install_handlers(app)

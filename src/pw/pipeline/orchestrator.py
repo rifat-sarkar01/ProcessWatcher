@@ -123,6 +123,7 @@ def stage_key(
     video_hash: str,
     sop_hash: str,
     artifacts: Mapping[str, Mapping[str, Any]],
+    graph_hash: str = "",
 ) -> str:
     material = {
         "stage_version": STAGE_VERSION,
@@ -132,6 +133,8 @@ def stage_key(
         "sop": sop_hash,
         "inputs": {name: _payload_hash(artifacts[name]) for name in stage.depends},
     }
+    if graph_hash:
+        material["graph_hash"] = graph_hash
     return sha256(json.dumps(material, sort_keys=True).encode("utf-8")).hexdigest()
 
 
@@ -278,14 +281,26 @@ def run_pipeline(
     services: StageServices | None = None,
     settings: Settings | None = None,
     on_event: ProgressCallback | None = None,
+    step_graph: Mapping[str, Any] | None = None,
 ) -> RunResult:
-    """Run the stage DAG for `video` + `sop`; raise `PipelineError` on bad input."""
+    """Run the stage DAG for `video` + `sop`; raise `PipelineError` on bad input.
+
+    `step_graph` is a human-edited SOP graph (05_Schema §14). It replaces the
+    `sop_compile` handler for this run and is folded into every stage key, so an
+    overridden graph and a compiled one never share a cache entry.
+    """
     source_video = Path(video)
     source_sop = Path(sop)
     if not source_video.is_file():
         raise PipelineError(f"video not found: {source_video}", exit_code=2)
     if not source_sop.is_file():
         raise PipelineError(f"sop not found: {source_sop}", exit_code=2)
+    override = dict(step_graph) if step_graph is not None else None
+    if override is not None:
+        errors = validate_payload("sop", override)
+        if errors:
+            raise PipelineError("; ".join(errors), exit_code=2)
+    graph_hash = _payload_hash(override) if override is not None else ""
     resolved = _build_settings(mode, settings)
 
     root_dir = runs_dir if runs_dir is not None else runs_root()
@@ -301,6 +316,8 @@ def run_pipeline(
             video_hash=video_hash,
             sop_hash=sop_hash,
             on_event=on_event,
+            step_graph=override,
+            graph_hash=graph_hash,
         )
     return _run_real(
         paths=paths,
@@ -312,6 +329,8 @@ def run_pipeline(
         settings=resolved,
         services=services or StageServices(),
         on_event=on_event,
+        step_graph=override,
+        graph_hash=graph_hash,
     )
 
 
@@ -323,6 +342,8 @@ def _run_fake(
     video_hash: str,
     sop_hash: str,
     on_event: ProgressCallback | None,
+    step_graph: Mapping[str, Any] | None,
+    graph_hash: str,
 ) -> RunResult:
     artifacts: dict[str, dict[str, Any]] = {}
     outcomes: list[StageOutcome] = []
@@ -335,21 +356,26 @@ def _run_fake(
             video_hash=video_hash,
             sop_hash=sop_hash,
             artifacts=artifacts,
+            graph_hash=graph_hash,
         )
         cached = _cached(artifact_path, key_file, key)
         _emit(on_event, {"event": "stage", "stage": stage.name, "status": "running"})
         if cached:
             artifacts[stage.name] = _read_payload(artifact_path)
         else:
-            payload = fake_artifact(
-                stage,
-                StageContext(
-                    run_id=paths.run_id,
-                    mode="fake",
-                    video=video,
-                    sop=sop,
-                    artifacts=artifacts,
-                ),
+            payload = (
+                dict(step_graph)
+                if stage.name == "sop_compile" and step_graph is not None
+                else fake_artifact(
+                    stage,
+                    StageContext(
+                        run_id=paths.run_id,
+                        mode="fake",
+                        video=video,
+                        sop=sop,
+                        artifacts=artifacts,
+                    ),
+                )
             )
             _write_payload(artifact_path, payload)
             key_file.write_text(key + "\n", encoding="utf-8")
@@ -379,11 +405,23 @@ def _run_real(
     settings: Settings | None,
     services: StageServices,
     on_event: ProgressCallback | None,
+    step_graph: Mapping[str, Any] | None,
+    graph_hash: str,
 ) -> RunResult:
     created_at = utc_now()
     cap = settings.spend_cap_usd if settings is not None else 3.0
     ledger = RunLedger(paths.root / "ledger.json", cap_usd=cap)
     services = _build_services(mode, settings, services, ledger)
+    if step_graph is not None:
+        override = dict(step_graph)
+
+        def _override(_run: StageRun) -> dict[str, Any]:
+            return dict(override)
+
+        services = replace(
+            services,
+            handlers={**services.handlers, "sop_compile": _override},
+        )
     frames: FrameProvider = services.frames or VideoFrames(Path("."))
     artifacts: dict[str, dict[str, Any]] = {}
     outcomes: list[StageOutcome] = []
@@ -399,6 +437,7 @@ def _run_real(
             video_hash=video_hash,
             sop_hash=sop_hash,
             artifacts=artifacts,
+            graph_hash=graph_hash,
         )
         started = time.monotonic()
         spend_before = ledger.total_usd
@@ -490,7 +529,7 @@ def _run_real(
             "video_sha256": video_hash,
             "sop_sha256": sop_hash,
             "step_graph_sha256": _payload_hash(artifacts["sop_compile"]),
-            "edited_by_user": False,
+            "edited_by_user": step_graph is not None,
         },
         outcomes=outcomes,
         ledger=ledger,
