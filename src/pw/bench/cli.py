@@ -7,6 +7,7 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+from pw.bench.perception_check import perception_check, render_markdown
 from pw.bench.runner import (
     DECLARED_PREDICTORS,
     IMPLEMENTED_PREDICTORS,
@@ -16,6 +17,7 @@ from pw.bench.runner import (
 )
 
 EXIT_OK = 0
+EXIT_INVALID = 1
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -35,6 +37,20 @@ def _build_parser() -> argparse.ArgumentParser:
     run.add_argument("--mode", default="replay", help="recorded in the result manifest")
     run.add_argument("--runs-dir", type=Path, default=Path("runs"))
 
+    check = commands.add_parser(
+        "perception-check", help="check hand coverage, fragmentation and pick-up alignment"
+    )
+    check.add_argument("--split", required=True, choices=SPLITS)
+    check.add_argument("--mode", default="replay")
+    check.add_argument("--bench-dir", type=Path, default=Path("bench"))
+    check.add_argument("--runs-dir", type=Path, default=Path("runs"))
+    check.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        help="markdown output (default: docs/results/perception_<split>.md)",
+    )
+
     tune = commands.add_parser("tune", help="calibrate thresholds on dev only")
     tune.add_argument("--split", default="dev", choices=SPLITS)
     tune.add_argument("--bench-dir", type=Path, default=Path("bench"))
@@ -48,6 +64,27 @@ def _build_parser() -> argparse.ArgumentParser:
     ablate.add_argument("--runs-dir", type=Path, default=Path("runs"))
     ablate.add_argument("--out", type=Path, default=Path("docs/results/ablation_dev.md"))
     return parser
+
+
+def _run_perception_check(args: argparse.Namespace) -> int:
+    result = perception_check(
+        split=args.split,
+        mode=args.mode,
+        bench_dir=args.bench_dir,
+        runs_dir=args.runs_dir,
+    )
+    out = args.out or Path("docs/results") / f"perception_{args.split}.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(render_markdown(result), encoding="utf-8")
+    for clip in result.clips:
+        verdict = "PASS" if clip.passed else "FAIL"
+        detail = "; ".join(clip.reasons) if clip.reasons else "ok"
+        print(f"{clip.clip_id}  {verdict}  {detail}")
+    print(
+        f"{'PASS' if result.ok else 'FAIL'} {result.passed}/{len(result.clips)} "
+        f"(required {result.required}) -> {out}"
+    )
+    return EXIT_OK if result.ok else EXIT_INVALID
 
 
 def _run_tune(args: argparse.Namespace) -> int:
@@ -103,6 +140,8 @@ def _run_ablate(args: argparse.Namespace) -> int:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
+    if args.command == "perception-check":
+        return _run_perception_check(args)
     if args.command == "tune":
         return _run_tune(args)
     if args.command == "ablate":
