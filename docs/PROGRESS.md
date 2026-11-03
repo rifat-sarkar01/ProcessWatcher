@@ -5,7 +5,7 @@
 ## Now (one row per owner; one task in progress per owner)
 | Owner | Track | Current task | Status | Branch / last green commit |
 |---|---|---|---|---|
-| O1 | ML | T-2.10 · Perception check on dev | done, **unmerged** | task/T-2.10-perception-check |
+| O1 | ML | T-2.10 · Perception check on dev | tool merged; **2/15 PASS** (fragmentation), card open | PR #70 |
 | O2 | ML | T-4.4 · Illustration QA loop | done | task/T-4.4-illustration-qa |
 | O3 | OPS | T-7.2 · Container and deploy | blocked: no Docker/flyctl on this machine | scaffold merged |
 | O4 | DOC | T-7.5 · Submission package | done | fix/T-3.6-parts-neutral |
@@ -32,6 +32,7 @@ Micro-plan (M tasks only, 3–6 lines):
 - **Video (T-7.4):** needs a recorded 3-minute walkthrough + 60 s teaser from the demo pack; not producible by an agent.
 - **Clean room (T-7.6):** needs a machine that has never seen the repo; README quickstart is the script.
 - **T-2.10 branch:** `task/T-2.10-perception-check` holds the perception check + results; open a PR and merge it (it was not part of this branch's touch list).
+- **T-2.10 branch merged; the gate fails honestly.** `pw-bench perception-check --split dev --mode live` → 2/15 (required 12). Hand coverage is 94.9–100% and pick-up hit rate 94.1–100% on every clip; the failures are all SAM fragmentation (1.29–2.71 tracks per concept against a 1.5 bar). The table is `docs/results/perception_dev.md`; the card stays `[ ]` until stitching improves.
 - Spend: **$135.57 of $150**; no further live runs planned. Q-1 track (Indie), Q-3 procedure (P-A keyboard), Q-4 OS mix, Q-5 rules are settled; portal entry needs the Representative/waiver items from ADR-000.
 
 ## Health
@@ -43,3 +44,5 @@ Scope violations: 0 · Tasks reopened: 0 · Tasks added: 0 · Failed-attempt str
 - **`wrong_tool` is reported as `missed` when the substituted object is not tracked**: without the expected tool the step never aligns. Type-level attribution needs the aligner to treat a tool mismatch as partial evidence.
 - **Tuning reclassifies raw `stages/deviations.json` while the bench scores `report.json`**, where the verifier can change status, so tune's false-flag rate (1.00) and the report's (1.67 on dev) differ; both are documented.
 - **`.gitignore` had `results/`** (matches `docs/results/` too); changed to `/results/` so the measured results docs are tracked, and `pytest-of-*/` is ignored.
+- **The held-out lock hashed checkout bytes, not content.** Windows checked the JSON out as CRLF while CI got LF, so `verify-lock` passed locally and failed in CI. The lock now hashes with `\r\n` normalised to `\n`; the content is unchanged and the lock was regenerated.
+- **SAM fragmentation is the perception bottleneck, not hand tracking.** Hand coverage and tool pick-up alignment are ~100%, but one concept becomes 1.7–2.7 tracks. The 4 s scoring windows absorb this today; better stitching is the next quality lever.
