@@ -1,0 +1,19 @@
+{
+  "case_id": "keyboard-compliant",
+  "title": "Keyboard clean: compliant run",
+  "description": "The operator follows the SOP; no finding is flagged, only one review-level note.",
+  "source_run": "run_01M6GJTQVVQF26EWF0GYGZKZWD",
+  "files": {
+    "evidence/evd_001/dev_001_f000705.png": "31e887d2c280062991779bbda63f98865e830d00eb84e8002cb429ef1abb20b8",
+    "evidence/evd_002/dev_001_f000706.png": "09dfbef125a21b1a3871e95a7a61aa3b4db870087733e5fbeacf4e73ad92590b",
+    "illustrations/ill_001.png": "716f49faa24b236cc13e155b6491f8e7fd698d758f993ca85550601176fd9194",
+    "ledger.json": "317ffc7a0c16d2b8df56bdc1942b3d346a52f3ec6cb5a68bcb4eed24cd873f9e",
+    "manifest.json": "89f786d00db4f8d3e34d2f6db56ec8659bf20f97f34a87d2d059892ab05de93e",
+    "media/analysis.mp4": "4a385926b3911ee51dfa4ea613ebd72f220bf39a1d160f06f257787f20d41db9",
+    "report.json": "9ef2cd21768eb584c12eb650c1d576b4c61054d61691959ee1c24df05f391be3",
+    "stages/alignment.json": "66b1ff02a6881d3d35a0cb6cb4c0637c4ca4be74127b5e8d51a42a9af83d2bcc",
+    "stages/deviations.json": "b1fb5ebd7827e653e7703cdccc40b82126088c5e002d77d454c823d45e856fdf",
+    "stages/timeline.json": "4bbf14fe433a74622c08fdd738ee05c465d1acc792860c4c46dc0fae8ddabd81",
+    "stages/tracks.json": "4b8972fdfd4607dd65eb9bc41be90f6d2388f28a97167082fceb88f997c91c06"
+  }
+}

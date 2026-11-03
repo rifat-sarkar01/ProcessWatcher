@@ -1,0 +1,31 @@
+{
+  "case_id": "keyboard-missed-tilt",
+  "title": "Keyboard clean: tilt and tap omitted",
+  "description": "Step 1 is never performed; the aligner flags it as missed with 1.0 confidence.",
+  "source_run": "run_01M6GERP2Y0GPDYV2AYJV77YAA",
+  "files": {
+    "evidence/evd_001/dev_001_f000000.png": "4bb5b755b9fd1e383aba8d685d1358e450935b3edcbf46196c4a0b73f7e83ad7",
+    "evidence/evd_002/dev_001_f000009.png": "79c7827a6a1b8e1ffa1d5b1e33be08b2aa06bcce985513b44cb658cad5d734c8",
+    "evidence/evd_003/dev_001_f000019.png": "c07a16e2540c1208cddf0ca5f0be1bb02f540bf67f7a73805f27c985c875646f",
+    "evidence/evd_004/dev_001_f000027.png": "e9c8d66c132d7a93afa6ecc668803f98d8564fb5879bf0ed0a2258aa48e7a0c7",
+    "evidence/evd_005/dev_002_f000319.png": "fc71ae655b0046ab7b7759a7c73a7d7ed0c7a629b106413ab46aa9bde78abec4",
+    "evidence/evd_006/dev_002_f000353.png": "3cea072ae9c52bfbb643203ea0b63f690837baec2430ff25f4b59ee1632e5327",
+    "evidence/evd_007/dev_002_f000366.png": "165700d0ffee0ff50e1b29bbcd0c7ec3aa7b420e018e8dc2d2d83a73c4f6dedb",
+    "evidence/evd_008/dev_002_f000376.png": "60923ed1e009be51713b6e2f7c57acaa0332a6a3b8b928f0472d107790dd7923",
+    "evidence/evd_009/dev_003_f000319.png": "fc71ae655b0046ab7b7759a7c73a7d7ed0c7a629b106413ab46aa9bde78abec4",
+    "evidence/evd_010/dev_003_f000353.png": "3cea072ae9c52bfbb643203ea0b63f690837baec2430ff25f4b59ee1632e5327",
+    "evidence/evd_011/dev_003_f000366.png": "165700d0ffee0ff50e1b29bbcd0c7ec3aa7b420e018e8dc2d2d83a73c4f6dedb",
+    "evidence/evd_012/dev_003_f000376.png": "60923ed1e009be51713b6e2f7c57acaa0332a6a3b8b928f0472d107790dd7923",
+    "illustrations/ill_001.png": "d494496926ff2ed98d8953169d7534bea59f6278c00e5ff43203b63846555c54",
+    "illustrations/ill_002.png": "d3daa1893ac715b6a624c0a2b4d04d61664c6e7e99ea48c88692deb0fb4b9e29",
+    "illustrations/ill_003.png": "0f6554ea26f9461ab0238b3b4ac265cf7a7d5d0f9ed7e99ee434f7036bd9b86f",
+    "ledger.json": "a034a456d3bd42525c5dcccb9edf6a5bf76acf193c8655dd94e58696dbadf457",
+    "manifest.json": "2b9dea735e70c6efdf0f840bc3a353411ee2739a7ad335f35e6b0d3780b5f4e2",
+    "media/analysis.mp4": "623505adab3d1c383b7f8f115d3896b1638b307273b9febfaaa7fc0e6cc4d980",
+    "report.json": "53759ff253be61106b9dbfa3ca867b7c13aa24c950545b855ff3798ec4a90295",
+    "stages/alignment.json": "0a59f3bb631bab9acc8dd033100c3ab0292ba99ba7cebfc83191d1798b3d38b3",
+    "stages/deviations.json": "8849551acce5e7df0c577b9c5ee4046413ba6ce8052afe18f11ad5a81ea87a3c",
+    "stages/timeline.json": "94915c4c0d06a22a3f19eccab7623c1bf8fa9df5f48941aaf33f83331315cc23",
+    "stages/tracks.json": "f8936a865bdffb77f670ac0a4e725fab9446679d3691f8bdb7573e285c349702"
+  }
+}

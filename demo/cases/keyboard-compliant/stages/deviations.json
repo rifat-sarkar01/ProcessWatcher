@@ -1,0 +1,41 @@
+{
+  "deviations": [
+    {
+      "confidence": 0.89899,
+      "expected_tools": [
+        "lint-free cloth"
+      ],
+      "id": "dev_001",
+      "margin": 0.14899,
+      "observed_tools": [],
+      "relates_to_step_id": null,
+      "severity": "medium",
+      "status": "needs_review",
+      "step_id": "stp_06",
+      "t_end": 47.0222,
+      "t_start": 47.0222,
+      "track_ids": [
+        "trk_001",
+        "trk_002",
+        "trk_003",
+        "trk_004",
+        "trk_005",
+        "trk_006",
+        "trk_007",
+        "trk_008",
+        "trk_009",
+        "trk_010",
+        "trk_011",
+        "trk_012",
+        "trk_013",
+        "trk_014",
+        "trk_015",
+        "trk_016"
+      ],
+      "type": "missed"
+    }
+  ],
+  "run_id": "run_01M6GJTQVVQF26EWF0GYGZKZWD",
+  "schema_version": "1.0.0",
+  "status": "ok"
+}
