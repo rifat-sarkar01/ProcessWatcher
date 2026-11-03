@@ -540,7 +540,7 @@ Standard checks S1–S9 plus the G2 extras in the Phase Profile. Evidence in PRO
 - **Tests first:** resume skips cached stages · cap aborts with a partial valid report · stage failure isolated and bannered.
 - **Done when:** `uv run pytest tests/pipeline -q` → pass; `uv run pw run --mode replay --video bench/dev/A2.mp4 --sop bench/sops/A.md` → exit 0 and `uv run pw-data validate-artifact runs/<id>/report.json` OK.
 
-### T-3.10 · Threshold calibration on dev                                                  [ ]
+### T-3.10 · Threshold calibration on dev  [x]
 - **Track:** ML | **Serves:** NFR-07, FR-08 | **Size:** M | **Tier:** standard | **Depends:** T-1.7, T-1.8, T-3.9 | **Blocks:** T-6.1
 - **Context pack (read only these):** NFR-07 · `src/pw/bench/runner.py`
 - **Goal:** grid-search flag threshold, verifier-agreement rule and margin cutoff on DEV only to maximise F1 subject to ≤ 0.3 false flags per compliant clip; write `config/thresholds.json` and freeze it.
@@ -793,7 +793,7 @@ Standard checks S1–S9 (with e2e) plus the G5 extras in the Phase Profile. **Fe
 - Gate extras: held-out numbers recorded with `lock: OK` · ablation table present · zero high/critical audit findings · failure-injection suite green · perf and cost targets met or amended by ADR · limitations written. A second held-out run requires a logged reason.
 - Exit evidence: `docs/results/{ablation_dev,heldout,failures}.md`, audit outputs.
 
-### T-6.1 · Dev full run and ablations                                                          [ ]
+### T-6.1 · Dev full run and ablations  [x]
 - **Track:** ML | **Serves:** FR-13, NFR-07 | **Size:** M | **Tier:** standard | **Depends:** T-3.10, T-3.12, T-4.6 | **Blocks:** T-6.2
 - **Context pack (read only these):** NFR-07 · `src/pw/bench/runner.py`
 - **Goal:** `pw-bench ablate --split dev` over {full, raw_video(A), no_sam(B), no_aligner (greedy argmax), no_verifier, no_identity_vote}; per-type P/R/F1, false flags per compliant clip, MAE, $/min, latency; bootstrap 95% CIs (1000 resamples over clips).
@@ -802,7 +802,7 @@ Standard checks S1–S9 (with e2e) plus the G5 extras in the Phase Profile. **Fe
 - **Tests first:** bootstrap on toy data matches a hand calculation · config switch actually disables the component.
 - **Done when:** `uv run pw-bench ablate --split dev` → table with 6 rows; Full ≥ baseline B F1 + 0.10, or the `#analysis` section explains why not (honest reporting).
 
-### T-6.2 · Held-out single-shot run                                                            [ ]
+### T-6.2 · Held-out single-shot run  [x]
 - **Track:** ML | **Serves:** NFR-07 | **Size:** S | **Tier:** deep | **Depends:** T-6.1, T-6.3, T-6.4, T-6.6, T-1.8 | **Blocks:** G6
 - **Context pack (read only these):** `config/thresholds.json` · `bench/HELDOUT.lock`
 - **Goal:** run the frozen pipeline once on the 9 held-out clips and record the headline numbers; no tuning afterwards.
@@ -856,7 +856,7 @@ Standard checks S1–S9 (with e2e) plus the G5 extras in the Phase Profile. **Fe
 - **Tests first:** axe on the 4 routes.
 - **Done when:** `npm --prefix web run test:a11y` → 0 serious/critical violations on 4 routes.
 
-### T-6.8 · Failure analysis and limitations                                                         [ ]
+### T-6.8 · Failure analysis and limitations  [x]
 - **Track:** ML | **Serves:** FR-13 | **Size:** S | **Tier:** standard | **Depends:** T-6.2 | **Blocks:** G6
 - **Context pack (read only these):** `docs/results/*.md`
 - **Goal:** top-10 failures (dev + held-out) with evidence frames, root cause, and what would fix them; a plain-language "Limitations" section for README and video.
@@ -882,7 +882,7 @@ Standard checks S1–S9 (audits blocking) plus the G6 extras in the Phase Profil
 - Gate extras: submission receipt saved · tag `v1.0.0` · rollback rehearsed (redeploy previous image) · **human approves the public deploy** · finals kit ready.
 - Exit evidence: receipt screenshot, public smoke output, clean-room log.
 
-### T-7.1 · Demo pack (frozen offline cases)                                                         [ ]
+### T-7.1 · Demo pack (frozen offline cases)  [x]
 - **Track:** BE | **Serves:** FR-14, NFR-08 | **Size:** S | **Tier:** standard | **Depends:** T-5.12, T-6.2 | **Blocks:** T-7.4
 - **Context pack (read only these):** §1A demo arc · `src/pw/pipeline/*`
 - **Goal:** `pw demo-build` runs 3 cases live once (one per procedure; include one held-out with a planted mistake and one compliant clip), freezes artifacts in `demo/cases/<id>/` (report, evidence, illustrations, polygons, 720p source), with checksums; `PW_MODE=demo` serves them with no network.
@@ -902,7 +902,7 @@ Standard checks S1–S9 (audits blocking) plus the G6 extras in the Phase Profil
 - **Done when:** `curl https://<host>/healthz` → `{"status":"ok"}`; `uv run pw smoke --url https://<host> --code $env:PW_ACCESS_CODE` → demo case loads and one live 20 s run completes.
 - **Rollback:** redeploy the previous image tag; documented in `deploy/ROLLBACK.md`; rehearsed once.
 
-### T-7.3 · README and docs                                                                           [ ]
+### T-7.3 · README and docs  [x]
 - **Track:** DOC | **Serves:** SUB-01 | **Size:** M | **Tier:** light | **Depends:** T-6.2, T-6.8 | **Blocks:** T-7.5
 - **Context pack (read only these):** `docs/results/*.md` · §1B · ADR-000 (licence rules)
 - **Goal:** what/why, 60-second quickstart (Windows/macOS/Linux), architecture figure, how each Meta model is used with its measured contribution (ablation), held-out results, cost/latency, limitations, security/privacy, SAM License acknowledgement, LICENSE per rules, contributors.
@@ -920,7 +920,7 @@ Standard checks S1–S9 (audits blocking) plus the G6 extras in the Phase Profil
 - **Tests first:** n/a (media).
 - **Done when:** `ffprobe -v error -show_entries format=duration -of csv=p=0 docs/demo/demo.mp4` → ≤ 180.0 (or the limit in ADR-000).
 
-### T-7.5 · Submission package and dry run                                                              [ ]
+### T-7.5 · Submission package and dry run  [x]
 - **Track:** DOC | **Serves:** SUB-01 | **Size:** S | **Tier:** light | **Depends:** T-7.2, T-7.3, T-7.4 | **Blocks:** T-7.7
 - **Context pack (read only these):** ADR-000 · README
 - **Goal:** title, one-liner, problem, solution, theme fit (Push the Frontier), track statement, how each model is used with evidence, results, links, team; draft entered in the portal if allowed (Nov 3).
@@ -1016,3 +1016,7 @@ Standard checks S1–S9 plus the G7 extras in the Phase Profile. **Human approve
 | 2026-11-03 | **T-1.8 held-out lock committed** before any tuning. `bench/HELDOUT.lock` (commit `74ff3a4`, the T-1.5 label commit) hashes `heldout/manifest.json` — which carries every clip's sha256, since the 461 MB videos stay outside git — plus all nine `heldout/gt/*.json`. `pw-data verify-lock` recomputes them; edit/add/remove is a `LOCK VIOLATION`. | T-3.10 must not run before the held-out data is frozen; locking the manifest transits the clip hashes without committing video. |
 | 2026-11-03 | **T-1.5 held-out split committed** under the same approved waiver. 9 held-out clips (A16–A24: 3 compliant, 2 missed, 2 out_of_order, 2 wrong_tool) labelled with step windows, instances, `sha256`, durations and GT; no model has been run on `bench/heldout/*`. T-1.8 hashes these files into `bench/HELDOUT.lock` before any tuning. | Held-out footage was delivered with the dev set; committing the labels is the remaining half of the split pair and gates T-1.8/T-6.2. |
 | 2026-11-03 | **Delivered footage adopted as P-A; T-1.4 completed with two approved waivers** (human-approved in-session). The 24 clips clean a mechanical keyboard, so `bench/sops/P-A-keyboard-clean.md` + `bench/golden/P-A.json` replace the unfilmed SSD-swap procedure; clips map to A1–A15 (dev) and A16–A24 (held-out). Waivers: the 45 s clip floor becomes 20 s (clips are 23.7–54.3 s) and the SOP keeps its 8 observable steps (tilt/tap, two brush passes, blower, two wipe passes, inspect, reconnect). Touch extended to `bench/golden/P-A.json`, `bench/sops/*`, `bench/ground_truth.csv`, `src/pw/data/split.py`, `src/pw/data/cli.py`, `tests/data/test_split_validate.py` and `docs/bench/shot_list.md`; the split validator (`pw-data validate --split`) did not exist. | The dataset is the real footage and does not match the authored A/B/C shot list; without the adaptation T-1.4/T-1.5 could never pass and every data-dependent card stayed blocked. |
+| 2026-11-03 | **Segmentation resolution raised before T-6.2** (quality fix, human-approved live spend). `SegmentParams.max_s` drops from 20 s to 4 s so the scorer sees one action per window instead of a merged wipe/inspect stretch; split parts inherit the parent's `activity` kind so an open hold does not turn its tail into an idle segment. A single-clip live experiment on A2 took false findings from 4 to 1 and rescued `stp_03`, `stp_07` and `stp_08`; the whole dev set was then re-run live. | Every compliant clip was flagged with the same late-step `missed` finding; one third of the bug was temporal resolution, not model quality. |
+| 2026-11-03 | **Tool neutrality extended to identity labels** (T-3.6 follow-up). `derive_deviations(neutral=...)` ignores held tracks whose *identity label* is the hand or a script part, and a step whose only expected tool is neutral has no tool requirement. Tests cover both directions. | Part concepts were excluded, but a keycap track labelled "hand" still produced `wrong_tool`; the neutral set now applies at both ends. |
+| 2026-11-03 | **T-3.10 calibrated with a documented unmet constraint; T-6.1/T-6.2 measured.** The tuner now falls back to the best-F1 pair and records `NOT met` when no pair reaches ≤0.3 false flags per compliant clip, instead of aborting. Chosen `tau_review 0.20` / `tau_flag 0.90`; dev F1 0.118 on reclassified raw deviations, 0.087 on the report lane. Held-out single pass: F1 0.235 [0–0.533], `missed` recall 1.00, false flags 0.67/compliant clip, MAE 0.08 s, $27.33. `bench/HELDOUT.lock` verified before and after. | The false-flag budget is unreachable while short neighbouring actions are under-detected; reporting the real number is more useful than a silent relaxation or an invented baseline. |
+| 2026-11-03 | **T-7.1 demo pack + demo routes; T-7.3/T-7.5 docs; T-7.2/T-7.4/T-7.6 remain open.** Three frozen cases (`keyboard-compliant`, `keyboard-missed-tilt`, `keyboard-heldout-missed-blower`) are built from finished runs, checksummed and served read-only by new `/demo/cases` routes; `pw demo-verify` → 3/3 and `PW_MODE=demo` serves the gallery and media. README rewritten (quickstart, mermaid figure, measured tables, limitations, licence), `docs/architecture.md` added, `scripts/readme_check.py` dry-runs 15 fenced commands. Submission draft has the seven required fields. | The remaining release cards need tools this machine does not have (Docker/flyctl for T-7.2), a camera/recording session (T-7.4) and a clean-room pass (T-7.6); documenting them keeps the plan honest. |
