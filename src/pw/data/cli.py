@@ -9,10 +9,12 @@ from pathlib import Path
 
 from pw.data.schemas import KINDS, SCHEMA_NAMES, example_files, load_json
 from pw.data.sopcheck import (
+    default_bench_dir,
     golden_step_ids,
     validate_bench_sops,
     validate_gt,
 )
+from pw.data.split import SPLIT_CLIP_COUNTS, validate_split
 from pw.data.validate import validate_all, validate_artifact_file
 
 EXIT_OK = 0
@@ -96,6 +98,18 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help="bench directory (default: <repo>/bench or $PW_BENCH_DIR)",
     )
+
+    split = subparsers.add_parser(
+        "validate",
+        help="validate a bench split (manifest, clip hashes and per-clip ground truth)",
+    )
+    split.add_argument("--split", required=True, choices=sorted(SPLIT_CLIP_COUNTS))
+    split.add_argument(
+        "--bench-dir",
+        type=Path,
+        default=None,
+        help="bench directory (default: <repo>/bench or $PW_BENCH_DIR)",
+    )
     return parser
 
 
@@ -157,6 +171,19 @@ def _run_validate_gt(path: Path, golden: Path, bench_dir: Path | None) -> int:
     return EXIT_OK
 
 
+def _run_validate_split(split: str, bench_dir: Path | None) -> int:
+    base = bench_dir if bench_dir is not None else default_bench_dir()
+    clips, ground_truths, errors = validate_split(split, base)
+    if errors:
+        return _print_errors(errors, f" in split {split}")
+
+    print(
+        f"{clips} clips OK · {ground_truths} GT OK · durations 20–180 s (45 s floor waived) "
+        "· sha256 match"
+    )
+    return EXIT_OK
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     _configure_stdio()
     args = _build_parser().parse_args(argv)
@@ -169,6 +196,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _run_validate_sops(args.bench_dir)
     if args.command == "validate-gt":
         return _run_validate_gt(args.path, args.golden, args.bench_dir)
+    if args.command == "validate":
+        return _run_validate_split(args.split, args.bench_dir)
 
     print(f"unknown command: {args.command}", file=sys.stderr)  # pragma: no cover - argparse
     return EXIT_USAGE

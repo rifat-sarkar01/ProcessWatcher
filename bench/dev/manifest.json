@@ -1,0 +1,125 @@
+{
+  "split": "dev",
+  "clips": [
+    {
+      "clip_id": "A1",
+      "procedure": "A",
+      "sha256": "3853d9bb4ec1075a42e685aef353aced7e7bb9f5a2a9f468ef006e91b00fc45c",
+      "duration_s": 54.333,
+      "storage_ref": "videos/dev_01_correct.mp4",
+      "gt_path": "gt/A1.json"
+    },
+    {
+      "clip_id": "A2",
+      "procedure": "A",
+      "sha256": "c5f2172ca60247496b64e0941595f8303d9515dd2ac8a38ae5c93b7ef64cca7e",
+      "duration_s": 53.667,
+      "storage_ref": "videos/dev_02_correct.mp4",
+      "gt_path": "gt/A2.json"
+    },
+    {
+      "clip_id": "A3",
+      "procedure": "A",
+      "sha256": "cf4bbb418ca9790c29be792566e49fe0ef4543135162e8a4304da36553fa1a0d",
+      "duration_s": 47.998,
+      "storage_ref": "videos/dev_03_correct.mp4",
+      "gt_path": "gt/A3.json"
+    },
+    {
+      "clip_id": "A4",
+      "procedure": "A",
+      "sha256": "c3fc9914c6a7453d67fbe032e2164ab039dbfc8dd0fbd528f19ef63b199f23ae",
+      "duration_s": 42.167,
+      "storage_ref": "videos/dev_04_correct.mp4",
+      "gt_path": "gt/A4.json"
+    },
+    {
+      "clip_id": "A5",
+      "procedure": "A",
+      "sha256": "a724331982386697f374ddc6a3110d37b9e6da6dac8ecadaf34ee6d72b52b580",
+      "duration_s": 43.2,
+      "storage_ref": "videos/dev_05_correct.mp4",
+      "gt_path": "gt/A5.json"
+    },
+    {
+      "clip_id": "A6",
+      "procedure": "A",
+      "sha256": "069bb37b343f784a269ad6c64ff13daa7bb859832eb10505daf8f15bcde8b2e3",
+      "duration_s": 45.033,
+      "storage_ref": "videos/dev_06_correct.mp4",
+      "gt_path": "gt/A6.json"
+    },
+    {
+      "clip_id": "A7",
+      "procedure": "A",
+      "sha256": "4de472278c757b6d6079d0eaf30a29663b0ee7a5a9bf4100cbfe264daa600eb0",
+      "duration_s": 28.467,
+      "storage_ref": "videos/dev_07_skipstep_tilttap.mp4",
+      "gt_path": "gt/A7.json"
+    },
+    {
+      "clip_id": "A8",
+      "procedure": "A",
+      "sha256": "ed6b9b3594970e93dd8e8b63ef5540a014898897626e0ce8797aca2ec48eb079",
+      "duration_s": 25.7,
+      "storage_ref": "videos/dev_08_skipstep_brush.mp4",
+      "gt_path": "gt/A8.json"
+    },
+    {
+      "clip_id": "A9",
+      "procedure": "A",
+      "sha256": "7ae13299f461800053672d640b02944ecd7e474375dd1e3ab0b7e4c5cd2003c7",
+      "duration_s": 28.4,
+      "storage_ref": "videos/dev_09_skipstep_blower.mp4",
+      "gt_path": "gt/A9.json"
+    },
+    {
+      "clip_id": "A10",
+      "procedure": "A",
+      "sha256": "600d640a4c85b9452cc7d936120c2386b977be2f247d3a1265a6e1a9c2271cda",
+      "duration_s": 32.367,
+      "storage_ref": "videos/dev_10_swaporder_blowerbeforebrush.mp4",
+      "gt_path": "gt/A10.json"
+    },
+    {
+      "clip_id": "A11",
+      "procedure": "A",
+      "sha256": "dcdd6df52f4f52638eb60de27ec0d0db5990f2ebe6799ab413865251248938ce",
+      "duration_s": 34.767,
+      "storage_ref": "videos/dev_11_swaporder_pluginbeforewipe.mp4",
+      "gt_path": "gt/A11.json"
+    },
+    {
+      "clip_id": "A12",
+      "procedure": "A",
+      "sha256": "9b41a4e2960aa7f8929d0d91e29295e301cafdf4099959640850a616d53710c2",
+      "duration_s": 38.782,
+      "storage_ref": "videos/dev_12_swaporder_wipebeforeblower.mp4",
+      "gt_path": "gt/A12.json"
+    },
+    {
+      "clip_id": "A13",
+      "procedure": "A",
+      "sha256": "ba1e6d8f74f3d9284b0fad0a1bf7bde2ed4d893be1dbbbd4d13705cff5a2c755",
+      "duration_s": 45.633,
+      "storage_ref": "videos/dev_13_wrongtool_card.mp4",
+      "gt_path": "gt/A13.json"
+    },
+    {
+      "clip_id": "A14",
+      "procedure": "A",
+      "sha256": "1e9c6e2a85348b462c1c2120276af45acf0ec1bc6d08e9481e92980339fa119a",
+      "duration_s": 36.6,
+      "storage_ref": "videos/dev_14_wrongtool_finger.mp4",
+      "gt_path": "gt/A14.json"
+    },
+    {
+      "clip_id": "A15",
+      "procedure": "A",
+      "sha256": "25a418c359a9827d1a7d939587d20823509309f9c7d9d2a20e0326c292cea49f",
+      "duration_s": 39.133,
+      "storage_ref": "videos/dev_15_wrongtool_Screwdriver .mp4",
+      "gt_path": "gt/A15.json"
+    }
+  ]
+}

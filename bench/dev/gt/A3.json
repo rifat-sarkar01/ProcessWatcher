@@ -1,0 +1,59 @@
+{
+  "clip_id": "A3",
+  "procedure": "A",
+  "sop_file": "bench/sops/P-A-keyboard-clean.md",
+  "compliant": true,
+  "operator": "operator_1",
+  "camera": "front-left overhead 35deg",
+  "instances": {
+    "hand": 2,
+    "keyboard": 1,
+    "brush": 1,
+    "blower": 1,
+    "cloth": 1,
+    "usb cable": 1
+  },
+  "steps": [
+    {
+      "step_id": "stp_01",
+      "t_start": 2.5,
+      "t_end": 9.5
+    },
+    {
+      "step_id": "stp_02",
+      "t_start": 11.0,
+      "t_end": 18.0
+    },
+    {
+      "step_id": "stp_03",
+      "t_start": 18.0,
+      "t_end": 24.5
+    },
+    {
+      "step_id": "stp_04",
+      "t_start": 26.0,
+      "t_end": 31.5
+    },
+    {
+      "step_id": "stp_05",
+      "t_start": 31.5,
+      "t_end": 37.0
+    },
+    {
+      "step_id": "stp_06",
+      "t_start": 37.0,
+      "t_end": 42.0
+    },
+    {
+      "step_id": "stp_07",
+      "t_start": 42.0,
+      "t_end": 43.0
+    },
+    {
+      "step_id": "stp_08",
+      "t_start": 43.0,
+      "t_end": 47.5
+    }
+  ],
+  "deviations": []
+}

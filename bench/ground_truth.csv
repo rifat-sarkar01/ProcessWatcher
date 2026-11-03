@@ -1,0 +1,25 @@
+filename,split,error_type,error_detail,duration_seconds,correct_sequence
+dev_01_correct.mp4,dev,correct,,54.333,true
+dev_02_correct.mp4,dev,correct,,53.667,true
+dev_03_correct.mp4,dev,correct,,47.998,true
+dev_04_correct.mp4,dev,correct,,42.167,true
+dev_05_correct.mp4,dev,correct,,43.2,true
+dev_06_correct.mp4,dev,correct,,45.033,true
+dev_07_skipstep_tilttap.mp4,dev,skipstep,skipped tilt/tap step,28.467,false
+dev_08_skipstep_brush.mp4,dev,skipstep,skipped brush step,25.7,false
+dev_09_skipstep_blower.mp4,dev,skipstep,skipped blower step,28.4,false
+dev_10_swaporder_blowerbeforebrush.mp4,dev,swaporder,swapped order: blower before brush,32.367,false
+dev_11_swaporder_pluginbeforewipe.mp4,dev,swaporder,swapped order: plug-in before wipe,34.767,false
+dev_12_swaporder_wipebeforeblower.mp4,dev,swaporder,swapped order: wipe before blower,38.782,false
+dev_13_wrongtool_card.mp4,dev,wrongtool,wrong tool: card,45.633,false
+dev_14_wrongtool_finger.mp4,dev,wrongtool,wrong tool: finger,36.6,false
+dev_15_wrongtool_Screwdriver .mp4,dev,wrongtool,wrong tool: screwdriver,39.133,false
+held_01_correct.mp4,held,correct,,35.033,true
+held_02_correct.mp4,held,correct,,33.133,true
+held_03_correct.mp4,held,correct,,35.433,true
+held_04_skipstep_blower.mp4,held,skipstep,skipped blower step,28.167,false
+held_05_skipstep_tilttap.mp4,held,skipstep,skipped tilt/tap step,27.486,false
+held_06_swaporder_blowerbeforebrush.mp4,held,swaporder,swapped order: blower before brush,23.732,false
+held_07_swaporder_pluginbeforewipe.mp4,held,swaporder,swapped order: plug-in before wipe,32.3,false
+held_08_wrongtool_screwdriver.mp4,held,wrongtool,wrong tool: screwdriver,43.733,false
+held_09_wrongtool_card.mp4,held,wrongtool,wrong tool: card,40.098,false
