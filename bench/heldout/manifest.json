@@ -1,0 +1,77 @@
+{
+  "split": "heldout",
+  "clips": [
+    {
+      "clip_id": "A16",
+      "procedure": "A",
+      "sha256": "4e8f6433c146340f8b2f248de6f138d65da49266baf80bc905192d6d82024564",
+      "duration_s": 35.033,
+      "storage_ref": "videos/held_01_correct.mp4",
+      "gt_path": "gt/A16.json"
+    },
+    {
+      "clip_id": "A17",
+      "procedure": "A",
+      "sha256": "2cbcbae23c896b13a1a5d77ae57f127e1a77bc56ad7fa85473d2d2d75c81f799",
+      "duration_s": 33.133,
+      "storage_ref": "videos/held_02_correct.mp4",
+      "gt_path": "gt/A17.json"
+    },
+    {
+      "clip_id": "A18",
+      "procedure": "A",
+      "sha256": "f98392a9131dffab7e5fd1a5219e4e3e5adfcd49e5d1afbce0240cc43ffb4756",
+      "duration_s": 35.433,
+      "storage_ref": "videos/held_03_correct.mp4",
+      "gt_path": "gt/A18.json"
+    },
+    {
+      "clip_id": "A19",
+      "procedure": "A",
+      "sha256": "5e662417d01cc4d619c92b86d62b3f469093d4ce39f0ed1c1016a42e09fd80d8",
+      "duration_s": 28.167,
+      "storage_ref": "videos/held_04_skipstep_blower.mp4",
+      "gt_path": "gt/A19.json"
+    },
+    {
+      "clip_id": "A20",
+      "procedure": "A",
+      "sha256": "faf198ad3f9cfda52bfd81cfac2045f5436d0945e25baae57cdb0ce337f74222",
+      "duration_s": 27.486,
+      "storage_ref": "videos/held_05_skipstep_tilttap.mp4",
+      "gt_path": "gt/A20.json"
+    },
+    {
+      "clip_id": "A21",
+      "procedure": "A",
+      "sha256": "807ff414102e5ab9cb064b7a6af9f73aac0b920a90e0ed64f64e2988d0f531b3",
+      "duration_s": 23.732,
+      "storage_ref": "videos/held_06_swaporder_blowerbeforebrush.mp4",
+      "gt_path": "gt/A21.json"
+    },
+    {
+      "clip_id": "A22",
+      "procedure": "A",
+      "sha256": "8cb2b67a880d682d307f468be58617ec5a824bd74286be7d1a8f6a246307d6b6",
+      "duration_s": 32.3,
+      "storage_ref": "videos/held_07_swaporder_pluginbeforewipe.mp4",
+      "gt_path": "gt/A22.json"
+    },
+    {
+      "clip_id": "A23",
+      "procedure": "A",
+      "sha256": "ade0c70dbf89952fae1bb1c7e743258bc894cff42984745d7cdb76f50aa17c41",
+      "duration_s": 43.733,
+      "storage_ref": "videos/held_08_wrongtool_screwdriver.mp4",
+      "gt_path": "gt/A23.json"
+    },
+    {
+      "clip_id": "A24",
+      "procedure": "A",
+      "sha256": "7932caa7cd410b84bd0a0fba1581e14c21b8168c9a96e938839859492f8eaa2b",
+      "duration_s": 40.098,
+      "storage_ref": "videos/held_09_wrongtool_card.mp4",
+      "gt_path": "gt/A24.json"
+    }
+  ]
+}

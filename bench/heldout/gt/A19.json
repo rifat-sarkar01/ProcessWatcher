@@ -1,0 +1,62 @@
+{
+  "clip_id": "A19",
+  "procedure": "A",
+  "sop_file": "bench/sops/P-A-keyboard-clean.md",
+  "compliant": false,
+  "operator": "operator_2",
+  "camera": "right overhead 45deg",
+  "instances": {
+    "hand": 2,
+    "keyboard": 1,
+    "brush": 1,
+    "blower": 1,
+    "cloth": 1,
+    "usb cable": 1
+  },
+  "steps": [
+    {
+      "step_id": "stp_01",
+      "t_start": 2.0,
+      "t_end": 7.0
+    },
+    {
+      "step_id": "stp_02",
+      "t_start": 7.5,
+      "t_end": 12.0
+    },
+    {
+      "step_id": "stp_03",
+      "t_start": 12.0,
+      "t_end": 16.5
+    },
+    {
+      "step_id": "stp_05",
+      "t_start": 17.0,
+      "t_end": 20.0
+    },
+    {
+      "step_id": "stp_06",
+      "t_start": 20.0,
+      "t_end": 22.5
+    },
+    {
+      "step_id": "stp_07",
+      "t_start": 22.5,
+      "t_end": 23.0
+    },
+    {
+      "step_id": "stp_08",
+      "t_start": 23.0,
+      "t_end": 27.5
+    }
+  ],
+  "deviations": [
+    {
+      "type": "missed",
+      "step_id": "stp_04",
+      "t_start": 16.5,
+      "t_end": 17.5,
+      "note": "blower omitted"
+    }
+  ]
+}
