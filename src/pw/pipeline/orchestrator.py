@@ -22,6 +22,7 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
+from pw import __version__
 from pw.clients import DEFAULT_BASE_URL, build_clients
 from pw.clients.errors import SpendCapExceeded
 from pw.core.ledger import RunLedger
@@ -238,7 +239,7 @@ def build_manifest(
         },
         "dropped_candidates": 0,
         "git_commit": _git_commit(),
-        "app_version": "0.0.0",
+        "app_version": __version__,
     }
 
 

@@ -30,10 +30,57 @@ flowchart LR
 
 The full stage table is in [docs/architecture.md](docs/architecture.md).
 
+## Windows one-click demo (showcase)
+
+This is the recommended path for demonstrating the app on a Windows laptop. It is **not**
+a standalone executable: Python 3.12 (managed by uv) and Node.js are still required.
+
+**Requirements:** Windows 10/11, [uv](https://docs.astral.sh/uv/) with Python 3.12,
+Node.js 22.12+ with npm, and ffmpeg only if you also want to analyse new clips. The three
+frozen demo cases need no API key, no network and no ffmpeg.
+
+**First-time setup** (once, from the repository root):
+
+```bash
+uv sync
+npm --prefix web ci
+```
+
+**Launch:** double-click `Start-ProcessWatcher.bat`. It resolves the project directory
+from the batch file, checks uv/Node/npm and the installed dependencies, refuses to start
+if port 8000 or 5173 is already in use, starts the API with `PW_MODE=demo`, starts the Vite
+dev server, waits for both health checks, verifies the frozen cases, and only then opens
+`http://127.0.0.1:5173/demo` in the default browser. Logs are written to `.runtime\logs\`.
+Running the launcher twice reuses the existing instance instead of starting duplicates.
+
+**Stop:** double-click `Stop-ProcessWatcher.bat`. It stops only the backend and frontend
+PIDs recorded by the launcher, after checking their start time and command line; it never
+kills unrelated Python, Node.js or other user processes and keeps the logs.
+
+**Demo mode:** `PW_MODE=demo` serves the committed, checksummed cases under `demo/cases/`
+read-only. Every model client is cache-only, so the demo makes **no outbound Meta API
+calls**. The launcher also points `PW_ENV_FILE` at a missing file and clears
+`META_API_KEY` for its child processes, so your real `.env` is not read in demo mode.
+
+**Live mode is separate.** Do not launch live mode through the demo batch files. Copy
+`.env.example` to `.env`, fill in `META_API_KEY` and `PW_ACCESS_CODE` locally, never commit
+that file, and use the manual commands below:
+
+```bash
+cp .env.example .env       # Windows: Copy-Item .env.example .env
+uv run pw config           # shows "set"/"missing" only, never the values
+PW_MODE=live uv run uvicorn pw.api.main:app --port 8000
+npm --prefix web run dev
+```
+
+`live` spends money and sends frames to the Meta API; the three demo cases do neither.
+Process Watcher is a local web application that requires Python and Node.js; there is no
+bundled installer or standalone executable.
+
 ## 60-second quickstart
 
-Requirements: Python 3.12 + [uv](https://docs.astral.sh/uv/), Node 20+, ffmpeg/ffprobe on
-PATH, and (for live runs) a Meta Model API key.
+Requirements: Python 3.12 + [uv](https://docs.astral.sh/uv/), Node 22.12+, ffmpeg/ffprobe
+on PATH, and (for live runs) a Meta Model API key.
 
 ```bash
 uv sync

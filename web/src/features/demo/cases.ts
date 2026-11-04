@@ -1,4 +1,5 @@
 import type { DemoCaseDetail as DemoCaseResponse, DemoCaseSummary } from "../../api";
+import type { Report } from "../../types/generated/report";
 import { toTimelineData, type TimelineData } from "../review/timeline/data";
 
 export type DemoDomain = "IT hardware";
@@ -16,6 +17,8 @@ export interface DemoCaseDetail extends DemoCase {
   /** Frozen, deterministic review data: no network, no model calls. */
   data: TimelineData;
   media_path: string;
+  /** Full frozen report so findings, evidence and illustrations can render offline. */
+  report: Report;
 }
 
 /** Every shipped demo case cleans a keyboard, so the domain is constant. */
@@ -47,5 +50,6 @@ export function toDemoCaseDetail(detail: DemoCaseResponse): DemoCaseDetail {
     ...toDemoCase(detail),
     data: toTimelineData(detail.report),
     media_path: detail.media.analysis,
+    report: detail.report,
   };
 }

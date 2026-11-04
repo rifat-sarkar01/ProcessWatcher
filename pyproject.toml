@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "process-watcher"
-version = "0.0.0"
+version = "1.0.0"
 description = "Process Watcher: check a recorded physical procedure against its written SOP"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"

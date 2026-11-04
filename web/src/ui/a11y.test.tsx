@@ -32,6 +32,15 @@ const DEMO_DETAIL = {
   ...DEMO_SUMMARY,
   media: { analysis: "media/analysis.mp4" },
   report: {
+    status: "done",
+    degraded_stages: [],
+    sop: { steps: [{ id: "stp_01", idx: 1 }] },
+    summary: {
+      flagged: 0,
+      needs_review: 0,
+      dropped: 0,
+      by_type: { missed: 0, out_of_order: 0, wrong_tool: 0 },
+    },
     video: { duration_s: 54.3333 },
     lanes: {
       expected: [{ step_id: "stp_01", idx: 1 }],

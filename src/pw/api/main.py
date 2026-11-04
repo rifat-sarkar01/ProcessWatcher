@@ -67,7 +67,7 @@ def create_app(
     load_env_file()
     settings = load_settings()
     root = runs_dir if runs_dir is not None else settings.runs_dir
-    app = FastAPI(title="Process Watcher", version="0.0.0")
+    app = FastAPI(title="Process Watcher", version="1.0.0")
     app.state.settings = ApiSettings(
         runs_dir=root,
         caps=caps or UploadCaps(),
