@@ -1,7 +1,7 @@
 {
   "name": "process-watcher-web",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Process Watcher review UI: video, dual-lane timeline, SAM overlay, deviation panel",
   "engines": {

@@ -143,7 +143,11 @@ pytest-cache-files-*/
 pw-selftest/
 
 
-# Playwright e2e output
+# Windows one-click launcher state and logs (never commit)
+.runtime/
+
+# Playwright e2e output (web/ when run with --prefix, root when run from the repo)
+/test-results/
 web/test-results/
 web/playwright-report/
 

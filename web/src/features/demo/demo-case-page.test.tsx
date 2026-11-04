@@ -5,13 +5,25 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError, type ApiClient } from "../../api";
 import { DemoCasePage } from "./demo-case-page";
 
+interface FixtureDeviation {
+  id: string;
+  type: string;
+  status: string;
+  step_id: string;
+  t_start: number;
+  t_end: number;
+}
+
 function detailPayload(
   caseId: string,
   title: string,
   description: string,
   durationSeconds: number,
-  deviations: { id: string; type: string; status: string; step_id: string; t_start: number; t_end: number }[],
+  deviations: FixtureDeviation[],
 ) {
+  const stepIds = [...new Set(deviations.map((deviation) => deviation.step_id))];
+  const countByType = (type: string) => deviations.filter((item) => item.type === type).length;
+
   return {
     case_id: caseId,
     title,
@@ -21,15 +33,71 @@ function detailPayload(
     deviation_count: deviations.length,
     media: { analysis: "media/analysis.mp4" },
     report: {
+      status: "done",
+      degraded_stages: [],
+      sop: {
+        steps: stepIds.map((stepId) => ({
+          id: stepId,
+          idx: Number(stepId.replace("stp_", "")),
+          text: "",
+          action: "",
+          tools: [],
+          parts: [],
+          ordering: "strict",
+          critical: false,
+        })),
+      },
+      summary: {
+        flagged: deviations.filter((item) => item.status === "flagged").length,
+        needs_review: deviations.filter((item) => item.status === "needs_review").length,
+        dropped: 0,
+        by_type: {
+          missed: countByType("missed"),
+          out_of_order: countByType("out_of_order"),
+          wrong_tool: countByType("wrong_tool"),
+        },
+      },
       video: { duration_s: durationSeconds },
       lanes: {
-        expected: [
-          { step_id: "stp_01", idx: 1 },
-          { step_id: "stp_02", idx: 2 },
-        ],
+        expected: stepIds.map((stepId) => ({
+          step_id: stepId,
+          idx: Number(stepId.replace("stp_", "")),
+        })),
         observed: [{ interval_id: "int_01", step_id: "stp_02", t_start: 1.8, t_end: 5.5 }],
       },
-      deviations,
+      deviations: deviations.map((deviation, index) => ({
+        ...deviation,
+        severity: "high",
+        confidence: 1,
+        margin: 0,
+        track_ids: [],
+        explanation: `Explanation for ${deviation.id}`,
+        verifier: { ran: true, agreed: true, note: "" },
+        evidence: [
+          {
+            evidence_id: `evd_${String(index + 1).padStart(3, "0")}`,
+            deviation_id: deviation.id,
+            frame_index: 0,
+            kind: "evidence",
+            output_path: `evidence/${deviation.id}.png`,
+            t: deviation.t_start,
+            track_ids: [],
+          },
+        ],
+        evidence_unavailable: false,
+        illustration:
+          index === 0
+            ? {
+                id: "ill_001",
+                kind: "illustration",
+                path: "illustrations/ill_001.png",
+                sha256: "",
+                watermark: true,
+                qa: { attempts: 1, verdict: "pass" },
+              }
+            : null,
+        illustration_unavailable_reason: index === 0 ? null : "No illustration for this finding.",
+      })),
     },
   };
 }
@@ -122,6 +190,22 @@ describe("DemoCasePage", () => {
     renderCase("keyboard-missed-tilt", fakeClient(MISSED_TILT));
 
     expect(await screen.findAllByTestId("deviation-marker")).toHaveLength(3);
+  });
+
+  it("loads the frozen findings, real-frame evidence and illustration", async () => {
+    renderCase("keyboard-missed-tilt", fakeClient(MISSED_TILT));
+
+    const evidence = await screen.findAllByRole("img", { name: /Evidence frame at/ });
+    expect(evidence[0]).toHaveAttribute(
+      "src",
+      "/demo/cases/keyboard-missed-tilt/evidence/dev_001.png",
+    );
+    expect(screen.getByText("Step 1 skipped")).toBeInTheDocument();
+    expect(screen.getByText("Explanation for dev_001")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /AI illustration, not evidence/ })).toHaveAttribute(
+      "src",
+      "/demo/cases/keyboard-missed-tilt/illustrations/ill_001.png",
+    );
   });
 
   it("appends the known-limitation note to the missed-tilt description", async () => {

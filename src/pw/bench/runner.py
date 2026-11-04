@@ -17,6 +17,7 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any, Protocol
 
+from pw import __version__
 from pw.bench.metrics import (
     FLAGGED,
     TOLERANCE_S,
@@ -354,7 +355,7 @@ def run_bench(
             "table.md": _file_hash(table_path),
         },
         "git_commit": _git_commit(),
-        "app_version": "0.0.0",
+        "app_version": __version__,
     }
     _write_json(run_dir / "manifest.json", manifest)
     return BenchRun(identifier, run_dir.resolve(), summary, tuple(per_clip))

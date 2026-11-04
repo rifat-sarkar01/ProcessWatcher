@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 
 import { ApiError, createApiClient, getDemoCase, type ApiClient } from "../../api";
 import { Banner, EmptyState, LoadingState } from "../../ui/states";
+import { DeviationPanel } from "../review/panel/deviation-panel";
 import { ReviewSurface } from "../review/player/review-surface";
 import { toDemoCaseDetail, type DemoCaseDetail } from "./cases";
 
@@ -81,6 +82,11 @@ export function DemoCasePage({ client }: DemoCasePageProps = {}) {
       <ReviewSurface
         src={`${API_BASE}/demo/cases/${demoCase.id}/${demoCase.media_path}`}
         data={demoCase.data}
+      />
+
+      <DeviationPanel
+        report={demoCase.report}
+        artifactUrl={(path) => `${API_BASE}/demo/cases/${demoCase.id}/${path}`}
       />
     </section>
   );
