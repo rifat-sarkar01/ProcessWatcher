@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://process-watcher.dev/contracts/schemas/demo-case.schema.json",
+  "title": "DemoCase",
+  "description": "One frozen demo case (`GET /demo/cases/{case_id}`): metadata plus the checksummed report the review core renders. Read-only; produced by pw demo-build (T-7.1).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "title",
+    "description",
+    "source_run",
+    "duration_s",
+    "deviation_count",
+    "media",
+    "report"
+  ],
+  "properties": {
+    "case_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "source_run": { "type": "string" },
+    "duration_s": { "type": "number", "exclusiveMinimum": 0 },
+    "deviation_count": { "type": "integer", "minimum": 0 },
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analysis"],
+      "properties": {
+        "analysis": { "type": "string", "minLength": 1 }
+      }
+    },
+    "report": { "$ref": "https://process-watcher.dev/contracts/report.schema.json" }
+  }
+}

@@ -6,6 +6,33 @@ import { COMPILE_RESPONSE, REPORT, STAGE_EVENTS } from "./fixtures/replay";
 export const RUN_ID = REPORT.run_id;
 export const ACCESS_CODE = "demo-code";
 
+const DEMO_CASES = [
+  {
+    case_id: "keyboard-compliant",
+    title: "Keyboard clean: compliant run",
+    description: "The operator follows the SOP; no finding is flagged, only one review-level note.",
+    source_run: RUN_ID,
+    duration_s: REPORT.video.duration_s,
+    deviation_count: REPORT.deviations.length,
+  },
+  {
+    case_id: "keyboard-heldout-missed-blower",
+    title: "Held-out clip: blower step omitted",
+    description: "A held-out recording with the blow-air step missing.",
+    source_run: RUN_ID,
+    duration_s: 28.2,
+    deviation_count: 4,
+  },
+  {
+    case_id: "keyboard-missed-tilt",
+    title: "Keyboard clean: tilt and tap omitted",
+    description: "Step 1 is never performed.",
+    source_run: RUN_ID,
+    duration_s: 28.4667,
+    deviation_count: 3,
+  },
+];
+
 export interface ReviewPatch {
   deviation_id: string;
   decision: string;
@@ -104,6 +131,24 @@ export async function installMockApi(page: Page): Promise<MockApi> {
       }
       if (artifact.endsWith(".mp4")) {
         await route.fulfill({ status: 200, contentType: "video/mp4", body: TINY_MP4 });
+        return;
+      }
+    }
+
+    if (path === "/demo/cases" && method === "GET") {
+      await json(route, { cases: DEMO_CASES });
+      return;
+    }
+
+    if (path.startsWith("/demo/cases/") && method === "GET" && !path.endsWith(".mp4")) {
+      const caseId = path.slice("/demo/cases/".length);
+      const summary = DEMO_CASES.find((item) => item.case_id === caseId);
+      if (summary) {
+        await json(route, {
+          ...summary,
+          media: { analysis: "media/analysis.mp4" },
+          report: REPORT,
+        });
         return;
       }
     }

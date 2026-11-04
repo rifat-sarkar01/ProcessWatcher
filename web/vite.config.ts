@@ -1,10 +1,14 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
+const apiTarget = process.env.PW_API_URL ?? "http://localhost:8000";
+
 export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    // The demo gallery reads the local API; same-origin in dev without VITE_API_BASE.
+    proxy: { "/demo/cases": apiTarget },
   },
   build: {
     outDir: "dist",
