@@ -105,11 +105,11 @@ test("demo gallery: three offline cases open the frozen review", async ({ page }
   await expect(cards).toHaveCount(3);
 
   await page
-    .getByRole("button", { name: /SSD swap: skipped power reconnect/ })
+    .getByRole("button", { name: /Keyboard clean: compliant run/ })
     .click();
-  await expect(page).toHaveURL(/\/demo\/ssd-swap$/);
+  await expect(page).toHaveURL(/\/demo\/keyboard-compliant$/);
   await expect(
-    page.getByRole("heading", { name: "SSD swap: skipped power reconnect" }),
+    page.getByRole("heading", { name: "Keyboard clean: compliant run" }),
   ).toBeVisible();
   await expect(page.getByText("Offline", { exact: true })).toBeVisible();
 

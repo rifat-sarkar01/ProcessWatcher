@@ -117,10 +117,31 @@ describe("app routes", () => {
     expect(await screen.findByText("No deviations found.")).toBeInTheDocument();
   });
 
-  it("renders the demo route", () => {
+  it("renders the demo route", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        jsonResponse({
+          cases: [
+            {
+              case_id: "keyboard-compliant",
+              title: "Keyboard clean: compliant run",
+              description: "The operator follows the SOP.",
+              source_run: RUN_ID,
+              duration_s: 54.3333,
+              deviation_count: 1,
+            },
+          ],
+        }),
+      ),
+    );
+
     renderAt("/demo");
 
-    expect(screen.getByRole("heading", { name: "Demo cases" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Demo cases" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("button", { name: /Keyboard clean: compliant run/i }),
+    ).toBeInTheDocument();
   });
 
   it("renders a not-found state for an unknown route", () => {

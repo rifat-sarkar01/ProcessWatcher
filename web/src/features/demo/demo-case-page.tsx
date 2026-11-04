@@ -1,26 +1,66 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { EmptyState } from "../../ui/states";
+import { ApiError, createApiClient, getDemoCase, type ApiClient } from "../../api";
+import { Banner, EmptyState, LoadingState } from "../../ui/states";
 import { ReviewSurface } from "../review/player/review-surface";
-import { DEMO_CASES } from "./cases";
+import { toDemoCaseDetail, type DemoCaseDetail } from "./cases";
 
-/** `/demo/:caseId`: the review core loaded with frozen data. */
-export function DemoCasePage() {
+const API_BASE = import.meta.env.VITE_API_BASE ?? "";
+
+export interface DemoCasePageProps {
+  client?: ApiClient;
+}
+
+/** `/demo/:caseId`: the review core loaded with frozen data from the local API. */
+export function DemoCasePage({ client }: DemoCasePageProps = {}) {
   const { caseId = "" } = useParams();
-  const demoCase = DEMO_CASES.find((candidate) => candidate.id === caseId);
+  const [demoCase, setDemoCase] = useState<DemoCaseDetail | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
-  if (!demoCase) {
+  useEffect(() => {
+    const api = client ?? createApiClient({ baseUrl: API_BASE });
+    let cancelled = false;
+
+    getDemoCase(api, caseId)
+      .then((payload) => {
+        if (!cancelled) setDemoCase(toDemoCaseDetail(payload));
+      })
+      .catch((caught: unknown) => {
+        if (cancelled) return;
+        setError(caught instanceof Error ? caught : new Error("The demo case could not be loaded."));
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [caseId, client]);
+
+  const backLink = (
+    <Link to="/demo" className="inline-block text-small text-accent underline underline-offset-4">
+      All demo cases
+    </Link>
+  );
+
+  if (error) {
+    if (error instanceof ApiError && error.code === "not_found") {
+      return (
+        <EmptyState
+          title="Case not found"
+          help="That demo case is not part of the frozen set."
+          action={backLink}
+        />
+      );
+    }
     return (
-      <EmptyState
-        title="Case not found"
-        help="That demo case is not part of the frozen set."
-        action={
-          <Link to="/demo" className="text-accent underline underline-offset-4">
-            All demo cases
-          </Link>
-        }
-      />
+      <Banner tone="error">
+        {error.message} {backLink}
+      </Banner>
     );
+  }
+
+  if (demoCase === null) {
+    return <LoadingState label="Loading demo case…" />;
   }
 
   return (
@@ -33,15 +73,13 @@ export function DemoCasePage() {
       </header>
 
       <p className="m-0 text-small text-muted">
-        {demoCase.domain} · {demoCase.summary}
+        {demoCase.domain} · {demoCase.description}
       </p>
 
-      <Link to="/demo" className="inline-block text-small text-accent underline underline-offset-4">
-        All demo cases
-      </Link>
+      {backLink}
 
       <ReviewSurface
-        src={`/demo/cases/${demoCase.id}/media/analysis.mp4`}
+        src={`${API_BASE}/demo/cases/${demoCase.id}/${demoCase.media_path}`}
         data={demoCase.data}
       />
     </section>

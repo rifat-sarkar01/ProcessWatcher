@@ -59,12 +59,31 @@ uv run uvicorn pw.api.main:app --port 8000
 npm --prefix web run dev
 ```
 
-The demo pack works without a network or an API key:
+The demo pack works without a network or an API key. The `/demo` routes are not behind
+the access-code gate, and the Vite dev server proxies `/demo` to port 8000:
 
 ```bash
+# macOS / Linux
 PW_MODE=demo uv run uvicorn pw.api.main:app --port 8000
 curl http://localhost:8000/demo/cases
 ```
+
+```bat
+REM Windows CMD
+set PW_MODE=demo
+uv run uvicorn pw.api.main:app --port 8000
+curl.exe http://localhost:8000/demo/cases
+```
+
+```powershell
+# Windows PowerShell
+$env:PW_MODE="demo"
+uv run uvicorn pw.api.main:app --port 8000
+curl.exe http://localhost:8000/demo/cases
+```
+
+The gallery at `http://localhost:5173/demo` lists the three keyboard-cleaning cases and
+opens each one's timeline and video from the frozen, checksummed pack.
 
 ## How each Meta model is used
 
